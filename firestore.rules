@@ -1,0 +1,89 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function adminDoc() {
+      return get(/databases/$(database)/documents/admins/$(request.auth.uid)).data;
+    }
+
+    function isActiveAdmin() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        && (adminDoc().role == "owner" || adminDoc().role == "admin")
+        && adminDoc().active == true;
+    }
+
+    function isOwner() {
+      return isActiveAdmin() && adminDoc().role == "owner";
+    }
+
+    function hasAdminPermission(permission) {
+      return isOwner()
+        || (isActiveAdmin()
+          && adminDoc().role == "admin"
+          && (!("permissions" in adminDoc()) || adminDoc().permissions[permission] == true));
+    }
+
+    match /menuItems/{menuItemId} {
+      allow read: if true;
+      allow create, delete: if hasAdminPermission("manageMenu");
+      allow update: if hasAdminPermission("manageMenu")
+        || (hasAdminPermission("manageImages")
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["image", "imagePublicId", "updatedAt"]))
+        || (hasAdminPermission("manageTodayMenu")
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["isTodayMenu", "updatedAt"]));
+    }
+
+    match /settings/public {
+      allow read: if true;
+      allow create, update, delete: if hasAdminPermission("manageSettings");
+    }
+
+    match /settings/{documentId} {
+      allow read, write: if hasAdminPermission("manageSettings");
+    }
+
+    match /admins/{adminId} {
+      allow read: if isSignedIn() && request.auth.uid == adminId;
+      allow create, update, delete: if false;
+    }
+
+    match /customers/{customerId} {
+      allow read: if isSignedIn() && request.auth.uid == customerId;
+      allow create: if isSignedIn()
+        && request.auth.uid == customerId
+        && request.resource.data.keys().hasOnly(["uid", "name", "email", "createdAt", "updatedAt"])
+        && request.resource.data.uid == customerId
+        && request.resource.data.email == request.auth.token.email;
+      allow update: if isSignedIn()
+        && request.auth.uid == customerId
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["name", "email", "updatedAt"])
+        && request.resource.data.uid == customerId
+        && request.resource.data.email == request.auth.token.email;
+      allow delete: if false;
+    }
+
+    match /orders/{orderId} {
+      allow read: if hasAdminPermission("manageOrders");
+      allow update: if hasAdminPermission("manageOrders")
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "updatedAt"])
+        && (resource.data.status != "completed" || request.resource.data.status == "completed");
+      allow create, delete: if false;
+    }
+
+    match /cateringRequests/{requestId} {
+      allow read: if hasAdminPermission("manageCatering");
+      allow update: if hasAdminPermission("manageCatering")
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "updatedAt"]);
+      allow create, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

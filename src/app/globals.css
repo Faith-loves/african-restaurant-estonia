@@ -1,26 +1,418 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --are-aubergine: #321b29;
+  --are-gold: #d89a27;
+  --are-paprika: #b9472e;
+  --are-blue: #294b73;
+  --are-ivory: #fff8ec;
+  --are-black: #151313;
+  --are-white: #ffffff;
+
+  --background: var(--are-ivory);
+  --foreground: var(--are-black);
+
+  --are-surface: #ffffff;
+  --are-surface-soft: #fff8ec;
+  --are-surface-warm: #f8f3ea;
+  --are-text-muted: rgba(21, 19, 19, 0.62);
+  --are-border: rgba(50, 27, 41, 0.12);
+  --surface-primary: #fff8ec;
+  --surface-secondary: #ffffff;
+  --surface-elevated: #ffffff;
+  --text-primary: #151313;
+  --text-secondary: #321b29;
+  --text-muted: rgba(21, 19, 19, 0.62);
+  --text-inverse: #fff8ec;
+  --input-background: #fff8ec;
+  --input-text: #151313;
+  --input-placeholder: rgba(21, 19, 19, 0.55);
+  --focus-ring: #d89a27;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html.dark {
+  color-scheme: dark;
+  --background: #151313;
+  --foreground: #fff8ec;
+  --are-surface: #21171d;
+  --are-surface-soft: #2a2025;
+  --are-surface-warm: #261b21;
+  --are-text-muted: rgba(255, 248, 236, 0.72);
+  --are-border: rgba(255, 248, 236, 0.2);
+  --surface-primary: #151313;
+  --surface-secondary: #21171d;
+  --surface-elevated: #2a2025;
+  --text-primary: #fff8ec;
+  --text-secondary: #fff8ec;
+  --text-muted: rgba(255, 248, 236, 0.72);
+  --text-inverse: #151313;
+  --input-background: #21171d;
+  --input-text: #fff8ec;
+  --input-placeholder: rgba(255, 248, 236, 0.62);
+  --focus-ring: #d89a27;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
+  margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-manrope), Arial, sans-serif;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-cormorant), Georgia, serif;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@keyframes announcement-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.announcement-track {
+  animation: announcement-scroll 30s linear infinite;
+}
+
+.announcement-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .announcement-track {
+    animation: none;
+  }
+}
+
+@keyframes entry-writing {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.entry-writing {
+  animation: entry-writing 900ms ease-out both;
+}
+
+html[data-entry-pending="true"] body > *:not(script) {
+  visibility: hidden;
+}
+
+html[data-entry-pending="true"] .entry-gate-shell {
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entry-writing { animation: none; }
+}
+
+:where(a, button, input, textarea, select):focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+/* Keep existing Tailwind markup while giving public surfaces a deliberate
+   branded dark appearance. Deep aubergine sections remain branded surfaces;
+   light cards, form fields and readable text receive dark-mode tokens. */
+html.dark .bg-white,
+html.dark [class*="bg-white/95"],
+html.dark [class*="bg-[#FFFDF9]"] {
+  background-color: #ffffff !important;
+}
+
+html.dark [class*="bg-[#FFF8EC]"],
+html.dark [class*="bg-[#F8F3EA]"] {
+  background-color: var(--are-surface-soft) !important;
+}
+
+/* Navigation controls sit on a white header, so keep their light control
+   surfaces and aubergine icons instead of inheriting the page theme. */
+html.dark .bg-white [class*="bg-[#FFF8EC]"],
+html.dark [class*="bg-white/95"] [class*="bg-[#FFF8EC]"] {
+  background-color: #fff8ec !important;
+}
+
+html.dark .bg-white [class*="bg-[#FFF8EC]"] [class*="text-[#321B29]"],
+html.dark [class*="bg-white/95"] [class*="bg-[#FFF8EC]"] [class*="text-[#321B29]"] {
+  color: #321b29 !important;
+}
+
+/* White cards and headers intentionally stay white. Restore their existing
+   dark text so they remain high-contrast instead of inheriting dark-theme text. */
+html.dark .bg-white [class*="text-[#151313]"],
+html.dark [class*="bg-white/95"] [class*="text-[#151313]"],
+html.dark [class*="bg-[#FFFDF9]"] [class*="text-[#151313]"],
+html.dark .bg-white [class*="text-[#321B29]"],
+html.dark [class*="bg-white/95"] [class*="text-[#321B29]"],
+html.dark [class*="bg-[#FFFDF9]"] [class*="text-[#321B29]"] {
+  color: #321b29 !important;
+}
+
+html.dark .bg-white [class*="text-[#151313]/"],
+html.dark [class*="bg-white/95"] [class*="text-[#151313]/"],
+html.dark [class*="bg-[#FFFDF9]"] [class*="text-[#151313]/"],
+html.dark .bg-white [class*="text-[#321B29]/"],
+html.dark [class*="bg-white/95"] [class*="text-[#321B29]/"],
+html.dark [class*="bg-[#FFFDF9]"] [class*="text-[#321B29]/"] {
+  color: rgba(21, 19, 19, 0.62) !important;
+}
+
+/* Warm ivory sections become a softer aubergine surface in dark mode. */
+html.dark [class*="bg-[#FFF8EC]"],
+html.dark [class*="bg-[#F8F3EA]"] {
+  background-color: var(--are-surface-soft) !important;
+}
+
+html.dark [class*="bg-[#321B29]"] {
+  background-color: #321b29 !important;
+}
+
+/* Analytics panels intentionally remain white for data readability. */
+html.dark .analytics-surface {
+  color: #321b29 !important;
+}
+
+html.dark .analytics-surface table,
+html.dark .analytics-surface td,
+html.dark .analytics-surface th,
+html.dark .analytics-surface p,
+html.dark .analytics-surface span {
+  color: #321b29;
+}
+
+html.dark .analytics-surface .text-black\/50,
+html.dark .analytics-surface .text-black\/55 {
+  color: rgba(50, 27, 41, 0.62) !important;
+}
+
+html.dark .are-navbar .are-start-order {
+  background-color: #321b29 !important;
+  color: #ffffff !important;
+}
+
+/* Keep dark action buttons readable when a hover text utility is also present. */
+html.dark .are-catering-add,
+html.dark .are-catering-submit,
+html.dark .are-catering-send {
+  background-color: #321b29 !important;
+  color: #ffffff !important;
+}
+
+html.dark .are-catering-add:disabled {
+  opacity: 0.65;
+}
+
+/* Covers the same contrast issue for other branded dark action buttons,
+   including menu add-to-cart and public catering links. */
+html.dark [class*="bg-[#321B29]"][class*="text-white"] {
+  color: #ffffff !important;
+}
+
+html.dark [class*="text-[#151313]"],
+html.dark [class*="text-[#321B29]"] {
+  color: var(--foreground) !important;
+}
+
+html.dark [class*="text-[#151313]/"],
+html.dark [class*="text-[#321B29]/"] {
+  color: var(--are-text-muted) !important;
+}
+
+/* These overrides intentionally come after the global dark text tokens. */
+html.dark .bg-white [class*="text-[#151313]"],
+html.dark [class*="bg-white/95"] [class*="text-[#151313]"],
+html.dark [class*="bg-[#FFFDF9]"] [class*="text-[#151313]"],
+html.dark .bg-white [class*="text-[#321B29]"],
+html.dark [class*="bg-white/95"] [class*="text-[#321B29]"],
+html.dark [class*="bg-[#FFFDF9]"] [class*="text-[#321B29]"] {
+  color: #321b29 !important;
+}
+
+html.dark .bg-white [class*="text-[#151313]/"],
+html.dark [class*="bg-white/95"] [class*="text-[#151313]/"],
+html.dark [class*="bg-[#FFFDF9]"] [class*="text-[#151313]/"],
+html.dark .bg-white [class*="text-[#321B29]/"],
+html.dark [class*="bg-white/95"] [class*="text-[#321B29]/"],
+html.dark [class*="bg-[#FFFDF9]"] [class*="text-[#321B29]/"] {
+  color: rgba(21, 19, 19, 0.62) !important;
+}
+
+html.dark [class*="text-[#294B73]"] {
+  color: #9fc5ed !important;
+}
+
+html.dark [class*="border-[#321B29]"],
+html.dark [class*="border-white"] {
+  border-color: var(--are-border) !important;
+}
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: var(--are-surface-soft);
+  color: var(--foreground);
+  border-color: var(--are-border);
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: rgba(255, 248, 236, 0.48);
+}
+
+html.dark [class*="shadow-"] {
+  --tw-shadow-color: rgba(0, 0, 0, 0.28) !important;
+}
+
+/* Final semantic dark-mode pass. This follows the legacy compatibility rules
+   above so nested cards and analytics tables cannot inherit an unreadable
+   mixture of white backgrounds and pale text. */
+html.dark .bg-white,
+html.dark [class*="bg-white/95"],
+html.dark [class*="bg-[#FFFDF9]"],
+html.dark [class*="bg-[#FFF8EC]"],
+html.dark [class*="bg-[#F8F3EA]"] {
+  background-color: var(--surface-secondary) !important;
+}
+
+html.dark [class*="bg-[#FFF8EC]"],
+html.dark [class*="bg-[#F8F3EA]"] {
+  background-color: var(--surface-elevated) !important;
+}
+
+html.dark [class*="text-[#151313]"],
+html.dark [class*="text-[#321B29]"],
+html.dark [class*="text-black"],
+html.dark [class*="text-gray-"] {
+  color: var(--text-primary) !important;
+}
+
+html.dark [class*="text-[#151313]/"],
+html.dark [class*="text-[#321B29]/"],
+html.dark [class*="text-black/"] {
+  color: var(--text-muted) !important;
+}
+
+html.dark .bg-white [class*="text-[#151313]"],
+html.dark .bg-white [class*="text-[#321B29]"],
+html.dark [class*="bg-white/95"] [class*="text-[#151313]"],
+html.dark [class*="bg-white/95"] [class*="text-[#321B29]"],
+html.dark [class*="bg-[#FFFDF9]"] [class*="text-[#151313]"],
+html.dark [class*="bg-[#FFFDF9]"] [class*="text-[#321B29]"] {
+  color: var(--text-primary) !important;
+}
+
+html.dark .bg-white [class*="text-[#151313]/"],
+html.dark .bg-white [class*="text-[#321B29]/"],
+html.dark [class*="bg-white/95"] [class*="text-[#151313]/"],
+html.dark [class*="bg-white/95"] [class*="text-[#321B29]/"] {
+  color: var(--text-muted) !important;
+}
+
+html.dark .analytics-surface,
+html.dark .analytics-surface table,
+html.dark .analytics-surface td,
+html.dark .analytics-surface th,
+html.dark .analytics-surface p,
+html.dark .analytics-surface span {
+  color: var(--text-primary) !important;
+}
+
+html.dark [class*="border-[#321B29]"],
+html.dark [class*="border-black"],
+html.dark [class*="border-white"] {
+  border-color: var(--are-border) !important;
+}
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: var(--input-background);
+  color: var(--input-text);
+  border-color: var(--are-border);
+  color-scheme: dark;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: var(--input-placeholder);
+}
+
+/* Gold is the readable dark-theme CTA treatment. Branded section backgrounds
+   and badges remain aubergine; actionable links/buttons get the stronger
+   button pairing. */
+html.dark button[class*="bg-[#321B29]"],
+html.dark a[class*="bg-[#321B29]"] {
+  background-color: var(--are-gold) !important;
+  color: var(--are-black) !important;
+}
+
+html.dark button[class*="bg-[#321B29]"]:hover,
+html.dark a[class*="bg-[#321B29]"]:hover {
+  background-color: var(--are-ivory) !important;
+  color: var(--are-black) !important;
+}
+
+html.dark button:disabled {
+  opacity: 0.62;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+  }
+}
+/* Hide scrollbar but keep scrolling */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+@layer components {
+  .admin-input {
+    @apply w-full rounded-xl border border-[#321B29]/15 bg-[#FFF8EC] px-4 py-3 text-sm font-semibold text-[#321B29] outline-none transition;
+  }
+
+  .admin-input:focus {
+    @apply border-[#D89A27];
+  }
 }
