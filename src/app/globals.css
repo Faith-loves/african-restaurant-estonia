@@ -390,6 +390,17 @@ html.dark button:disabled {
   opacity: 0.62;
 }
 
+/* Header controls keep their light control surfaces in dark mode so the
+   icons and theme label remain visible against the branded navbar. */
+html.dark .are-navbar button[class*="bg-[#FFF8EC]"] {
+  background-color: #fff8ec !important;
+  color: #321b29 !important;
+}
+
+html.dark .are-navbar button[class*="bg-[#FFF8EC]"] span {
+  color: #321b29 !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   body {
     transition: none;
