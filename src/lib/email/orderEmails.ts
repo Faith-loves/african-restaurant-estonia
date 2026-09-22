@@ -1,4 +1,4 @@
-﻿import {
+import {
   EMAIL_FROM,
   resend,
   RESTAURANT_EMAIL,
@@ -41,9 +41,6 @@ type OrderEmailData = {
   items: OrderEmailItem[];
   subtotal: number;
 };
-
-const DEVELOPMENT_EMAIL =
-  "omolarak724@gmail.com";
 
 function escapeHtml(value: string) {
   return value
@@ -144,7 +141,7 @@ export async function sendRestaurantOrderEmail(
       // delivery to the verified account email.
       // RESTAURANT_EMAIL remains the real
       // production recipient.
-      to: [DEVELOPMENT_EMAIL],
+      to: [RESTAURANT_EMAIL],
 
       replyTo: order.customer.email,
 
@@ -228,7 +225,7 @@ export async function sendCustomerOrderConfirmation(
       // TEMPORARY DEVELOPMENT REDIRECT.
       // Change this to order.customer.email
       // after the restaurant domain is verified.
-      to: [DEVELOPMENT_EMAIL],
+      to: [order.customer.email],
 
       replyTo: RESTAURANT_EMAIL,
 
@@ -285,3 +282,4 @@ export async function sendCustomerOrderConfirmation(
 
   return data;
 }
+

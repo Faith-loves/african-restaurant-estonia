@@ -1,11 +1,8 @@
-﻿import {
+import {
   EMAIL_FROM,
   resend,
   RESTAURANT_EMAIL,
 } from "@/lib/email/resend";
-
-const DEVELOPMENT_EMAIL =
-  "omolarak724@gmail.com";
 
 type CateringEmailData = {
   reference: string;
@@ -114,7 +111,7 @@ export async function sendRestaurantCateringEmail(
       // DEVELOPMENT ONLY.
       // Production:
       // to: [RESTAURANT_EMAIL]
-      to: [DEVELOPMENT_EMAIL],
+      to: [RESTAURANT_EMAIL],
 
       replyTo:
         order.customer.email,
@@ -282,7 +279,7 @@ export async function sendCustomerCateringConfirmation(
       // DEVELOPMENT ONLY.
       // Production:
       // to: [order.customer.email]
-      to: [DEVELOPMENT_EMAIL],
+      to: [order.customer.email],
 
       replyTo:
         RESTAURANT_EMAIL,
@@ -351,3 +348,4 @@ export async function sendCustomerCateringConfirmation(
 
   return result.data;
 }
+
