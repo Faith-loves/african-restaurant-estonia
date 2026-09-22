@@ -11,7 +11,7 @@ function clearPendingEntryMarker() {
 }
 
 function isExcludedPath(pathname: string) {
-  return pathname.startsWith("/admin") || pathname === "/login" || pathname === "/signup" || pathname === "/account";
+  return pathname.startsWith("/admin") || pathname === "/login" || pathname === "/signup" || pathname === "/forgot-password" || pathname === "/account";
 }
 
 export default function CustomerEntryGate({ children }: { children: React.ReactNode }) {
