@@ -14,7 +14,6 @@ import {
 import {
   AuthProvider,
 } from "@/context/AuthContext";
-import { ThemeProvider } from "@/context/ThemeContext";
 import { GuestSessionProvider } from "@/context/GuestSessionContext";
 
 import CartDrawer from "@/components/cart/CartDrawer";
@@ -123,11 +122,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FFF8EC" },
-    { media: "(prefers-color-scheme: dark)", color: "#321B29" },
-  ],
-  colorScheme: "light dark",
+  themeColor: "#FFF8EC",
+  colorScheme: "light",
 };
 
 export default function RootLayout({
@@ -143,11 +139,10 @@ export default function RootLayout({
       >
         <script
           dangerouslySetInnerHTML={{
-            __html: `(() => { try { const p = localStorage.getItem('are-theme'); const d = p === 'dark' || (p !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.dataset.theme = d ? 'dark' : 'light'; const path = location.pathname; const excluded = path.startsWith('/admin') || path === '/login' || path === '/signup' || path === '/account'; if (!excluded) document.documentElement.dataset.entryPending = 'true'; } catch {} })();`,
+            __html: `(() => { try { localStorage.removeItem('are-theme'); document.documentElement.classList.remove('dark'); document.documentElement.dataset.theme = 'light'; const path = location.pathname; const excluded = path.startsWith('/admin') || path === '/login' || path === '/signup' || path === '/account'; if (!excluded) document.documentElement.dataset.entryPending = 'true'; } catch {} })();`,
           }}
         />
-        <ThemeProvider>
-          <AuthProvider>
+        <AuthProvider>
 
           <GuestSessionProvider>
 
@@ -169,8 +164,7 @@ export default function RootLayout({
 
           </GuestSessionProvider>
 
-          </AuthProvider>
-        </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

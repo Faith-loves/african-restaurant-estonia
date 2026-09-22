@@ -13,7 +13,6 @@ import {
 } from "react";
 
 import CartNavButton from "@/components/cart/CartNavButton";
-import ThemeToggle from "@/components/layout/ThemeToggle";
 import { useAuth } from "@/context/AuthContext";
 import { useGuestSession } from "@/context/GuestSessionContext";
 
@@ -102,8 +101,6 @@ export default function Navbar() {
 
           <CartNavButton />
 
-          <ThemeToggle />
-
           {!authLoading && guestReady && (
             guestActive ? (
               <div className="flex items-center gap-2">
@@ -137,8 +134,6 @@ export default function Navbar() {
         <div className="flex items-center gap-2 lg:hidden">
 
           <CartNavButton />
-
-          <ThemeToggle />
 
           <button
             type="button"
@@ -197,10 +192,6 @@ export default function Navbar() {
           >
             Start Order
           </Link>
-
-          <div className="mt-3">
-            <ThemeToggle mobile />
-          </div>
 
           {!authLoading && guestReady && (
             guestActive ? (

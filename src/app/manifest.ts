@@ -7,7 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "Authentic Nigerian & West African food in Tallinn.",
     start_url: "/",
     display: "standalone",
-    theme_color: "#321B29",
+    theme_color: "#FFF8EC",
     background_color: "#FFF8EC",
     icons: [
       {
