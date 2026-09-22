@@ -42,10 +42,17 @@ import {
   db,
 } from "@/lib/firebase/client";
 
+import {
+  menuItems as catalogMenuItems,
+  menuImageById,
+} from "@/data/menuData";
+import MenuItemImage from "@/components/menu/MenuItemImage";
+
 type TodayMenuItem = {
   id: string;
   name: string;
   category?: string;
+  image?: string;
 
   available: boolean;
   pricePending: boolean;
@@ -271,49 +278,47 @@ export default function AdminTodayMenu() {
           "menuItems"
         ),
         (snapshot) => {
-          const menuItems =
-            snapshot.docs
-              .map(
-                (
-                  menuDocument
-                ) => {
-                  const data =
-                    menuDocument.data();
+          const menuItemsById = new Map<string, TodayMenuItem>(
+            catalogMenuItems.map((item) => [
+              item.id,
+              {
+                id: item.id,
+                name: item.name,
+                category: item.category,
+                image: item.image,
+                available: item.available,
+                pricePending: item.pricePending === true,
+                isTodayMenu: item.isTodayMenu === true,
+                archived: item.archived === true,
+              },
+            ])
+          );
 
-                  return {
-                    id:
-                      menuDocument.id,
+          snapshot.docs.forEach((menuDocument) => {
+            const data = menuDocument.data();
 
-                    name:
-                      typeof data.name ===
-                      "string"
-                        ? data.name
-                        : "Unnamed Food",
+            menuItemsById.set(menuDocument.id, {
+              id: menuDocument.id,
+              name:
+                typeof data.name === "string"
+                  ? data.name
+                  : "Unnamed Food",
+              category:
+                typeof data.category === "string"
+                  ? data.category
+                  : undefined,
+              image:
+                typeof data.image === "string"
+                  ? data.image
+                  : menuImageById[menuDocument.id],
+              available: data.available === true,
+              pricePending: data.pricePending === true,
+              isTodayMenu: data.isTodayMenu === true,
+              archived: data.archived === true,
+            });
+          });
 
-                    category:
-                      typeof data.category ===
-                      "string"
-                        ? data.category
-                        : undefined,
-
-                    available:
-                      data.available ===
-                      true,
-
-                    pricePending:
-                      data.pricePending ===
-                      true,
-
-                    isTodayMenu:
-                      data.isTodayMenu ===
-                      true,
-
-                    archived:
-                      data.archived ===
-                      true,
-                  };
-                }
-              )
+          const menuItems = Array.from(menuItemsById.values())
               .filter(
                 (item) =>
                   !item.archived
@@ -991,6 +996,14 @@ export default function AdminTodayMenu() {
                   >
 
                     <div className="flex items-start gap-3">
+
+                      <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white">
+                        <MenuItemImage
+                          name={item.name}
+                        image={item.image}
+                          className="h-full w-full"
+                        />
+                      </div>
 
                       <div
                         className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md border ${

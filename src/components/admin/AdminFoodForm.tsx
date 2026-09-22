@@ -17,7 +17,7 @@ import {
   collection,
   doc,
   serverTimestamp,
-  updateDoc,
+  setDoc,
 } from "firebase/firestore";
 
 import {
@@ -810,13 +810,14 @@ export default function AdminFoodForm({
         editing &&
         item
       ) {
-        await updateDoc(
+        await setDoc(
           doc(
             db,
             "menuItems",
             item.id
           ),
-          payload
+          payload,
+          { merge: true }
         );
       } else {
         await addDoc(

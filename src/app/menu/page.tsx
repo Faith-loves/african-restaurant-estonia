@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import Image from "next/image";
 
 import SiteHeader from "@/components/layout/SiteHeader";
 import MenuSection from "@/components/menu/MenuSection";
@@ -21,10 +22,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://africanrestaurant.ee/images/hero/hero-food.png",
-        width: 1672,
-        height: 941,
-        alt: "African Restaurant Estonia food",
+        url: "https://africanrestaurant.ee/images/hero/menu-food.jpg",
+        width: 1000,
+        height: 667,
+        alt: "African Restaurant Estonia menu",
       },
     ],
   },
@@ -79,18 +80,41 @@ export default function MenuPage() {
       <SiteHeader />
 
       <main>
-        <section className="bg-[#321B29] px-5 py-12 text-center text-[#FFF8EC] sm:px-8">
-          <p className="text-sm font-extrabold uppercase tracking-[0.22em] text-[#D89A27]">
-            African Restaurant Estonia
-          </p>
+        <section className="relative isolate flex min-h-[480px] items-center justify-center overflow-hidden px-5 py-20 text-[#FFF8EC] sm:px-8 lg:px-12 lg:py-28">
+          <Image
+            src="/images/hero/menu-food.jpg"
+            alt="A selection of food ready to explore on the menu"
+            fill
+            priority
+            sizes="100vw"
+            className="-z-20 object-cover"
+          />
+          <div className="absolute inset-0 -z-10 bg-[#321B29]/80" />
 
-          <h1 className="mt-2 font-[var(--font-cormorant)] text-4xl font-bold sm:text-5xl md:text-6xl">
-            Our Menu
-          </h1>
+          <div className="relative z-10 mx-auto max-w-[820px] text-center">
+            <div>
+              <p className="text-sm font-extrabold uppercase tracking-[0.22em] text-[#D89A27]">
+                African Restaurant Estonia
+              </p>
 
-          <p className="mx-auto mt-3 max-w-[620px] text-sm font-semibold leading-7 text-white/75">
-            Browse our food, choose what is available and build your order.
-          </p>
+              <h1 className="mt-4 font-[var(--font-cormorant)] text-6xl font-bold leading-none sm:text-7xl lg:text-8xl">
+                Our Menu
+              </h1>
+
+              <p className="mx-auto mt-6 max-w-[680px] text-base font-semibold leading-8 text-white/95 sm:text-lg">
+                Browse our menu and discover the bold, comforting flavours of
+                West Africa. From fragrant rice and hearty soups to grilled
+                proteins, snacks and refreshing drinks, there is something for
+                every appetite.
+              </p>
+
+              <p className="mx-auto mt-4 max-w-[620px] text-sm font-medium leading-7 text-white/80">
+                Choose your favourite dishes, check what is available, and
+                build an order made just for you.
+              </p>
+            </div>
+
+          </div>
         </section>
 
         <Suspense fallback={<MenuLoading />}>

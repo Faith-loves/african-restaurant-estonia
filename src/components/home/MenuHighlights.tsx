@@ -1,4 +1,4 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -36,17 +36,14 @@ export default function MenuHighlights() {
       className="bg-[#FFF8EC] px-5 py-14 sm:px-8 lg:px-12"
     >
       <div className="mx-auto max-w-[1440px]">
-
         <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="mb-2 text-sm font-extrabold uppercase tracking-[0.22em] text-[#B9472E]">
               Order Takeaway or Pickup
             </p>
-
             <h2 className="font-[var(--font-cormorant)] text-5xl font-bold leading-none text-[#321B29] md:text-6xl">
               Explore the Menu
             </h2>
-
             <p className="mt-3 max-w-[620px] text-base font-semibold leading-7 text-[#151313]/75">
               Discover what is available today, our chef&apos;s selections,
               vegan dishes and meal combinations.
@@ -85,7 +82,6 @@ export default function MenuHighlights() {
                   sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw"
                   className="object-cover transition duration-500 group-hover:scale-[1.04]"
                 />
-
                 <div className="absolute inset-0 bg-gradient-to-t from-[#321B29]/35 via-transparent to-transparent" />
               </div>
 
@@ -93,11 +89,9 @@ export default function MenuHighlights() {
                 <h3 className="font-[var(--font-cormorant)] text-[28px] font-bold leading-none text-[#321B29]">
                   {item.title}
                 </h3>
-
                 <p className="mt-2 min-h-[48px] text-sm font-semibold leading-6 text-[#151313]/70">
                   {item.description}
                 </p>
-
                 <div className="mt-4 flex items-center gap-2 text-sm font-extrabold text-[#B9472E]">
                   Explore
                   <ArrowRight
@@ -109,7 +103,6 @@ export default function MenuHighlights() {
             </Link>
           ))}
         </div>
-
       </div>
     </section>
   );

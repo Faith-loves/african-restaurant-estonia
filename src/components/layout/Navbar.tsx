@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import {
   Menu,
@@ -44,6 +45,7 @@ const navigation = [
 ];
 
 export default function Navbar() {
+  const router = useRouter();
   const [
     mobileMenuOpen,
     setMobileMenuOpen,
@@ -58,6 +60,12 @@ export default function Navbar() {
 
   const customerName =
     user?.displayName?.split(" ")[0] || "Account";
+
+  async function handleExitGuest() {
+    setMobileMenuOpen(false);
+    await exitGuestSession();
+    router.replace("/");
+  }
 
   return (
     <nav className="are-navbar border-b border-[#321B29]/10 bg-white shadow-[0_2px_12px_rgba(50,27,41,0.04)]">
@@ -105,7 +113,7 @@ export default function Navbar() {
             guestActive ? (
               <div className="flex items-center gap-2">
                 <Link href="/account" className="rounded-lg border border-[#294B73]/30 px-4 py-3 text-sm font-extrabold text-[#294B73] transition hover:border-[#294B73] hover:bg-[#294B73] hover:text-white">Account</Link>
-                <button type="button" onClick={() => { if (window.confirm("Exit this guest session? You may lose access to its order history on this device.")) void exitGuestSession(); }} className="rounded-lg border border-[#294B73]/30 px-4 py-3 text-sm font-extrabold text-[#294B73] transition hover:border-[#294B73] hover:bg-[#294B73] hover:text-white">Exit Guest</button>
+                <button type="button" onClick={() => { if (window.confirm("Exit this guest session? You may lose access to its order history on this device.")) void handleExitGuest(); }} className="rounded-lg border border-[#294B73]/30 px-4 py-3 text-sm font-extrabold text-[#294B73] transition hover:border-[#294B73] hover:bg-[#294B73] hover:text-white">Exit Guest</button>
               </div>
             ) : user ? (
               <div className="flex items-center gap-2">
@@ -197,7 +205,7 @@ export default function Navbar() {
             guestActive ? (
               <div className="mt-3 grid gap-3">
                 <Link href="/account" onClick={() => setMobileMenuOpen(false)} className="flex min-h-11 w-full items-center justify-center rounded-xl border border-[#294B73]/30 px-5 py-3 text-sm font-extrabold text-[#294B73]">Account</Link>
-                <button type="button" onClick={() => { if (window.confirm("Exit this guest session? You may lose access to its order history on this device.")) { setMobileMenuOpen(false); void exitGuestSession(); } }} className="flex min-h-11 w-full items-center justify-center rounded-xl border border-[#294B73]/30 px-5 py-3 text-sm font-extrabold text-[#294B73]">Exit Guest Session</button>
+                <button type="button" onClick={() => { if (window.confirm("Exit this guest session? You may lose access to its order history on this device.")) void handleExitGuest(); }} className="flex min-h-11 w-full items-center justify-center rounded-xl border border-[#294B73]/30 px-5 py-3 text-sm font-extrabold text-[#294B73]">Exit Guest Session</button>
               </div>
             ) : user ? (
               <div className="mt-3 grid gap-3">

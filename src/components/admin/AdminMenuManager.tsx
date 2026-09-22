@@ -17,7 +17,7 @@ import {
   getDoc,
   onSnapshot,
   serverTimestamp,
-  updateDoc,
+  setDoc,
 } from "firebase/firestore";
 
 import {
@@ -29,7 +29,6 @@ import {
   ArrowLeft,
   ChefHat,
   Edit3,
-  ImageIcon,
   Loader2,
   Plus,
   RotateCcw,
@@ -43,9 +42,15 @@ import {
   db,
 } from "@/lib/firebase/client";
 
+import {
+  menuItems as catalogMenuItems,
+  menuImageById,
+} from "@/data/menuData";
+
 import AdminFoodForm, {
   AdminFoodItem,
 } from "@/components/admin/AdminFoodForm";
+import MenuItemImage from "@/components/menu/MenuItemImage";
 
 export default function AdminMenuManager() {
   const router =
@@ -184,14 +189,25 @@ export default function AdminMenuManager() {
           "menuItems"
         ),
         (snapshot) => {
-          const records =
-            snapshot.docs.map(
-              (menuDocument) => ({
-                id:
-                  menuDocument.id,
-                ...menuDocument.data(),
-              })
-            ) as AdminFoodItem[];
+          const recordsById = new Map<string, AdminFoodItem>(
+            catalogMenuItems.map((item) => [
+              item.id,
+              { ...item },
+            ])
+          );
+
+          snapshot.docs.forEach((menuDocument) => {
+            const data = menuDocument.data();
+
+            recordsById.set(menuDocument.id, {
+              id: menuDocument.id,
+              ...data,
+              image:
+                data.image || menuImageById[menuDocument.id],
+            } as AdminFoodItem);
+          });
+
+          const records = Array.from(recordsById.values());
 
           records.sort(
             (a, b) =>
@@ -297,7 +313,7 @@ export default function AdminMenuManager() {
 
 
     try {
-      await updateDoc(
+      await setDoc(
         doc(
           db,
           "menuItems",
@@ -310,7 +326,8 @@ export default function AdminMenuManager() {
 
           updatedAt:
             serverTimestamp(),
-        }
+        },
+        { merge: true }
       );
     } catch (updateError) {
       console.error(
@@ -341,7 +358,7 @@ export default function AdminMenuManager() {
     }
 
     try {
-      await updateDoc(
+      await setDoc(
         doc(
           db,
           "menuItems",
@@ -365,7 +382,8 @@ export default function AdminMenuManager() {
 
           updatedAt:
             serverTimestamp(),
-        }
+        },
+        { merge: true }
       );
     } catch (archiveError) {
       console.error(
@@ -614,30 +632,10 @@ export default function AdminMenuManager() {
 
                         <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white">
 
-                          {item.image ? (
-                            <img
-                              src={
-                                item.image
-                              }
-                              alt={
-                                item.name
-                              }
-                              loading="lazy"
-                              decoding="async"
-                              className="h-full w-full object-cover"
-                              onError={(
-                                event
-                              ) => {
-                                event.currentTarget.style.display =
-                                  "none";
-                              }}
-                            />
-                          ) : (
-                            <ImageIcon
-                              size={22}
-                              className="text-[#321B29]/25"
-                            />
-                          )}
+                          <MenuItemImage
+                            name={item.name}
+                            image={item.image}
+                          />
 
                         </div>
 

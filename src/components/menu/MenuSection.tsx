@@ -26,6 +26,11 @@ import {
   db,
 } from "@/lib/firebase/client";
 
+import {
+  menuItems as catalogMenuItems,
+  menuImageById,
+} from "@/data/menuData";
+
 import type {
   MenuAddOn,
   MenuCategory,
@@ -34,6 +39,7 @@ import type {
 } from "@/types/menu";
 
 import FoodDetailsModal from "./FoodDetailsModal";
+import MenuItemImage from "./MenuItemImage";
 
 type FilterCategory =
   | "ALL"
@@ -360,7 +366,7 @@ function mapFirestoreMenuItem(
       typeof data.image ===
       "string"
         ? data.image
-        : undefined,
+        : menuImageById[id],
 
     imagePublicId:
       typeof data.imagePublicId ===
@@ -502,17 +508,26 @@ export default function MenuSection() {
           "menuItems"
         ),
         (snapshot) => {
+          const remoteItems =
+            snapshot.docs.map(
+              (menuDocument) =>
+                mapFirestoreMenuItem(
+                  menuDocument.id,
+                  menuDocument.data()
+                )
+            );
+
+          const remoteIds = new Set(
+            remoteItems.map((item) => item.id)
+          );
+
           const items =
-            snapshot.docs
-              .map(
-                (
-                  menuDocument
-                ) =>
-                  mapFirestoreMenuItem(
-                    menuDocument.id,
-                    menuDocument.data()
-                  )
-              )
+            [
+              ...remoteItems,
+              ...catalogMenuItems.filter(
+                (item) => !remoteIds.has(item.id)
+              ),
+            ]
               .filter(
                 (item) =>
                   item.archived !==
@@ -915,17 +930,10 @@ export default function MenuSection() {
 
                           <div className="relative h-[145px] overflow-hidden bg-[#321B29]/5">
 
-                            <img
-                              src={
-                                item.image ||
-                                "/images/hero/hero-food.png"
-                              }
-                              alt={
-                                item.name
-                              }
-                              loading="lazy"
-                              decoding="async"
-                              className={`h-full w-full object-cover transition duration-500 ${
+                            <MenuItemImage
+                              name={item.name}
+                              image={item.image || "/images/hero/hero-food.png"}
+                              className={`transition duration-500 ${
                                 canChoose
                                   ? "group-hover:scale-105"
                                   : "opacity-80"

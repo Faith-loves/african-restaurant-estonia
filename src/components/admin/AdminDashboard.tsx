@@ -187,16 +187,16 @@ export default function AdminDashboard() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F8F3EA] text-[#151313]">
+    <main className="min-h-screen bg-[#F4F0E8] text-[#151313]">
 
       {/* TOP NAVIGATION */}
-      <header className="sticky top-0 z-30 border-b border-[#321B29]/10 bg-[#FFFDF9]/95 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-white/10 bg-[#261526]/95 text-white shadow-[0_8px_30px_rgba(38,21,38,0.14)] backdrop-blur">
 
         <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-4 px-5 py-4 sm:px-8 lg:px-12">
 
           <div className="flex min-w-0 items-center gap-3">
 
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#321B29] text-[#D89A27] shadow-sm">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#D89A27] text-[#261526] shadow-sm">
               <UtensilsCrossed
                 size={20}
               />
@@ -204,11 +204,11 @@ export default function AdminDashboard() {
 
             <div className="min-w-0">
 
-              <p className="truncate text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#B9472E] sm:text-xs">
+              <p className="truncate text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#D89A27] sm:text-xs">
                 African Restaurant Estonia
               </p>
 
-              <h1 className="truncate font-[var(--font-cormorant)] text-2xl font-bold leading-none text-[#321B29] sm:text-3xl">
+              <h1 className="truncate font-[var(--font-cormorant)] text-2xl font-bold leading-none text-white sm:text-3xl">
                 Admin
               </h1>
 
@@ -223,7 +223,7 @@ export default function AdminDashboard() {
               onClick={() =>
                 router.push("/")
               }
-              className="hidden items-center gap-2 rounded-xl border border-[#321B29]/10 bg-white px-4 py-2.5 text-xs font-extrabold text-[#321B29] transition hover:border-[#D89A27] hover:bg-[#FFF8EC] sm:flex"
+              className="hidden items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-xs font-extrabold text-white transition hover:border-[#D89A27] hover:bg-[#D89A27] hover:text-[#261526] sm:flex"
             >
               <ExternalLink
                 size={15}
@@ -237,7 +237,7 @@ export default function AdminDashboard() {
               onClick={
                 handleLogout
               }
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#321B29]/10 bg-white text-[#321B29] transition hover:border-[#B9472E]/30 hover:bg-[#B9472E]/5 hover:text-[#B9472E] sm:h-auto sm:w-auto sm:gap-2 sm:px-4 sm:py-2.5"
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-white/10 text-white transition hover:border-[#B9472E]/60 hover:bg-[#B9472E] sm:h-auto sm:w-auto sm:gap-2 sm:px-4 sm:py-2.5"
               aria-label="Logout"
             >
               <LogOut
@@ -258,7 +258,7 @@ export default function AdminDashboard() {
       <div className="mx-auto max-w-[1500px] px-5 py-7 sm:px-8 lg:px-12 lg:py-10">
 
         {/* WELCOME SECTION */}
-        <section className="relative overflow-hidden rounded-[30px] bg-[#321B29] px-6 py-7 text-white shadow-[0_18px_55px_rgba(50,27,41,0.15)] sm:px-8 sm:py-9 lg:px-10">
+        <section className="relative overflow-hidden rounded-[26px] bg-[#321B29] px-6 py-7 text-white shadow-[0_18px_55px_rgba(50,27,41,0.15)] sm:px-8 sm:py-8 lg:px-10">
 
           <div className="absolute -right-20 -top-24 h-72 w-72 rounded-full bg-[#D89A27]/10" />
 
@@ -282,7 +282,7 @@ export default function AdminDashboard() {
               </div>
 
               <h2 className="mt-5 max-w-[720px] font-[var(--font-cormorant)] text-4xl font-bold leading-[0.95] sm:text-5xl lg:text-6xl">
-                Manage the restaurant from one place.
+                Your restaurant at a glance.
               </h2>
 
               <p className="mt-4 max-w-[680px] text-sm font-semibold leading-7 text-white/60">
@@ -340,7 +340,7 @@ export default function AdminDashboard() {
           onClick={() =>
             router.push("/")
           }
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-[#321B29]/10 bg-white px-4 py-3 text-xs font-extrabold text-[#321B29] sm:hidden"
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-[#321B29]/10 bg-white px-4 py-3 text-xs font-extrabold text-[#321B29] shadow-sm sm:hidden"
         >
           <ExternalLink
             size={15}
@@ -355,11 +355,11 @@ export default function AdminDashboard() {
           <div>
 
             <p className="text-[11px] font-extrabold uppercase tracking-[0.19em] text-[#B9472E]">
-              Management
+              Control panel
             </p>
 
             <h2 className="mt-1 font-[var(--font-cormorant)] text-4xl font-bold text-[#321B29]">
-              Restaurant Tools
+              Management areas
             </h2>
 
           </div>
@@ -371,7 +371,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* MAIN CARDS */}
-        <section className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <section className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
 
           {hasPermission("manageMenu") && <DashboardCard
             eyebrow="Menu"
@@ -571,7 +571,7 @@ function DashboardCard({
       disabled={
         !enabled
       }
-      className={`group relative min-h-[285px] overflow-hidden rounded-[24px] border p-5 text-left transition duration-300 sm:p-6 ${
+      className={`group relative flex min-h-[355px] flex-col overflow-hidden rounded-[24px] border p-5 text-left transition duration-300 sm:p-6 ${
         enabled
           ? "border-[#321B29]/10 bg-white shadow-[0_8px_30px_rgba(50,27,41,0.05)] hover:-translate-y-1 hover:border-[#D89A27]/70 hover:shadow-[0_16px_40px_rgba(50,27,41,0.10)]"
           : "cursor-default border-[#321B29]/8 bg-white/65"
@@ -615,11 +615,11 @@ function DashboardCard({
         {title}
       </h3>
 
-      <p className="mt-3 text-sm font-semibold leading-6 text-[#151313]/50">
+      <p className="mt-3 min-h-[72px] text-sm font-semibold leading-6 text-[#151313]/50">
         {description}
       </p>
 
-      <div className="absolute bottom-5 left-5 right-5 sm:bottom-6 sm:left-6 sm:right-6">
+      <div className="mt-auto pt-6">
 
         {enabled ? (
           <div className="flex items-center justify-between border-t border-[#321B29]/10 pt-4">

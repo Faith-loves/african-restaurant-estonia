@@ -96,6 +96,7 @@ export const menuItems: MenuItem[] = [
       estonianName: "Jollof-riis",
       description:
         "Aromatic Nigerian jollof rice cooked in a rich tomato and pepper sauce with onions and traditional spices.",
+      image: "/images/foods/jollof.webp",
       addOns: [
         ["VEGETABLE SALAD", 4.5],
         ["FRIED PLANTAINS", 5],
@@ -118,6 +119,7 @@ export const menuItems: MenuItem[] = [
         "Praetud riis",
       description:
         "Aromatic fried rice with mixed vegetables, onions and Nigerian-style seasoning.",
+      image: "/images/foods/fried-rice-chicken.jpg",
       addOns: [
         ["VEGETABLE SALAD", 4.5],
         ["FRIED PLANTAINS", 5],
@@ -136,6 +138,7 @@ export const menuItems: MenuItem[] = [
       ["Large"],
     ],
     {
+      image: "/images/foods/rice-and-beans.jpg",
       addOns: [
         ["VEGETABLE SALAD"],
         ["FRIED PLANTAINS"],
@@ -155,6 +158,7 @@ export const menuItems: MenuItem[] = [
       ["Large"],
     ],
     {
+      image: "/images/foods/coconut-rice.jpg",
       addOns: [
         ["VEGETABLE SALAD"],
         ["FRIED PLANTAINS"],
@@ -174,6 +178,7 @@ export const menuItems: MenuItem[] = [
       ["Large"],
     ],
     {
+      image: "/images/foods/plain-rice.jpg",
       addOns: [
         ["VEGETABLE SALAD"],
         ["FRIED PLANTAINS"],
@@ -193,6 +198,7 @@ export const menuItems: MenuItem[] = [
       ["Large"],
     ],
     {
+      image: "/images/foods/native-jollof-rice.jpg",
       addOns: [
         ["VEGETABLE SALAD"],
         ["FRIED PLANTAINS"],
@@ -212,6 +218,7 @@ export const menuItems: MenuItem[] = [
       ["Large"],
     ],
     {
+      image: "/images/foods/seafood-fried-rice.jpg",
       addOns: [
         ["VEGETABLE SALAD"],
         ["FRIED PLANTAINS"],
@@ -231,6 +238,7 @@ export const menuItems: MenuItem[] = [
       ["Large"],
     ],
     {
+      image: "/images/foods/ofada-rice.jpg",
       addOns: [
         ["VEGETABLE SALAD"],
         ["FRIED PLANTAINS"],
@@ -246,6 +254,7 @@ export const menuItems: MenuItem[] = [
     "MAIN DISH",
     [],
     {
+      image: "/images/foods/ewa-agoyin.jpg",
       addOns: [
         ["FRIED PLANTAIN"],
         ["AGEGE BREAD"],
@@ -261,6 +270,7 @@ export const menuItems: MenuItem[] = [
     "MAIN DISH",
     [],
     {
+      image: "/images/foods/porridge-beans.jpg",
       addOns: [
         ["PLAIN"],
         ["PROTEINS"],
@@ -282,6 +292,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 15],
     ],
     {
+      image: "/images/foods/fried-yam.jpg",
       estonianName:
         "Praetud jamss",
       description:
@@ -303,6 +314,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 14.5],
     ],
     {
+      image: "/images/foods/boiled-yam.jpg",
       estonianName:
         "Keedetud jamss",
       description:
@@ -324,6 +336,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 16],
     ],
     {
+      image: "/images/foods/yam-porridge.jpg",
       estonianName:
         "Jamsipuder",
       description:
@@ -344,6 +357,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 20],
     ],
     {
+      image: "/images/foods/fried-plantain.jpg",
       estonianName:
         "Praetud jahubanaan",
       description:
@@ -367,6 +381,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 22],
     ],
     {
+      image: "/images/foods/roasted-plantains.jpg",
       estonianName:
         "Röstitud jahubanaanid",
       description:
@@ -391,6 +406,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 18],
     ],
     {
+      image: "/images/foods/boiled-plantain.jpg",
       estonianName:
         "Keedetud jahubanaanid",
       description:
@@ -413,6 +429,7 @@ export const menuItems: MenuItem[] = [
       ["Large"],
     ],
     {
+      image: "/images/foods/akara.jpg",
       addOns: [
         ["PAP"],
         ["CUSTARD"],
@@ -434,6 +451,7 @@ export const menuItems: MenuItem[] = [
       ["Large"],
     ],
     {
+      image: "/images/foods/moi-moi.jpg",
       addOns: [
         ["PAP"],
         ["CUSTARD"],
@@ -463,6 +481,7 @@ export const menuItems: MenuItem[] = [
         "Kitselihasupp",
       description:
         "Tender goat meat simmered in a delicious aromatic Nigerian pepper soup with traditional spices.",
+      image: "/images/foods/goat-meat-pepper-soup.jpg",
       addOns: [
         ["PLAIN", 0],
         ["UNRIPE PLANTAIN", 5],
@@ -483,6 +502,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 18],
     ],
     {
+      image: "/images/foods/chicken-peppersoup.jpg",
       estonianName:
         "Kanasupp",
       description:
@@ -507,6 +527,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 20],
     ],
     {
+      image: "/images/foods/beef-mix-peppersoup.jpg",
       estonianName:
         "Veiseliha segupiprasupp",
       description:
@@ -531,6 +552,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 20],
     ],
     {
+      image: "/images/foods/tilapia-peppersoup.jpg",
       estonianName:
         "Tilapia piprasupp",
       description:
@@ -555,6 +577,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 19],
     ],
     {
+      image: "/images/foods/turkey-peppersoup.jpg",
       estonianName:
         "Kalkunisupp",
       description:
@@ -588,6 +611,7 @@ export const menuItems: MenuItem[] = [
         "Egusi supp",
       description:
         "Rich Nigerian Egusi soup made with ground melon seeds, leafy greens and aromatic spices.",
+      image: "/images/foods/egusi.webp",
       addOns: [
         ["EBA", 5],
         ["SEMO", 5.6],
@@ -608,6 +632,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 25],
     ],
     {
+      image: "/images/foods/banga-soup.jpg",
       estonianName:
         "Banga supp",
       description:
@@ -636,6 +661,7 @@ export const menuItems: MenuItem[] = [
         "Ogbono supp",
       description:
         "Rich Nigerian Ogbono soup made with ground ogbono seeds, leafy vegetables and aromatic spices.",
+      image: "/images/foods/ogbono-soup.jpg",
       addOns: [
         ["EBA", 5],
         ["SEMO", 5.6],
@@ -660,6 +686,7 @@ export const menuItems: MenuItem[] = [
         "Okra supp",
       description:
         "Delicious Nigerian okra soup prepared with tender okra, vegetables and aromatic spices.",
+      image: "/images/foods/okro-soup.jpg",
       addOns: [
         ["EBA", 5],
         ["SEMO", 5.6],
@@ -680,6 +707,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 28.5],
     ],
     {
+      image: "/images/foods/seafood-okro.jpg",
       estonianName:
         "Okrasupp mereandidega",
       description:
@@ -703,6 +731,7 @@ export const menuItems: MenuItem[] = [
       ["Medium"],
     ],
     {
+      image: "/images/foods/abula.jpg",
       addOns: [
         ["TOMATO SOUP"],
         ["EWEDU"],
@@ -722,6 +751,7 @@ export const menuItems: MenuItem[] = [
       ["Medium"],
     ],
     {
+      image: "/images/foods/afang.jpg",
       addOns: [
         ["EBA"],
         ["SEMO"],
@@ -743,6 +773,7 @@ export const menuItems: MenuItem[] = [
       ["Medium"],
     ],
     {
+      image: "/images/foods/oha-soup.jpg",
       available: false,
       pricePending: true,
     }
@@ -757,6 +788,7 @@ export const menuItems: MenuItem[] = [
       ["Medium"],
     ],
     {
+      image: "/images/foods/achi-soup.jpg",
       available: false,
       pricePending: true,
     }
@@ -776,6 +808,7 @@ export const menuItems: MenuItem[] = [
         "Efo Riro",
       description:
         "Rich Nigerian vegetable stew made with leafy greens, peppers, tomatoes, onions and aromatic spices.",
+      image: "/images/foods/efo-riro.webp",
       addOns: [
         ["EBA", 5],
         ["SEMO", 5.6],
@@ -799,6 +832,7 @@ export const menuItems: MenuItem[] = [
       ["Large"],
     ],
     {
+      image: "/images/foods/seafood-pasta.jpg",
       available: false,
       pricePending: true,
     }
@@ -813,6 +847,7 @@ export const menuItems: MenuItem[] = [
       ["Large"],
     ],
     {
+      image: "/images/foods/plain-pasta.jpg",
       addOns: [
         ["EGG SAUCE"],
         ["FISH SAUCE"],
@@ -829,6 +864,42 @@ export const menuItems: MenuItem[] = [
   // =========================================================
 
   m(
+    "hake",
+    "Hake",
+    "PROTEIN",
+    [],
+    {
+      image: "/images/foods/hake.jpg",
+      available: false,
+      pricePending: true,
+    }
+  ),
+
+  m(
+    "mackerel",
+    "Mackerel",
+    "PROTEIN",
+    [],
+    {
+      image: "/images/foods/mackerel.jpg",
+      available: false,
+      pricePending: true,
+    }
+  ),
+
+  m(
+    "cowleg",
+    "Cowleg",
+    "PROTEIN",
+    [],
+    {
+      image: "/images/foods/cowleg.jpg",
+      available: false,
+      pricePending: true,
+    }
+  ),
+
+  m(
     "peppered-turkey",
     "Peppered Turkey",
     "PROTEIN",
@@ -838,6 +909,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 30],
     ],
     {
+      image: "/images/foods/peppered-turkey.jpg",
       estonianName:
         "Kalkun tomati-piprakastmes",
       description:
@@ -862,6 +934,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 26],
     ],
     {
+      image: "/images/foods/fried-chicken.jpg",
       estonianName:
         "Kana tomati-piprakastmes",
       description:
@@ -886,6 +959,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 24],
     ],
     {
+      image: "/images/foods/beef-stew.jpg",
       estonianName:
         "Veiseliha tomati-piprakastmes",
       description:
@@ -910,6 +984,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 21],
     ],
     {
+      image: "/images/foods/peppered-gizzard.jpg",
       estonianName:
         "Kanapugu tomati-piprakastmes",
       description:
@@ -934,6 +1009,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 19.5],
     ],
     {
+      image: "/images/foods/peppered-pomo.jpg",
       estonianName:
         "Pomo tomati-piprakastmes",
       description:
@@ -958,6 +1034,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 24.5],
     ],
     {
+      image: "/images/foods/fried-fish.jpg",
       estonianName:
         "Kala tomati-piprakastmes",
       description:
@@ -981,6 +1058,7 @@ export const menuItems: MenuItem[] = [
       ["Large"],
     ],
     {
+      image: "/images/foods/nkwobi.jpg",
       available: false,
       pricePending: true,
     }
@@ -992,6 +1070,7 @@ export const menuItems: MenuItem[] = [
     "PROTEIN",
     [],
     {
+      image: "/images/foods/bbq-catfish.jpg",
       available: false,
       pricePending: true,
     }
@@ -1003,6 +1082,7 @@ export const menuItems: MenuItem[] = [
     "PROTEIN",
     [],
     {
+      image: "/images/foods/bbq-tilapia.jpg",
       available: false,
       pricePending: true,
     }
@@ -1022,6 +1102,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 32],
     ],
     {
+      image: "/images/foods/gizzard-plantain.jpg",
       estonianName: "Gizdodo",
       description:
         "A delicious Nigerian dish combining tender chicken gizzard and ripe plantain in a rich, aromatic pepper sauce.",
@@ -1045,6 +1126,7 @@ export const menuItems: MenuItem[] = [
       ["30 pcs", 25],
     ],
     {
+      image: "/images/foods/peppered-fish.jpg",
       estonianName:
         "Puff Puff",
       description:
@@ -1063,6 +1145,7 @@ export const menuItems: MenuItem[] = [
       ["30 pcs", 110],
     ],
     {
+      image: "/images/foods/meat-pie-nigerian.jpg",
       estonianName:
         "Lihapirukas",
       description:
@@ -1080,6 +1163,7 @@ export const menuItems: MenuItem[] = [
       ["30 pcs", 25],
     ],
     {
+      image: "/images/foods/spring-rolls.jpg",
       estonianName:
         "Kevadrullid",
       description:
@@ -1097,6 +1181,7 @@ export const menuItems: MenuItem[] = [
       ["30 pcs", 110],
     ],
     {
+      image: "/images/foods/fish-pie.jpg",
       estonianName:
         "Kalapirukas",
       description:
@@ -1114,6 +1199,7 @@ export const menuItems: MenuItem[] = [
       ["Large (2 litre)", 25],
     ],
     {
+      image: "/images/foods/chin-chin.jpg",
       estonianName:
         "Chin Chin",
       description:
@@ -1127,6 +1213,7 @@ export const menuItems: MenuItem[] = [
     "SNACKS",
     [],
     {
+      image: "/images/foods/peanuts.jpg",
       available: false,
       pricePending: true,
     }
@@ -1142,6 +1229,7 @@ export const menuItems: MenuItem[] = [
       ["30 pcs", 110],
     ],
     {
+      image: "/images/foods/chicken-pie.jpg",
       estonianName:
         "Kanapirukas",
       description:
@@ -1152,6 +1240,18 @@ export const menuItems: MenuItem[] = [
   // =========================================================
   // SAUCES
   // =========================================================
+
+  m(
+    "ginger-juice",
+    "Ginger Juice",
+    "DRINKS",
+    [],
+    {
+      image: "/images/foods/ginger-juice.jpg",
+      available: false,
+      pricePending: true,
+    }
+  ),
 
   m(
     "egg-sauce",
@@ -1205,6 +1305,7 @@ export const menuItems: MenuItem[] = [
     "SAUCE",
     [],
     {
+      image: "/images/foods/ugba-sauce.jpg",
       addOns: [
         ["BOILED YAM"],
         ["FRIED YAM"],
@@ -1223,6 +1324,7 @@ export const menuItems: MenuItem[] = [
     "SAUCE",
     [],
     {
+      image: "/images/foods/garden-egg-sauce.jpg",
       addOns: [
         ["BOILED YAM"],
         ["FRIED YAM"],
@@ -1241,6 +1343,7 @@ export const menuItems: MenuItem[] = [
     "SAUCE",
     [],
     {
+      image: "/images/foods/ewa-agoyin-sauce.jpg",
       addOns: [
         ["EWA AGOYIN BEANS"],
         ["AGEGE BREAD"],
@@ -1261,6 +1364,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 32],
     ],
     {
+      image: "/images/foods/ofada-sauce.jpg",
       estonianName:
         "Ofada kaste",
       description:
@@ -1282,6 +1386,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 32],
     ],
     {
+      image: "/images/foods/ayamase-sauce.jpg",
       estonianName:
         "Ayamase kaste",
       description:
@@ -1303,6 +1408,7 @@ export const menuItems: MenuItem[] = [
     "MAIN DISH",
     [],
     {
+      image: "/images/foods/abacha.jpg",
       available: false,
       pricePending: true,
     }
@@ -1319,6 +1425,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/jollof-chicken-plantain.jpg",
       available: false,
       pricePending: true,
     }
@@ -1330,6 +1437,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/peppered-turkey.jpg",
       available: false,
       pricePending: true,
     }
@@ -1341,6 +1449,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/fried-fish.jpg",
       available: false,
       pricePending: true,
     }
@@ -1352,6 +1461,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/fried-rice-chicken.jpg",
       available: false,
       pricePending: true,
     }
@@ -1363,6 +1473,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/peppered-turkey.jpg",
       available: false,
       pricePending: true,
     }
@@ -1374,6 +1485,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/fried-fish.jpg",
       available: false,
       pricePending: true,
     }
@@ -1392,6 +1504,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/jollof-chicken-plantain.jpg",
       available: false,
       pricePending: true,
     }
@@ -1403,6 +1516,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/peppered-turkey.jpg",
       available: false,
       pricePending: true,
     }
@@ -1414,6 +1528,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/fried-fish.jpg",
       available: false,
       pricePending: true,
     }
@@ -1425,6 +1540,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/fried-rice-chicken.jpg",
       available: false,
       pricePending: true,
     }
@@ -1436,6 +1552,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/peppered-turkey.jpg",
       available: false,
       pricePending: true,
     }
@@ -1447,6 +1564,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/fried-fish.jpg",
       available: false,
       pricePending: true,
     }
@@ -1458,6 +1576,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/peppered-fish.jpg",
       available: false,
       pricePending: true,
     }
@@ -1469,6 +1588,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/peppered-beef.jpg",
       available: false,
       pricePending: true,
     }
@@ -1480,6 +1600,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/beef-mix-peppersoup.jpg",
       available: false,
       pricePending: true,
     }
@@ -1491,6 +1612,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/turkey-peppersoup.jpg",
       available: false,
       pricePending: true,
     }
@@ -1502,6 +1624,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/jollof-chicken-plantain.jpg",
       available: false,
       pricePending: true,
     }
@@ -1513,6 +1636,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/fried-rice-chicken.jpg",
       available: false,
       pricePending: true,
     }
@@ -1524,6 +1648,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/egusi-soup-eba.jpg",
       available: false,
       pricePending: true,
     }
@@ -1535,6 +1660,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/egusi-soup-pounded-yam.jpg",
       available: false,
       pricePending: true,
     }
@@ -1546,6 +1672,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/okro-soup.jpg",
       available: false,
       pricePending: true,
     }
@@ -1557,6 +1684,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/okro-soup.jpg",
       available: false,
       pricePending: true,
     }
@@ -1568,6 +1696,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/tomato-sauce.jpg",
       available: false,
       pricePending: true,
     }
@@ -1579,6 +1708,7 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/noodles.jpg",
       available: false,
       pricePending: true,
     }
@@ -1590,11 +1720,18 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/noodles.jpg",
       available: false,
       pricePending: true,
     }
   ),
 ];
+
+export const menuImageById: Record<string, string> = Object.fromEntries(
+  menuItems.flatMap((item) =>
+    item.image ? [[item.id, item.image]] : []
+  )
+);
 
 /*
   Restaurant-wide extras supplied separately in the Excel.

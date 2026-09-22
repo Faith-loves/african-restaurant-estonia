@@ -1,5 +1,7 @@
 ﻿"use client";
 
+import Image from "next/image";
+
 import {
   FormEvent,
   useEffect,
@@ -201,11 +203,16 @@ export default function ContactPage() {
     <main className="min-h-screen bg-[#FFF8EC]">
 
       {/* HERO */}
-      <section className="relative overflow-hidden bg-[#321B29] px-5 py-20 text-white sm:px-8 lg:px-12 lg:py-24">
-
-        <div className="absolute -right-24 -top-24 h-[340px] w-[340px] rounded-full bg-[#D89A27]/10" />
-
-        <div className="absolute -bottom-32 left-20 h-[300px] w-[300px] rounded-full bg-[#294B73]/35" />
+      <section className="relative isolate overflow-hidden px-5 py-20 text-white sm:px-8 lg:px-12 lg:py-28">
+        <Image
+          src="/images/hero/contact-food.jpg"
+          alt="Fresh food served at an African Restaurant Estonia buffet"
+          fill
+          priority
+          sizes="100vw"
+          className="-z-20 object-cover"
+        />
+        <div className="absolute inset-0 -z-10 bg-[#321B29]/80" />
 
         <div className="relative z-10 mx-auto max-w-[1312px]">
 
@@ -213,11 +220,11 @@ export default function ContactPage() {
             Contact Us
           </p>
 
-          <h1 className="mt-4 max-w-[760px] font-[var(--font-cormorant)] text-5xl font-bold leading-[0.9] sm:text-7xl lg:text-[88px]">
+          <h1 className="mt-4 max-w-[760px] font-[var(--font-cormorant)] text-5xl font-bold leading-[0.9] sm:text-7xl lg:text-[76px]">
             We&apos;d Love to Hear From You.
           </h1>
 
-          <p className="mt-6 max-w-[650px] text-sm font-semibold leading-7 text-white/65 sm:text-base">
+          <p className="mt-6 max-w-[650px] text-sm font-semibold leading-7 text-white/95 sm:text-base">
             Questions about the menu, catering, special requests or anything else? Send African Restaurant Estonia a message.
           </p>
 

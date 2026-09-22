@@ -58,7 +58,7 @@ export default function CustomerEntryGate({ children }: { children: React.ReactN
   return (
     <div className="entry-gate-shell fixed inset-0 z-[100] overflow-y-auto bg-[#151313] text-[#FFF8EC]">
       <Image
-        src="/images/hero/hero-food.png"
+        src="/images/hero/splash-buffet.jpg"
         alt=""
         fill
         priority
