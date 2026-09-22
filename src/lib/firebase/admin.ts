@@ -37,13 +37,13 @@ const clientEmail =
     "FIREBASE_ADMIN_CLIENT_EMAIL"
   );
 
-const privateKey =
-  getRequiredEnvironmentVariable(
-    "FIREBASE_ADMIN_PRIVATE_KEY"
-  ).replace(
-    /\\n/g,
-    "\n"
-  );
+const privateKey = getRequiredEnvironmentVariable(
+  "FIREBASE_ADMIN_PRIVATE_KEY"
+)
+  .trim()
+  .replace(/^['"]|['"]$/g, "")
+  .replace(/\\n/g, "\n")
+  .replace(/\r\n/g, "\n");
 
 const adminApp =
   getApps().length > 0
