@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { FirebaseError } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
-  signOut,
   signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
@@ -140,8 +139,8 @@ export default function CustomerAuthForm({
           );
         }
 
-        await signOut(auth);
-        router.replace("/login");
+        if (guestActive) await exitGuestSession();
+        router.replace("/");
         return;
       } else {
         const credential = await signInWithEmailAndPassword(
@@ -386,3 +385,7 @@ function PasswordField({
     </div>
   );
 }
+
+
+
+
