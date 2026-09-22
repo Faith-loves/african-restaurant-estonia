@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { FirebaseError } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
+  signOut,
   signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
@@ -73,7 +74,7 @@ export default function CustomerAuthForm({
 }) {
   const router = useRouter();
   const isSignup = mode === "signup";
-  const { guestActive, exitGuestSession } = useGuestSession();
+  const { guestActive, exitGuestSession, startGuestSession } = useGuestSession();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -82,6 +83,7 @@ export default function CustomerAuthForm({
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [guestLoading, setGuestLoading] = useState(false);
   const [error, setError] = useState("");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -137,6 +139,10 @@ export default function CustomerAuthForm({
             "Your account was created, but the customer profile could not be saved. Please try signing in again."
           );
         }
+
+        await signOut(auth);
+        router.replace("/login");
+        return;
       } else {
         const credential = await signInWithEmailAndPassword(
           auth,
@@ -164,6 +170,23 @@ export default function CustomerAuthForm({
       setError(getFriendlyAuthError(authError));
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleContinueAsGuest() {
+    setError("");
+    setGuestLoading(true);
+
+    try {
+      const started = await startGuestSession();
+      if (!started) {
+        setError("Guest access could not be started. Please try again.");
+        return;
+      }
+
+      router.replace("/menu");
+    } finally {
+      setGuestLoading(false);
     }
   }
 
@@ -301,12 +324,14 @@ export default function CustomerAuthForm({
             </Link>
           </p>
 
-          <Link
-            href="/menu"
-            className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#D89A27]/50 bg-[#FFF8EC] px-5 py-3 text-sm font-extrabold text-[#321B29] transition hover:border-[#D89A27] hover:bg-[#D89A27]/15"
+          <button
+            type="button"
+            onClick={() => void handleContinueAsGuest()}
+            disabled={guestLoading}
+            className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#D89A27]/50 bg-[#FFF8EC] px-5 py-3 text-sm font-extrabold text-[#321B29] transition hover:border-[#D89A27] hover:bg-[#D89A27]/15 disabled:cursor-wait disabled:opacity-60"
           >
-            Continue as Guest
-          </Link>
+            {guestLoading ? "Starting Guest Session..." : "Continue as Guest"}
+          </button>
         </div>
       </div>
     </section>

@@ -25,6 +25,7 @@ export default function CustomerEntryGate({ children }: { children: React.ReactN
   useEffect(() => {
     if (isExcludedPath(initialPathname.current)) {
       clearPendingEntryMarker();
+      queueMicrotask(() => setStage("done"));
       return;
     }
 
