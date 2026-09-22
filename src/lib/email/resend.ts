@@ -1,4 +1,4 @@
-﻿import { Resend } from "resend";
+import { Resend } from "resend";
 
 const apiKey = process.env.RESEND_API_KEY;
 
@@ -12,4 +12,4 @@ export const RESTAURANT_EMAIL =
   "africanrestaurantestonia@gmail.com";
 
 export const EMAIL_FROM =
-  "African Restaurant Estonia <onboarding@resend.dev>";
+  "African Restaurant Estonia <orders@africanrestaurant.ee>";

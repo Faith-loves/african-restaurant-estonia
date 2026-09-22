@@ -9,6 +9,7 @@ import {
 import {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -19,6 +20,7 @@ import { auth } from "@/lib/firebase/client";
 type AuthContextValue = {
   user: User | null;
   loading: boolean;
+  waitForUser: () => Promise<User | null>;
   logout: () => Promise<void>;
 };
 
@@ -51,9 +53,21 @@ export function AuthProvider({
     await signOut(auth);
   }
 
+  const waitForUser = useCallback(() => {
+    if (auth.currentUser) return Promise.resolve(auth.currentUser);
+
+    return new Promise<User | null>((resolve) => {
+      let unsubscribe = () => {};
+      unsubscribe = onAuthStateChanged(auth, (nextUser) => {
+        unsubscribe();
+        resolve(nextUser);
+      });
+    });
+  }, []);
+
   return (
     <AuthContext.Provider
-      value={{ user, loading, logout }}
+      value={{ user, loading, waitForUser, logout }}
     >
       {children}
     </AuthContext.Provider>

@@ -5,6 +5,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { GUEST_ACTIVE_STORAGE_KEY } from "@/lib/guestSessionConstants";
 import { auth } from "@/lib/firebase/client";
 import { signOut } from "firebase/auth";
+import { useAuth } from "@/context/AuthContext";
 
 type GuestSessionContextValue = {
   guestActive: boolean;
@@ -16,6 +17,7 @@ type GuestSessionContextValue = {
 const GuestSessionContext = createContext<GuestSessionContextValue | undefined>(undefined);
 
 export function GuestSessionProvider({ children }: { children: React.ReactNode }) {
+  const { user, loading: authLoading } = useAuth();
   const [guestActive, setGuestActive] = useState(false);
   const [ready, setReady] = useState(false);
 
@@ -42,16 +44,57 @@ export function GuestSessionProvider({ children }: { children: React.ReactNode }
   }, []);
 
   useEffect(() => {
+    if (authLoading) return;
+
+    let cancelled = false;
     const active = window.localStorage.getItem(GUEST_ACTIVE_STORAGE_KEY) === "true";
-    if (!active) {
-      queueMicrotask(() => setReady(true));
-      return;
+
+    // A customer session is authoritative. Do not let a stale guest marker
+    // rehydrate and sign out a customer while Firebase is settling.
+    if (user) {
+      window.localStorage.removeItem(GUEST_ACTIVE_STORAGE_KEY);
+      queueMicrotask(() => {
+        if (cancelled) return;
+        setGuestActive(false);
+        setReady(true);
+      });
+
+      if (active) {
+        void fetch("/api/account/guest-session", { method: "DELETE" });
+      }
+
+      return () => {
+        cancelled = true;
+      };
     }
 
-    window.setTimeout(() => {
-      void startGuestSession().finally(() => setReady(true));
-    }, 0);
-  }, [startGuestSession]);
+    if (!active) {
+      queueMicrotask(() => {
+        if (cancelled) return;
+        setGuestActive(false);
+        setReady(true);
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    void (async () => {
+      const started = await startGuestSession();
+      if (cancelled) return;
+
+      if (!started) {
+        window.localStorage.removeItem(GUEST_ACTIVE_STORAGE_KEY);
+      }
+
+      setGuestActive(started);
+      setReady(true);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [authLoading, startGuestSession, user]);
 
   const value = useMemo(() => ({ guestActive, ready, startGuestSession, exitGuestSession }), [exitGuestSession, guestActive, ready, startGuestSession]);
   return <GuestSessionContext.Provider value={value}>{children}</GuestSessionContext.Provider>;

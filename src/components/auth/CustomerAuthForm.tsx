@@ -32,6 +32,7 @@ import {
 import { auth, db } from "@/lib/firebase/client";
 import { isActiveAdminRecord } from "@/lib/admin/permissions";
 import { useGuestSession } from "@/context/GuestSessionContext";
+import { useAuth } from "@/context/AuthContext";
 
 type CustomerAuthMode = "login" | "signup";
 
@@ -74,6 +75,7 @@ export default function CustomerAuthForm({
   const router = useRouter();
   const isSignup = mode === "signup";
   const { guestActive, exitGuestSession, startGuestSession } = useGuestSession();
+  const { waitForUser } = useAuth();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -139,6 +141,9 @@ export default function CustomerAuthForm({
           );
         }
 
+        if (!(await waitForUser())) {
+          throw new Error("Customer authentication could not be established.");
+        }
         if (guestActive) await exitGuestSession();
         router.replace("/");
         return;
@@ -148,6 +153,10 @@ export default function CustomerAuthForm({
           trimmedEmail,
           password
         );
+
+        if (!(await waitForUser())) {
+          throw new Error("Customer authentication could not be established.");
+        }
 
         const adminSnapshot = await getDoc(
           doc(db, "admins", credential.user.uid)
