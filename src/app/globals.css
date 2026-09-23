@@ -60,14 +60,51 @@ html.dark {
 
 html {
   scroll-behavior: smooth;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
   margin: 0;
+  max-width: 100%;
+  overflow-x: hidden;
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-manrope), Arial, sans-serif;
   transition: background-color 160ms ease, color 160ms ease;
+}
+
+/* Public pages stay inside the phone viewport even when a decorative
+   element, long translated label, or third-party content has an oversized
+   intrinsic width. */
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+@media (max-width: 639px) {
+  .are-navbar > div:first-child {
+    height: 72px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .are-navbar > div:first-child > a:first-child {
+    width: 104px;
+    height: 50px;
+  }
+
+  .are-navbar > div:first-child > div:last-child {
+    gap: 0.375rem;
+  }
+
+  .are-start-order {
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
 }
 
 h1,

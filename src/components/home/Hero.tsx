@@ -26,7 +26,7 @@ export default function Hero() {
   }
 
   return (
-    <section id="home" aria-roledescription="carousel" aria-label="African Restaurant Estonia highlights" className="relative min-h-[calc(100vh-114px)] overflow-hidden">
+    <section id="home" aria-roledescription="carousel" aria-label="African Restaurant Estonia highlights" className="relative min-h-[calc(100svh-106px)] overflow-hidden sm:min-h-[calc(100vh-114px)]">
       <div className="absolute inset-0">
         <div className={`absolute inset-0 transition-opacity duration-700 motion-reduce:transition-none ${activeSlide === 0 ? "opacity-100" : "pointer-events-none opacity-0"}`} aria-hidden={activeSlide !== 0}>
           <Image src="/images/hero/hero-food.png" alt="West African food from African Restaurant Estonia" fill priority sizes="100vw" className="object-cover object-center" />
@@ -41,11 +41,11 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-114px)] max-w-[1440px] items-center px-5 py-20 sm:px-8 lg:px-12">
+      <div className="relative z-10 mx-auto flex min-h-[calc(100svh-106px)] max-w-[1440px] items-center px-5 py-14 sm:min-h-[calc(100vh-114px)] sm:px-8 sm:py-20 lg:px-12">
         {activeSlide === 0 ? (
           <div className="max-w-[760px] animate-[entry-writing_500ms_ease-out] motion-reduce:animate-none">
             <p className="mb-5 text-sm font-bold uppercase tracking-[0.24em] text-[#D89A27]">{t("hero.eyebrow")}</p>
-            <h1 className="font-[var(--font-cormorant)] text-[48px] font-bold leading-[0.9] text-[#FFF8EC] sm:text-[68px] md:text-[82px] lg:text-[92px]">
+            <h1 className="max-w-full break-words font-[var(--font-cormorant)] text-[42px] font-bold leading-[0.92] text-[#FFF8EC] sm:text-[68px] md:text-[82px] lg:text-[92px]">
               {t("hero.titleLine1")}<br />{t("hero.titleLine2")}<br /><span className="text-[#D89A27]">{t("hero.titleLine3")}</span>
             </h1>
             <p className="mt-7 max-w-[620px] text-base leading-8 text-[#FFF8EC]/85 sm:text-lg">{t("hero.description")}</p>
@@ -58,7 +58,7 @@ export default function Hero() {
         ) : (
           <div className="ml-auto w-full max-w-[600px] animate-[entry-writing_500ms_ease-out] text-left motion-reduce:animate-none">
             <p className="mb-5 text-sm font-bold uppercase tracking-[0.2em] text-[#D89A27]">{t("hero.cateringEyebrow")}</p>
-            <h2 className="font-[var(--font-cormorant)] text-[48px] font-bold leading-[0.9] text-[#FFF8EC] sm:text-[68px] md:text-[78px]">{t("hero.cateringTitle")}</h2>
+            <h2 className="max-w-full break-words font-[var(--font-cormorant)] text-[42px] font-bold leading-[0.92] text-[#FFF8EC] sm:text-[68px] md:text-[78px]">{t("hero.cateringTitle")}</h2>
             <p className="mt-7 max-w-[530px] text-base leading-8 text-[#FFF8EC]/85 sm:text-lg">{t("hero.cateringDescription")}</p>
             <Link href="/catering" className="mt-9 inline-flex items-center justify-center gap-2 rounded-md bg-[#D89A27] px-6 py-4 font-bold text-[#321B29] transition hover:bg-[#FFF8EC] focus:outline-none focus:ring-2 focus:ring-[#FFF8EC] focus:ring-offset-2 focus:ring-offset-[#321B29]">{t("hero.exploreCatering")}<ArrowRight size={18} /></Link>
           </div>
