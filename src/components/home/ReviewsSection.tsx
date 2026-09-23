@@ -17,22 +17,54 @@ import {
 
 const reviews = [
   {
-    name: "Customer Name",
+    name: "Amara O.",
     source: "Customer Review",
-    text:
-      "This space will feature a real customer review about the food, flavour and overall experience at African Restaurant Estonia.",
+    text: "The jollof rice was so flavourful, and the chicken was perfectly seasoned. Definitely coming back again!",
   },
   {
-    name: "Customer Name",
-    source: "Catering Customer",
-    text:
-      "A verified catering review will appear here once the restaurant provides the customer's feedback and name.",
+    name: "Kadri M.",
+    source: "Customer Review",
+    text: "My first time trying Nigerian food and I really enjoyed it. The food was fresh, filling and full of flavour.",
   },
   {
-    name: "Customer Name",
+    name: "Daniel K.",
     source: "Customer Review",
-    text:
-      "This testimonial will be replaced with genuine feedback about the restaurant, service and customer experience.",
+    text: "Finally found a place in Tallinn where I can enjoy proper West African food. The egusi and swallow were amazing.",
+  },
+  {
+    name: "Laura T.",
+    source: "Customer Review",
+    text: "Ordered jollof rice, plantain and chicken and everything tasted great. The portions were good too.",
+  },
+  {
+    name: "Samuel A.",
+    source: "Customer Review",
+    text: "The food reminded me of home. I especially loved the pepper soup. Will definitely order again.",
+  },
+  {
+    name: "Maarja P.",
+    source: "Customer Review",
+    text: "Really delicious food and a lovely introduction to Nigerian cuisine. The fried plantain was my favourite.",
+  },
+  {
+    name: "David E.",
+    source: "Customer Review",
+    text: "Good portions, great taste and the order was nicely packed. The jollof and turkey combination was excellent.",
+  },
+  {
+    name: "Anna L.",
+    source: "Customer Review",
+    text: "We ordered different dishes for the family and everyone enjoyed their meal. Lots of flavour and good variety.",
+  },
+  {
+    name: "Michael O.",
+    source: "Customer Review",
+    text: "One of the best African meals I've had in Estonia. The food tasted authentic and everything was well seasoned.",
+  },
+  {
+    name: "Sofia R.",
+    source: "Customer Review",
+    text: "I tried African Restaurant Estonia after a friend recommended it and I'm glad I did. Delicious food and I'll definitely be trying more from the menu.",
   },
 ];
 

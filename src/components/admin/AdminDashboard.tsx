@@ -31,6 +31,7 @@ import {
   ExternalLink,
   LockKeyhole,
   LogOut,
+  Menu,
   Settings,
   ShoppingBag,
   Sparkles,
@@ -43,6 +44,7 @@ import {
   db,
 } from "@/lib/firebase/client";
 import { useAdminAuthorization } from "@/components/admin/AdminGuard";
+import AdminSidebar from "@/components/admin/AdminSidebar";
 
 type DashboardCardProps = {
   title: string;
@@ -71,6 +73,8 @@ export default function AdminDashboard() {
     adminEmail,
     setAdminEmail,
   ] = useState("");
+
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const unsubscribe =
@@ -189,12 +193,20 @@ export default function AdminDashboard() {
   return (
     <main className="min-h-screen bg-[#F4F0E8] text-[#151313]">
 
+      <AdminSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
+      <div className="min-h-screen lg:ml-[272px]">
+
       {/* TOP NAVIGATION */}
       <header className="sticky top-0 z-30 border-b border-white/10 bg-[#261526]/95 text-white shadow-[0_8px_30px_rgba(38,21,38,0.14)] backdrop-blur">
 
         <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-4 px-5 py-4 sm:px-8 lg:px-12">
 
           <div className="flex min-w-0 items-center gap-3">
+
+            <button type="button" onClick={() => setSidebarOpen(true)} aria-label="Open admin navigation" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/15 bg-white/10 text-white transition hover:border-[#D89A27] hover:bg-[#D89A27] hover:text-[#321B29] lg:hidden">
+              <Menu size={19} />
+            </button>
 
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#D89A27] text-[#261526] shadow-sm">
               <UtensilsCrossed
@@ -541,6 +553,8 @@ export default function AdminDashboard() {
           </div>
 
         </section>
+
+      </div>
 
       </div>
 

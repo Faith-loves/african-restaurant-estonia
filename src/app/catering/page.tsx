@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
 import SiteHeader from "@/components/layout/SiteHeader";
 import CateringRequestForm from "@/components/catering/CateringRequestForm";
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://africanrestaurant.ee/images/catering/event-catering.jpg",
+        url: "https://africanrestaurant.ee/images/catering/catering.jpg",
         width: 1448,
         height: 1086,
         alt: "African Restaurant Estonia catering",
@@ -35,16 +36,26 @@ export default function CateringPage() {
       <SiteHeader />
 
       <main>
-        <section className="bg-[#321B29] px-5 py-14 text-center text-[#FFF8EC] sm:px-8">
-          <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#D89A27]">
+        <section className="relative isolate overflow-hidden px-5 py-20 text-center text-[#FFF8EC] sm:px-8 sm:py-28">
+          <Image
+            src="/images/catering/catering.jpg"
+            alt="West African catering dishes prepared for an event"
+            fill
+            priority
+            sizes="100vw"
+            className="-z-20 object-cover object-center"
+          />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#321B29]/95 via-[#321B29]/80 to-[#321B29]/65" />
+
+          <p className="relative z-10 text-xs font-extrabold uppercase tracking-[0.22em] text-[#D89A27]">
             African Restaurant Estonia
           </p>
 
-          <h1 className="mt-2 font-[var(--font-cormorant)] text-4xl font-bold sm:text-5xl md:text-6xl">
+          <h1 className="relative z-10 mt-2 font-[var(--font-cormorant)] text-4xl font-bold sm:text-5xl md:text-6xl">
             Catering & Special Orders
           </h1>
 
-          <p className="mx-auto mt-4 max-w-[650px] font-semibold leading-7 text-white/70">
+          <p className="relative z-10 mx-auto mt-4 max-w-[650px] font-semibold leading-7 text-white/85">
             Corporate meals, private events and thoughtful food gift boxes prepared with authentic West African flavour.
           </p>
         </section>
