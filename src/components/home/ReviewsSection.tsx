@@ -156,10 +156,10 @@ export default function ReviewsSection() {
     >
       <div className="mx-auto max-w-[1312px]">
 
-        <div className="grid gap-10 lg:grid-cols-2 lg:gap-8">
+        <div className="grid min-w-0 grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-8">
 
           {/* LEFT - REVIEWS */}
-          <div className="flex flex-col">
+          <div className="flex min-w-0 w-full flex-col">
 
             <div className="lg:min-h-[210px]">
 
@@ -167,7 +167,7 @@ export default function ReviewsSection() {
                 {t("home.reviewsEyebrow")}
               </p>
 
-              <h2 className="mt-3 font-[var(--font-cormorant)] text-5xl font-bold leading-[0.95] text-[#321B29] sm:text-6xl">
+              <h2 className="mt-3 max-w-full break-words font-[var(--font-cormorant)] text-5xl font-bold leading-[0.95] text-[#321B29] sm:text-6xl">
                 {t("home.reviewsTitle")}
               </h2>
 
@@ -177,7 +177,7 @@ export default function ReviewsSection() {
 
             </div>
 
-            <div className="relative min-h-[410px] overflow-hidden rounded-[28px] bg-[#321B29] p-7 text-white shadow-[0_18px_45px_rgba(50,27,41,0.14)] sm:p-8">
+            <div className="relative min-h-[360px] w-full min-w-0 overflow-hidden rounded-[28px] bg-[#321B29] p-5 text-white shadow-[0_18px_45px_rgba(50,27,41,0.14)] sm:min-h-[410px] sm:p-8">
 
               <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-[#D89A27]/10" />
 
@@ -218,7 +218,7 @@ export default function ReviewsSection() {
                   className="flex flex-1 flex-col"
                 >
 
-                  <p className="mt-8 flex-1 font-[var(--font-cormorant)] text-[29px] font-semibold leading-[1.25] text-white sm:text-[33px]">
+                  <p className="mt-8 flex-1 break-words font-[var(--font-cormorant)] text-[27px] font-semibold leading-[1.25] text-white sm:text-[33px]">
                     “{review.text}”
                   </p>
 
@@ -327,7 +327,7 @@ export default function ReviewsSection() {
           </div>
 
           {/* RIGHT - FAQ */}
-          <div className="flex flex-col">
+          <div className="flex min-w-0 w-full flex-col">
 
             <div className="lg:min-h-[210px]">
 
@@ -335,7 +335,7 @@ export default function ReviewsSection() {
                 {t("home.faqTitle")}
               </p>
 
-              <h2 className="mt-3 font-[var(--font-cormorant)] text-5xl font-bold leading-[0.95] text-[#321B29] sm:text-6xl">
+              <h2 className="mt-3 max-w-full break-words font-[var(--font-cormorant)] text-5xl font-bold leading-[0.95] text-[#321B29] sm:text-6xl">
                 Questions? We&apos;ve Got Answers.
               </h2>
 
@@ -345,7 +345,7 @@ export default function ReviewsSection() {
 
             </div>
 
-            <div className="min-h-[410px] overflow-hidden rounded-[28px] border border-[#321B29]/10 bg-[#FFF8EC] shadow-[0_12px_35px_rgba(50,27,41,0.06)]">
+            <div className="min-h-0 w-full min-w-0 overflow-hidden rounded-[28px] border border-[#321B29]/10 bg-[#FFF8EC] shadow-[0_12px_35px_rgba(50,27,41,0.06)] sm:min-h-[410px]">
 
               {faqs.map(
                 (faq, index) => {
