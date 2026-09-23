@@ -23,7 +23,7 @@ const menuOptions = [
   },
   {
     title: "Combo Options",
-    description: "Complete meal combinations with sides and drinks.",
+    description: "Complete meal combos with sides and drinks.",
     href: "/menu?filter=combo",
     image: "/images/menu-highlights/combo-options.jpg",
   },
@@ -46,7 +46,7 @@ export default function MenuHighlights() {
             </h2>
             <p className="mt-3 max-w-[620px] text-base font-semibold leading-7 text-[#151313]/75">
               Discover what is available today, our chef&apos;s selections,
-              vegan dishes and meal combinations.
+              vegan dishes and meal combos.
             </p>
           </div>
 
