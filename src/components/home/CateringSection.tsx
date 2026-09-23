@@ -14,7 +14,7 @@ const cateringOptions = [
     description:
       "Beautifully prepared food for birthdays, celebrations, private gatherings and special occasions.",
     image:
-      "/images/catering/event-catering.png",
+      "/images/catering/event-catering.jpg",
   },
   {
     title: "Food Gift Box",

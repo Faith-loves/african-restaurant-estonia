@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://africanrestaurant.ee/images/catering/event-catering.png",
+        url: "https://africanrestaurant.ee/images/catering/event-catering.jpg",
         width: 1448,
         height: 1086,
         alt: "African Restaurant Estonia catering",
