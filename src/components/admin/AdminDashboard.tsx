@@ -45,6 +45,7 @@ import {
 } from "@/lib/firebase/client";
 import { useAdminAuthorization } from "@/components/admin/AdminGuard";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import AdminOverview from "@/components/admin/AdminOverview";
 
 type DashboardCardProps = {
   title: string;
@@ -360,6 +361,8 @@ export default function AdminDashboard() {
 
           View Customer Website
         </button>
+
+        <AdminOverview />
 
         {/* SECTION TITLE */}
         <div className="mt-9 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
