@@ -1,31 +1,16 @@
-﻿import Image from "next/image";
-import Link from "next/link";
+"use client";
 
-const cateringOptions = [
-  {
-    title: "Corporate Catering",
-    description:
-      "Office lunches, meetings, team meals, conferences and company events with authentic West African food.",
-    image:
-      "/images/catering/corporate-catering.png",
-  },
-  {
-    title: "Events",
-    description:
-      "Beautifully prepared food for birthdays, celebrations, private gatherings and special occasions.",
-    image:
-      "/images/catering/event-catering.jpg",
-  },
-  {
-    title: "Food Gift Box",
-    description:
-      "A thoughtful selection of African favourites, beautifully packed for gifting.",
-    image:
-      "/images/catering/food-gift-box.png",
-  },
-];
+import Image from "next/image";
+import Link from "next/link";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function CateringSection() {
+  const { t } = useLanguage();
+  const translatedOptions = [
+    { title: t("home.corporateCatering"), description: t("home.corporateCateringDescription"), image: "/images/catering/corporate-catering.png" },
+    { title: t("home.events"), description: t("home.eventsDescription"), image: "/images/catering/event-catering.jpg" },
+    { title: t("home.foodGiftBox"), description: t("home.foodGiftBoxDescription"), image: "/images/catering/food-gift-box.png" },
+  ];
   return (
     <section
       id="catering"
@@ -37,24 +22,24 @@ export default function CateringSection() {
 
           <div>
             <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#B9472E]">
-              Catering & Special Orders
+              {t("home.cateringEyebrow")}
             </p>
 
             <h2 className="mt-3 max-w-[700px] font-[var(--font-cormorant)] text-5xl font-bold leading-[0.95] text-[#321B29] sm:text-6xl lg:text-7xl">
-              West African Food for More Than Just Dinner.
+              {t("home.cateringTitle")}
             </h2>
           </div>
 
           <div className="lg:pb-2">
             <p className="max-w-[520px] font-semibold leading-7 text-[#151313]/60">
-              From company lunches to private celebrations and thoughtful food gifts, African Restaurant Estonia can prepare something suited to the occasion.
+              {t("home.cateringDescription")}
             </p>
 
             <Link
               href="/catering"
               className="mt-6 inline-flex rounded-xl bg-[#321B29] px-6 py-4 text-sm font-extrabold text-white transition hover:bg-[#D89A27] hover:text-[#321B29]"
             >
-              Make a Catering Request
+              {t("home.makeCateringRequest")}
             </Link>
           </div>
 
@@ -62,7 +47,7 @@ export default function CateringSection() {
 
         <div className="mt-12 grid gap-5 md:grid-cols-3">
 
-          {cateringOptions.map((option, index) => (
+          {translatedOptions.map((option, index) => (
             <Link
               key={option.title}
               href="/catering"

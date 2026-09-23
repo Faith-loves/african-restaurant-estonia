@@ -15,6 +15,8 @@ import {
   Star,
 } from "lucide-react";
 
+import { useLanguage } from "@/context/LanguageContext";
+
 const reviews = [
   {
     name: "Amara O.",
@@ -96,6 +98,7 @@ const faqs = [
 ];
 
 export default function ReviewsSection() {
+  const { t } = useLanguage();
   const [
     activeReview,
     setActiveReview,
@@ -161,11 +164,11 @@ export default function ReviewsSection() {
             <div className="lg:min-h-[210px]">
 
               <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#B9472E]">
-                Customer Reviews
+                {t("home.reviewsEyebrow")}
               </p>
 
               <h2 className="mt-3 font-[var(--font-cormorant)] text-5xl font-bold leading-[0.95] text-[#321B29] sm:text-6xl">
-                Loved by the People We Cook For.
+                {t("home.reviewsTitle")}
               </h2>
 
               <p className="mt-5 max-w-[520px] text-sm font-semibold leading-7 text-[#151313]/55">
@@ -293,7 +296,7 @@ export default function ReviewsSection() {
                         previousReview
                       }
                       className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white transition hover:bg-[#D89A27] hover:text-[#321B29]"
-                      aria-label="Previous review"
+                      aria-label={t("home.previousReview")}
                     >
                       <ChevronLeft
                         size={18}
@@ -306,7 +309,7 @@ export default function ReviewsSection() {
                         nextReview
                       }
                       className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white transition hover:bg-[#D89A27] hover:text-[#321B29]"
-                      aria-label="Next review"
+                      aria-label={t("home.nextReview")}
                     >
                       <ChevronRight
                         size={18}
@@ -329,7 +332,7 @@ export default function ReviewsSection() {
             <div className="lg:min-h-[210px]">
 
               <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#B9472E]">
-                Frequently Asked Questions
+                {t("home.faqTitle")}
               </p>
 
               <h2 className="mt-3 font-[var(--font-cormorant)] text-5xl font-bold leading-[0.95] text-[#321B29] sm:text-6xl">

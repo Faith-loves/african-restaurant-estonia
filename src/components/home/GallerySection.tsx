@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 import { menuItems } from "@/data/menuData";
+import { useLanguage } from "@/context/LanguageContext";
 
 const galleryImages = menuItems
   .filter((item) => item.image)
@@ -17,6 +18,7 @@ const galleryImages = menuItems
 const GALLERY_SIZE = 5;
 
 export default function GallerySection() {
+  const { t } = useLanguage();
   const [rotation, setRotation] = useState(0);
 
   useEffect(() => {
@@ -44,26 +46,25 @@ export default function GallerySection() {
         <div className="grid gap-6 lg:grid-cols-[0.75fr_1.25fr] lg:items-end">
           <div>
             <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#B9472E]">
-              Food & Moments
+              {t("home.galleryEyebrow")}
             </p>
 
             <h2 className="mt-3 font-[var(--font-cormorant)] text-5xl font-bold leading-[0.95] text-[#321B29] sm:text-6xl lg:text-7xl">
-              A Little Taste Before You Order.
+              {t("home.galleryTitle")}
             </h2>
           </div>
 
           <div className="lg:flex lg:justify-end lg:pb-2">
             <div className="max-w-[550px]">
               <p className="text-sm font-semibold leading-7 text-[#151313]/55">
-              A changing selection from our menu. Explore the full collection
-              and find your next favourite on the menu page.
+              {t("home.galleryDescription")}
               </p>
 
               <Link
                 href="/gallery"
                 className="mt-5 inline-flex items-center rounded-lg bg-[#321B29] px-5 py-3 text-sm font-extrabold text-white transition hover:bg-[#D89A27] hover:text-[#321B29]"
               >
-                View Full Gallery
+                {t("home.viewFullGallery")}
               </Link>
             </div>
           </div>

@@ -48,7 +48,52 @@ type TranslationKey =
   | "install.notNow"
   | "install.iosDescription"
   | "install.iosAction"
-  | "install.close";
+  | "install.close"
+  | "home.menuEyebrow"
+  | "home.menuTitle"
+  | "home.menuDescription"
+  | "home.viewFullMenu"
+  | "home.explore"
+  | "home.todayMenu"
+  | "home.todayMenuDescription"
+  | "home.chefSpecial"
+  | "home.chefSpecialDescription"
+  | "home.veganOptions"
+  | "home.veganDescription"
+  | "home.comboOptions"
+  | "home.comboDescription"
+  | "home.storyEyebrow"
+  | "home.storyTitle"
+  | "home.storyTitleAccent"
+  | "home.storyParagraph1"
+  | "home.storyParagraph2"
+  | "home.storyParagraph3"
+  | "home.storyClosing"
+  | "home.foodWithRoots"
+  | "home.foodWithRootsText"
+  | "home.moreThanMeal"
+  | "home.moreThanMealText"
+  | "home.fromWestAfrica"
+  | "home.fromWestAfricaText"
+  | "home.cateringEyebrow"
+  | "home.cateringTitle"
+  | "home.cateringDescription"
+  | "home.makeCateringRequest"
+  | "home.corporateCatering"
+  | "home.corporateCateringDescription"
+  | "home.events"
+  | "home.eventsDescription"
+  | "home.foodGiftBox"
+  | "home.foodGiftBoxDescription"
+  | "home.galleryEyebrow"
+  | "home.galleryTitle"
+  | "home.galleryDescription"
+  | "home.viewFullGallery"
+  | "home.reviewsEyebrow"
+  | "home.reviewsTitle"
+  | "home.faqTitle"
+  | "home.previousReview"
+  | "home.nextReview";
 
 type TranslationSet = Record<TranslationKey, string>;
 
@@ -99,6 +144,51 @@ const english: TranslationSet = {
   "install.iosDescription": "To install: tap Share, then Add to Home Screen.",
   "install.iosAction": "Got it",
   "install.close": "Close install reminder",
+  "home.menuEyebrow": "Order Takeaway or Pickup",
+  "home.menuTitle": "Explore the Menu",
+  "home.menuDescription": "Discover what is available today, our chef's selections, vegan dishes and meal combos.",
+  "home.viewFullMenu": "View Full Menu",
+  "home.explore": "Explore",
+  "home.todayMenu": "Today's Menu",
+  "home.todayMenuDescription": "Freshly prepared dishes available to order today.",
+  "home.chefSpecial": "Chef's Special",
+  "home.chefSpecialDescription": "Special dishes selected from our kitchen.",
+  "home.veganOptions": "Vegan Options",
+  "home.veganDescription": "Flavourful plant-based West African meals.",
+  "home.comboOptions": "Combo Options",
+  "home.comboDescription": "Complete meal combos with sides and drinks.",
+  "home.storyEyebrow": "Our Story",
+  "home.storyTitle": "Familiar to Some.",
+  "home.storyTitleAccent": "A Discovery for Others.",
+  "home.storyParagraph1": "At African Restaurant Estonia, we believe food can do more than satisfy hunger. It can bring back memories, introduce you to something new and bring people together.",
+  "home.storyParagraph2": "We were created to make the rich flavours of West African cuisine more accessible in Estonia, with a special focus on the Nigerian dishes we love and are proud to share.",
+  "home.storyParagraph3": "For some, a plate of jollof rice, egusi soup, fried plantain or a chilled bottle of zobo is a familiar taste of home. For others, it may be their first introduction to West African food.",
+  "home.storyClosing": "Both are welcome at our table.",
+  "home.foodWithRoots": "Food With Roots",
+  "home.foodWithRootsText": "Bold spices, hearty soups, flavourful rice dishes, snacks and traditional drinks inspired by the foods we grew up with.",
+  "home.moreThanMeal": "More Than a Meal",
+  "home.moreThanMealText": "Food carries stories, brings people together and gives everyone a chance to experience something familiar or discover something new.",
+  "home.fromWestAfrica": "From West Africa to Estonia",
+  "home.fromWestAfricaText": "Starting in Tallinn, our goal is to make authentic African food easier to find, understand and enjoy across Estonia.",
+  "home.cateringEyebrow": "Catering & Special Orders",
+  "home.cateringTitle": "West African Food for More Than Just Dinner.",
+  "home.cateringDescription": "From company lunches to private celebrations and thoughtful food gifts, African Restaurant Estonia can prepare something suited to the occasion.",
+  "home.makeCateringRequest": "Make a Catering Request",
+  "home.corporateCatering": "Corporate Catering",
+  "home.corporateCateringDescription": "Office lunches, meetings, team meals, conferences and company events with authentic West African food.",
+  "home.events": "Events",
+  "home.eventsDescription": "Beautifully prepared food for birthdays, celebrations, private gatherings and special occasions.",
+  "home.foodGiftBox": "Food Gift Box",
+  "home.foodGiftBoxDescription": "A thoughtful selection of African favourites, beautifully packed for gifting.",
+  "home.galleryEyebrow": "Food & Moments",
+  "home.galleryTitle": "A Little Taste Before You Order.",
+  "home.galleryDescription": "A changing selection from our menu. Explore the full collection and find your next favourite on the menu page.",
+  "home.viewFullGallery": "View Full Gallery",
+  "home.reviewsEyebrow": "Customer Reviews",
+  "home.reviewsTitle": "Loved by the People We Cook For.",
+  "home.faqTitle": "Frequently Asked Questions",
+  "home.previousReview": "Previous review",
+  "home.nextReview": "Next review",
 };
 
 export const translations: Record<Language, TranslationSet> = {
@@ -148,6 +238,24 @@ export const translations: Record<Language, TranslationSet> = {
     "install.iosDescription": "Paigaldamiseks puuduta Jaga ja seejärel Lisa avaekraanile.",
     "install.iosAction": "Selge",
     "install.close": "Sulge paigaldamise meeldetuletus",
+    "home.menuEyebrow": "Telli kaasa või tule ise järele",
+    "home.menuTitle": "Avasta menüü",
+    "home.menuDescription": "Avasta tänane valik, koka soovitused, veganroad ja kombod.",
+    "home.viewFullMenu": "Vaata kogu menüüd",
+    "home.explore": "Avasta",
+    "home.storyEyebrow": "Meie lugu",
+    "home.storyTitle": "Mõnele tuttav.",
+    "home.storyTitleAccent": "Teistele avastus.",
+    "home.storyClosing": "Meie lauas on mõlemad teretulnud.",
+    "home.cateringEyebrow": "Catering ja eritellimused",
+    "home.cateringTitle": "Lääne-Aafrika toit enamaks kui lihtsalt õhtusöögiks.",
+    "home.makeCateringRequest": "Tee catering-päring",
+    "home.galleryEyebrow": "Toit ja hetked",
+    "home.galleryTitle": "Väike maitseproov enne tellimist.",
+    "home.viewFullGallery": "Vaata kogu galeriid",
+    "home.reviewsEyebrow": "Klientide arvustused",
+    "home.reviewsTitle": "Armastatud nende poolt, kellele süüa teeme.",
+    "home.faqTitle": "Korduma kippuvad küsimused",
   },
   fi: {
     ...english,
@@ -194,6 +302,24 @@ export const translations: Record<Language, TranslationSet> = {
     "install.iosDescription": "Asenna napauttamalla Jaa ja sitten Lisää Koti-valikkoon.",
     "install.iosAction": "Selvä",
     "install.close": "Sulje asennusmuistutus",
+    "home.menuEyebrow": "Tilaa mukaan tai nouda itse",
+    "home.menuTitle": "Tutustu menuun",
+    "home.menuDescription": "Tutustu päivän valikoimaan, kokin suosituksiin, vegaaniruokiin ja ateriasetteihin.",
+    "home.viewFullMenu": "Katso koko menu",
+    "home.explore": "Tutustu",
+    "home.storyEyebrow": "Tarinamme",
+    "home.storyTitle": "Joillekin tuttu.",
+    "home.storyTitleAccent": "Toisille löytö.",
+    "home.storyClosing": "Kaikki ovat tervetulleita pöytäämme.",
+    "home.cateringEyebrow": "Catering ja erikoistilaukset",
+    "home.cateringTitle": "Länsiafrikkalaista ruokaa muuhunkin kuin päivälliselle.",
+    "home.makeCateringRequest": "Tee catering-pyyntö",
+    "home.galleryEyebrow": "Ruokaa ja hetkiä",
+    "home.galleryTitle": "Pieni makupala ennen tilausta.",
+    "home.viewFullGallery": "Katso koko galleria",
+    "home.reviewsEyebrow": "Asiakasarvostelut",
+    "home.reviewsTitle": "Niiden rakastama, joille valmistamme ruokaa.",
+    "home.faqTitle": "Usein kysytyt kysymykset",
   },
   ru: {
     ...english,
@@ -240,6 +366,24 @@ export const translations: Record<Language, TranslationSet> = {
     "install.iosDescription": "Для установки нажмите «Поделиться», затем «На экран Домой».",
     "install.iosAction": "Понятно",
     "install.close": "Закрыть напоминание об установке",
+    "home.menuEyebrow": "Закажите навынос или заберите сами",
+    "home.menuTitle": "Откройте меню",
+    "home.menuDescription": "Откройте сегодняшние блюда, рекомендации шеф-повара, веганские блюда и комбо.",
+    "home.viewFullMenu": "Смотреть всё меню",
+    "home.explore": "Открыть",
+    "home.storyEyebrow": "Наша история",
+    "home.storyTitle": "Для одних знакомо.",
+    "home.storyTitleAccent": "Для других — открытие.",
+    "home.storyClosing": "Мы рады каждому за нашим столом.",
+    "home.cateringEyebrow": "Кейтеринг и специальные заказы",
+    "home.cateringTitle": "Западноафриканская кухня не только для ужина.",
+    "home.makeCateringRequest": "Оставить заявку на кейтеринг",
+    "home.galleryEyebrow": "Еда и моменты",
+    "home.galleryTitle": "Небольшой вкус перед заказом.",
+    "home.viewFullGallery": "Смотреть всю галерею",
+    "home.reviewsEyebrow": "Отзывы клиентов",
+    "home.reviewsTitle": "Любимо теми, для кого мы готовим.",
+    "home.faqTitle": "Часто задаваемые вопросы",
   },
 };
 
