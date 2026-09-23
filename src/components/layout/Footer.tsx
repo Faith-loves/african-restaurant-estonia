@@ -23,6 +23,7 @@ import {
 import {
   db,
 } from "@/lib/firebase/client";
+import { useLanguage } from "@/context/LanguageContext";
 
 type FooterSettings = {
   restaurantName: string;
@@ -81,6 +82,7 @@ const navigation = [
 ];
 
 export default function Footer() {
+  const { t } = useLanguage();
   const [
     settings,
     setSettings,
@@ -184,7 +186,7 @@ export default function Footer() {
             </Link>
 
             <h2 className="mt-5 max-w-[420px] font-[var(--font-cormorant)] text-3xl font-bold leading-tight">
-              A Taste of West Africa, Right Here.
+              {t("hero.titleLine1")} {t("hero.titleLine2")} {t("hero.titleLine3")}
             </h2>
 
             <p className="mt-4 max-w-[430px] text-sm font-semibold leading-7 text-white/55">
@@ -195,7 +197,7 @@ export default function Footer() {
               href="/menu"
               className="mt-6 inline-flex rounded-xl bg-[#D89A27] px-5 py-3 text-sm font-extrabold text-[#321B29] transition hover:bg-white"
             >
-              Start Order
+              {t("nav.startOrder")}
             </Link>
 
           </div>
@@ -204,7 +206,7 @@ export default function Footer() {
           <div>
 
             <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#D89A27]">
-              Explore
+              {t("nav.about")}
             </p>
 
             <nav className="mt-5 flex flex-col gap-3">
@@ -220,7 +222,7 @@ export default function Footer() {
                     }
                     className="w-fit text-sm font-bold text-white/65 transition hover:text-[#D89A27]"
                   >
-                    {item.label}
+                    {t(`nav.${item.label.toLowerCase()}` as "nav.home")}
                   </Link>
                 )
               )}
@@ -233,7 +235,7 @@ export default function Footer() {
           <div>
 
             <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#D89A27]">
-              Contact
+              {t("nav.contact")}
             </p>
 
             <div className="mt-5 space-y-4">
@@ -288,7 +290,7 @@ export default function Footer() {
                 href="/contact"
                 className="transition hover:text-[#D89A27]"
               >
-                Contact
+                {t("nav.contact")}
               </Link>
 
               <Link

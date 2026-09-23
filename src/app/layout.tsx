@@ -15,11 +15,13 @@ import {
   AuthProvider,
 } from "@/context/AuthContext";
 import { GuestSessionProvider } from "@/context/GuestSessionContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 import CartDrawer from "@/components/cart/CartDrawer";
 import PublicFooter from "@/components/layout/PublicFooter";
 import RestaurantJsonLd from "@/components/seo/RestaurantJsonLd";
 import CustomerEntryGate from "@/components/entry/CustomerEntryGate";
+import InstallBanner from "@/components/layout/InstallBanner";
 
 const cormorant =
   Cormorant_Garamond({
@@ -142,6 +144,8 @@ export default function RootLayout({
             __html: `(() => { try { localStorage.removeItem('are-theme'); document.documentElement.classList.remove('dark'); document.documentElement.dataset.theme = 'light'; const path = location.pathname; const excluded = path.startsWith('/admin') || path === '/login' || path === '/signup' || path === '/account'; if (!excluded) document.documentElement.dataset.entryPending = 'true'; } catch {} })();`,
           }}
         />
+        <LanguageProvider>
+
         <AuthProvider>
 
           <GuestSessionProvider>
@@ -158,6 +162,8 @@ export default function RootLayout({
 
           <CartDrawer />
 
+          <InstallBanner />
+
           </CustomerEntryGate>
 
           </CartProvider>
@@ -165,6 +171,8 @@ export default function RootLayout({
           </GuestSessionProvider>
 
         </AuthProvider>
+
+        </LanguageProvider>
       </body>
     </html>
   );

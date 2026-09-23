@@ -2,18 +2,20 @@
 
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function CartNavButton() {
   const {
     itemCount,
     openCart,
   } = useCart();
+  const { t } = useLanguage();
 
   return (
     <button
       type="button"
       onClick={openCart}
-      aria-label="Open cart"
+      aria-label={`${t("nav.menu")} cart`}
       className="relative flex h-11 w-11 items-center justify-center rounded-full border border-[#321B29]/15 bg-[#FFF8EC] text-[#321B29] transition hover:border-[#D89A27] hover:bg-[#D89A27]/10"
     >
       <ShoppingBag size={20} />
