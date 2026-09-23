@@ -7,25 +7,25 @@ const menuOptions = [
     title: "Today's Menu",
     description: "Freshly prepared dishes available to order today.",
     href: "/menu?filter=today",
-    image: "/images/menu-highlights/todays-menu.png",
+    image: "/images/menu-highlights/todays-menu.jpg",
   },
   {
     title: "Chef's Special",
     description: "Special dishes selected from our kitchen.",
     href: "/menu?filter=chef",
-    image: "/images/menu-highlights/chef-special.png",
+    image: "/images/menu-highlights/chef-special.jpg",
   },
   {
     title: "Vegan Options",
     description: "Flavourful plant-based West African meals.",
     href: "/menu?filter=vegan",
-    image: "/images/menu-highlights/vegan-options.png",
+    image: "/images/menu-highlights/vegan-options.jpg",
   },
   {
     title: "Combo Options",
     description: "Complete meal combinations with sides and drinks.",
     href: "/menu?filter=combo",
-    image: "/images/menu-highlights/combo-options.png",
+    image: "/images/menu-highlights/combo-options.jpg",
   },
 ];
 
