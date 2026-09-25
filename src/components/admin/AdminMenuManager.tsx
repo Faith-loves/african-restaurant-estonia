@@ -43,6 +43,7 @@ import {
 } from "@/lib/firebase/client";
 
 import {
+  legacyDuplicateComboIds,
   menuItems as catalogMenuItems,
   menuImageById,
 } from "@/data/menuData";
@@ -51,6 +52,12 @@ import AdminFoodForm, {
   AdminFoodItem,
 } from "@/components/admin/AdminFoodForm";
 import MenuItemImage from "@/components/menu/MenuItemImage";
+
+const catalogComboIds = new Set(
+  catalogMenuItems
+    .filter((item) => item.category === "COMBO OPTIONS")
+    .map((item) => item.id)
+);
 
 export default function AdminMenuManager() {
   const router =
@@ -196,16 +203,40 @@ export default function AdminMenuManager() {
             ])
           );
 
-          snapshot.docs.forEach((menuDocument) => {
+          snapshot.docs
+            .filter(
+              (menuDocument) => {
+                const category = menuDocument.data().category;
+
+                return (
+                  !legacyDuplicateComboIds.includes(
+                    menuDocument.id as (typeof legacyDuplicateComboIds)[number]
+                  ) &&
+                  (category !== "COMBO OPTIONS" ||
+                    catalogComboIds.has(menuDocument.id))
+                );
+              }
+            )
+            .forEach((menuDocument) => {
             const data = menuDocument.data();
+
+            const remoteTags = Array.isArray(data.tags)
+              ? data.tags.filter(
+                  (tag) =>
+                    !((menuDocument.id === "jollof-rice" || menuDocument.id === "fried-rice") && tag === "VEGAN OPTIONS")
+                )
+              : data.tags;
 
             recordsById.set(menuDocument.id, {
               id: menuDocument.id,
               ...data,
+              tags: remoteTags,
               image:
-                data.image || menuImageById[menuDocument.id],
-            } as AdminFoodItem);
-          });
+                menuDocument.id === "puff-puff" || menuDocument.id === "abula" || menuDocument.id === "jollof-rice" || menuDocument.id === "fried-rice" || menuDocument.id === "combo-peppered-fish-plantain-zobo-13"
+                  ? menuImageById[menuDocument.id]
+                  : data.image || menuImageById[menuDocument.id],
+            } as unknown as AdminFoodItem);
+            });
 
           const records = Array.from(recordsById.values());
 

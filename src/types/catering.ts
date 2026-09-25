@@ -1,7 +1,8 @@
 ﻿export type CateringServiceType =
   | "corporate"
   | "event"
-  | "gift-box";
+  | "gift-box"
+  | "bulk-order";
 
 export type CateringRequest = {
   serviceType: CateringServiceType;
@@ -15,6 +16,7 @@ export type CateringRequest = {
 
   date: string;
   guestCount?: number;
+  quantityLitres?: 3 | 5;
 
   location: string;
   budget?: string;

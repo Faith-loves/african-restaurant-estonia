@@ -9,7 +9,8 @@ type CateringEmailData = {
   serviceType:
     | "corporate"
     | "event"
-    | "gift-box";
+    | "gift-box"
+    | "bulk-order";
 
   customer: {
     name: string;
@@ -23,6 +24,7 @@ type CateringEmailData = {
   requestedDate: string;
   location: string;
   guestCount?: number;
+  quantityLitres?: 3 | 5;
   budget?: string;
 
   recipient?: {
@@ -57,6 +59,10 @@ function serviceName(
 
   if (serviceType === "event") {
     return "Event Catering";
+  }
+
+  if (serviceType === "bulk-order") {
+    return "Bulk Order";
   }
 
   return "Food Gift Box";
@@ -192,6 +198,12 @@ export async function sendRestaurantCateringEmail(
                 )}`
               : ""
           }
+
+          ${
+            order.quantityLitres
+              ? `<br /><strong>Quantity:</strong> ${order.quantityLitres} Litres`
+              : ""
+          }
         </p>
 
         ${
@@ -316,6 +328,12 @@ export async function sendCustomerCateringConfirmation(
             order.requestedDate
           )}
         </p>
+
+        ${
+          order.quantityLitres
+            ? `<p><strong>Quantity:</strong> ${order.quantityLitres} Litres</p>`
+            : ""
+        }
 
         <h2>Your Food Selection</h2>
 

@@ -1,5 +1,7 @@
 ﻿"use client";
 
+import Image from "next/image";
+
 import type {
   ChangeEvent,
   FormEvent,
@@ -1068,7 +1070,7 @@ export default function AdminFoodForm({
             <div className="mt-5 overflow-hidden rounded-[20px] bg-[#FFF8EC]">
 
               {displayedImage ? (
-                <img
+                <Image
                   src={
                     displayedImage
                   }
@@ -1076,6 +1078,9 @@ export default function AdminFoodForm({
                     name ||
                     "Food preview"
                   }
+                  width={1200}
+                  height={240}
+                  unoptimized
                   className="h-[240px] w-full object-cover"
                 />
               ) : (

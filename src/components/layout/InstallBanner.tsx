@@ -11,6 +11,27 @@ type BeforeInstallPromptEvent = Event & {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 };
 
+const INSTALL_DISMISSAL_KEY = "are-install-dismissals";
+const INSTALL_DISMISSAL_LIMIT = 2;
+
+function dismissalCount() {
+  try {
+    return Number.parseInt(window.localStorage.getItem(INSTALL_DISMISSAL_KEY) ?? "0", 10) || 0;
+  } catch {
+    return 0;
+  }
+}
+
+function recordDismissal() {
+  const nextCount = dismissalCount() + 1;
+  try {
+    window.localStorage.setItem(INSTALL_DISMISSAL_KEY, String(nextCount));
+  } catch {
+    // A storage failure should not prevent the install prompt from closing.
+  }
+  return nextCount;
+}
+
 function isStandalone() {
   return window.matchMedia("(display-mode: standalone)").matches
     || ("standalone" in navigator && Boolean((navigator as Navigator & { standalone?: boolean }).standalone));
@@ -46,7 +67,7 @@ export default function InstallBanner() {
     const showLater = (delay: number) => {
       if (repeatTimer.current) window.clearTimeout(repeatTimer.current);
       repeatTimer.current = window.setTimeout(() => {
-        if (mounted && !isStandalone()) setVisible(true);
+        if (mounted && !isStandalone() && dismissalCount() < INSTALL_DISMISSAL_LIMIT) setVisible(true);
       }, delay);
     };
 
@@ -65,7 +86,7 @@ export default function InstallBanner() {
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     window.addEventListener("appinstalled", handleAppInstalled);
-    showLater(7000);
+    if (dismissalCount() < INSTALL_DISMISSAL_LIMIT) showLater(7000);
 
     return () => {
       mounted = false;
@@ -87,6 +108,8 @@ export default function InstallBanner() {
     setVisible(false);
 
     if (choice.outcome === "dismissed") {
+      const count = recordDismissal();
+      if (count >= INSTALL_DISMISSAL_LIMIT) return;
       if (repeatTimer.current) window.clearTimeout(repeatTimer.current);
       repeatTimer.current = window.setTimeout(() => setVisible(true), 10000);
     }
@@ -94,9 +117,11 @@ export default function InstallBanner() {
 
   function dismiss() {
     setVisible(false);
+    const count = recordDismissal();
+    if (count >= INSTALL_DISMISSAL_LIMIT) return;
     if (repeatTimer.current) window.clearTimeout(repeatTimer.current);
     repeatTimer.current = window.setTimeout(() => {
-      if (!isStandalone()) setVisible(true);
+      if (!isStandalone() && dismissalCount() < INSTALL_DISMISSAL_LIMIT) setVisible(true);
     }, 10000);
   }
 

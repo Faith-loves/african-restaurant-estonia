@@ -10,6 +10,7 @@ export default function CateringSection() {
     { title: t("home.corporateCatering"), description: t("home.corporateCateringDescription"), image: "/images/catering/corporate-catering.png" },
     { title: t("home.events"), description: t("home.eventsDescription"), image: "/images/catering/event-catering.jpg" },
     { title: t("home.foodGiftBox"), description: t("home.foodGiftBoxDescription"), image: "/images/catering/food-gift-box.png" },
+    { title: t("home.bulkOrder"), description: t("home.bulkOrderDescription"), image: "/images/catering/catering.jpg" },
   ];
   return (
     <section
@@ -45,7 +46,7 @@ export default function CateringSection() {
 
         </div>
 
-        <div className="mt-12 grid gap-5 md:grid-cols-3">
+        <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
 
           {translatedOptions.map((option, index) => (
             <Link
@@ -56,7 +57,9 @@ export default function CateringSection() {
                   ? "border-[#294B73]"
                   : index === 1
                     ? "border-[#B9472E]"
-                    : "border-[#D89A27]"
+                    : index === 2
+                      ? "border-[#D89A27]"
+                      : "border-[#2E7D5B]"
               }`}
             >
               <Image

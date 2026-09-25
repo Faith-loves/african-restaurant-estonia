@@ -4,14 +4,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { menuItems as catalogMenuItems } from "@/data/menuData";
 
 export default function MenuHighlights() {
   const { t } = useLanguage();
+  const comboPreviewImage = catalogMenuItems.find(
+    (item) => item.category === "COMBO OPTIONS" && item.image
+  )?.image ?? "/images/menu-highlights/combo-options.jpg";
+
   const menuOptions = [
     { title: t("home.todayMenu"), description: t("home.todayMenuDescription"), href: "/menu?filter=today", image: "/images/menu-highlights/todays-menu.jpg" },
     { title: t("home.chefSpecial"), description: t("home.chefSpecialDescription"), href: "/menu?filter=chef", image: "/images/menu-highlights/chef-special.jpg" },
     { title: t("home.veganOptions"), description: t("home.veganDescription"), href: "/menu?filter=vegan", image: "/images/menu-highlights/vegan-options.jpg" },
-    { title: t("home.comboOptions"), description: t("home.comboDescription"), href: "/menu?filter=combo", image: "/images/menu-highlights/combo-options.jpg" },
+    { title: t("home.comboOptions"), description: t("home.comboDescription"), href: "/menu?filter=combo", image: comboPreviewImage },
   ];
   return (
     <section

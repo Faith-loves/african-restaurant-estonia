@@ -103,9 +103,10 @@ export default function MenuPage() {
 
               <p className="mx-auto mt-6 max-w-[680px] text-base font-semibold leading-8 text-white/95 sm:text-lg">
                 Browse our menu and discover the tasty and memorable flavours of
-                Africa. From a wide range of diverse rice dishes and hearty soups to grilled
-                proteins, snacks and refreshing drinks, there is something for
-                every appetite.
+                Africa. From diverse rice dishes and hearty soups to traditional
+                meals like egusi, afang and ewedu, with a variety of fufu, grilled
+                proteins, snacks and refreshing drinks, we bring the flavours of
+                Africa to your table.
               </p>
 
               <p className="mx-auto mt-4 max-w-[620px] text-sm font-medium leading-7 text-white/80">

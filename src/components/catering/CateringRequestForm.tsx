@@ -29,6 +29,7 @@ import {
   Loader2,
   MapPin,
   MessageCircle,
+  Package,
   PartyPopper,
   Plus,
   UserRound,
@@ -44,6 +45,7 @@ import {
   CateringRequest,
   CateringServiceType,
 } from "@/types/catering";
+import { useLanguage } from "@/context/LanguageContext";
 
 type CateringMenuOption = {
   id: string;
@@ -79,9 +81,17 @@ const services = [
       "Order a West African food package for someone special in Estonia.",
     icon: Gift,
   },
+  {
+    id: "bulk-order" as CateringServiceType,
+    title: "Bulk Order",
+    description:
+      "Larger food orders prepared in 3 or 5 litre quantities.",
+    icon: Package,
+  },
 ];
 
 export default function CateringRequestForm() {
+  const { t } = useLanguage();
   const router = useRouter();
   const [
     serviceType,
@@ -312,6 +322,12 @@ export default function CateringRequestForm() {
         ?.toString()
         .trim();
 
+    const quantityLitresRaw =
+      formData
+        .get("quantityLitres")
+        ?.toString()
+        .trim();
+
     const request: CateringRequest = {
       serviceType,
 
@@ -388,6 +404,14 @@ export default function CateringRequestForm() {
           .trim() || "";
     }
 
+    if (serviceType === "bulk-order") {
+      const quantityLitres = Number(quantityLitresRaw);
+
+      if (quantityLitres === 3 || quantityLitres === 5) {
+        request.quantityLitres = quantityLitres;
+      }
+    }
+
     if (
       serviceType !==
         "gift-box" &&
@@ -454,6 +478,8 @@ export default function CateringRequestForm() {
         ? "Corporate Catering"
         : request.serviceType === "event"
           ? "Event Catering"
+          : request.serviceType === "bulk-order"
+            ? "Bulk Order"
           : "Food Gift Box";
 
     const foods =
@@ -479,6 +505,11 @@ export default function CateringRequestForm() {
     const guests =
       request.guestCount
         ? `\nNumber of Guests: ${request.guestCount}`
+        : "";
+
+    const quantity =
+      request.quantityLitres
+        ? `\nQuantity: ${request.quantityLitres} Litres`
         : "";
 
     const budget =
@@ -531,7 +562,7 @@ REQUEST TYPE
 ${service}${company}${event}
 
 REQUEST DETAILS
-Date: ${request.date}
+Date: ${request.date}${quantity}
 Location: ${request.location}${guests}${budget}
 ${recipient}
 
@@ -701,7 +732,9 @@ Thank you.`;
               <ReviewBox
                 label="Service"
                 value={
-                  service?.title ||
+                  service?.id === "bulk-order"
+                    ? t("catering.bulkOrder")
+                    : service?.title ||
                   ""
                 }
               />
@@ -769,6 +802,13 @@ Thank you.`;
                     value={String(
                       submittedRequest.guestCount
                     )}
+                  />
+                )}
+
+                {submittedRequest.quantityLitres && (
+                  <ReviewBox
+                    label="Quantity (Litres)"
+                    value={`${submittedRequest.quantityLitres} Litres`}
                   />
                 )}
 
@@ -992,12 +1032,12 @@ Thank you.`;
           </h2>
 
           <p className="mx-auto mt-4 max-w-[640px] font-semibold leading-7 text-[#151313]/60">
-            Choose the type of request, select meals from our wider restaurant menu and tell us anything extra you would like.
+            From bulk food orders and company lunches to private celebrations and thoughtful food gifts, African Restaurant Estonia can prepare something suited to the occasion.
           </p>
 
         </div>
 
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
+        <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
 
           {services.map(
             (service) => {
@@ -1041,15 +1081,11 @@ Thank you.`;
                   </div>
 
                   <h3 className="mt-5 font-[var(--font-cormorant)] text-3xl font-bold text-[#321B29]">
-                    {
-                      service.title
-                    }
+                    {service.id === "bulk-order" ? t("catering.bulkOrder") : service.title}
                   </h3>
 
                   <p className="mt-2 text-sm font-semibold leading-6 text-[#151313]/55">
-                    {
-                      service.description
-                    }
+                    {service.id === "bulk-order" ? t("catering.bulkOrderDescription") : service.description}
                   </p>
 
                 </button>
@@ -1077,7 +1113,10 @@ Thank you.`;
               : serviceType ===
                   "event"
                 ? "Event Catering Request"
-                : "Food Gift Box Request"}
+                : serviceType === "bulk-order"
+                  ? "Bulk Order Request"
+                  : "Food Gift Box Request"}
+
           </h2>
 
           <div className="mt-7">
@@ -1153,6 +1192,29 @@ Thank you.`;
                 required
               />
 
+            </div>
+          )}
+
+          {serviceType === "bulk-order" && (
+            <div className="mt-5">
+              <label
+                htmlFor="quantityLitres"
+                className="mb-2 flex items-center gap-2 text-sm font-bold text-[#321B29]"
+              >
+                <Package size={16} />
+                {t("catering.quantityLitres")}
+              </label>
+              <select
+                id="quantityLitres"
+                name="quantityLitres"
+                required
+                defaultValue=""
+                className="w-full rounded-xl border border-[#321B29]/15 bg-[#FFF8EC] px-4 py-3 text-sm font-semibold text-[#321B29] outline-none focus:border-[#D89A27]"
+              >
+                <option value="" disabled>{t("catering.selectQuantity")}</option>
+                <option value="3">{t("catering.threeLitres")}</option>
+                <option value="5">{t("catering.fiveLitres")}</option>
+              </select>
             </div>
           )}
 

@@ -27,8 +27,10 @@ import {
 } from "@/lib/firebase/client";
 
 import {
+  legacyDuplicateComboIds,
   menuItems as catalogMenuItems,
   menuImageById,
+  restaurantDrinkAddOns,
 } from "@/data/menuData";
 
 import type {
@@ -63,6 +65,12 @@ const categories:
     "VEGAN OPTIONS",
     "COMBO OPTIONS",
   ];
+
+const catalogComboIds = new Set(
+  catalogMenuItems
+    .filter((item) => item.category === "COMBO OPTIONS")
+    .map((item) => item.id)
+);
 
 const categoryLabels:
   Record<
@@ -301,10 +309,31 @@ function mapFirestoreMenuItem(
       data.sizes
     );
 
+  const category =
+    normalizeCategory(
+      data.category
+    );
+
+  const tags = normalizeTags(
+    data.tags
+  ).filter(
+    (tag) =>
+      !((id === "jollof-rice" || id === "fried-rice") && tag === "VEGAN OPTIONS")
+  );
+
   const addOns =
     normalizeAddOns(
       data.addOns
     );
+
+  const mealAddOns = category === "DRINKS"
+    ? addOns
+    : [
+        ...addOns,
+        ...restaurantDrinkAddOns.filter(
+          (drink) => !addOns.some((addOn) => addOn.name === drink.name)
+        ),
+      ];
 
   const calculatedPricePending =
     sizes.length === 0 ||
@@ -339,19 +368,13 @@ function mapFirestoreMenuItem(
         ? data.description
         : undefined,
 
-    category:
-      normalizeCategory(
-        data.category
-      ),
+    category,
 
     sizes,
 
-    addOns,
+    addOns: mealAddOns,
 
-    tags:
-      normalizeTags(
-        data.tags
-      ),
+    tags,
 
     available:
       data.available ===
@@ -363,10 +386,12 @@ function mapFirestoreMenuItem(
       calculatedPricePending,
 
     image:
-      typeof data.image ===
-      "string"
-        ? data.image
-        : menuImageById[id],
+      id === "puff-puff" || id === "abula" || id === "jollof-rice" || id === "fried-rice" || id === "combo-peppered-fish-plantain-zobo-13"
+        ? menuImageById[id]
+        : typeof data.image ===
+            "string"
+          ? data.image
+          : menuImageById[id],
 
     imagePublicId:
       typeof data.imagePublicId ===
@@ -509,13 +534,29 @@ export default function MenuSection() {
         ),
         (snapshot) => {
           const remoteItems =
-            snapshot.docs.map(
+            snapshot.docs
+              .filter(
+                (menuDocument) => {
+                  const category = normalizeCategory(
+                    menuDocument.data().category
+                  );
+
+                  return (
+                    !legacyDuplicateComboIds.includes(
+                      menuDocument.id as (typeof legacyDuplicateComboIds)[number]
+                    ) &&
+                    (category !== "COMBO OPTIONS" ||
+                      catalogComboIds.has(menuDocument.id))
+                  );
+                }
+              )
+              .map(
               (menuDocument) =>
                 mapFirestoreMenuItem(
                   menuDocument.id,
                   menuDocument.data()
                 )
-            );
+              );
 
           const remoteIds = new Set(
             remoteItems.map((item) => item.id)

@@ -12,7 +12,8 @@ import { allowPublicMutation } from "@/lib/server/rateLimit";
 type CateringServiceType =
   | "corporate"
   | "event"
-  | "gift-box";
+  | "gift-box"
+  | "bulk-order";
 
 type SubmittedCateringRequest = {
   idempotencyKey?: unknown;
@@ -27,6 +28,7 @@ type SubmittedCateringRequest = {
 
   date?: unknown;
   guestCount?: unknown;
+  quantityLitres?: unknown;
 
   location?: unknown;
   budget?: unknown;
@@ -140,7 +142,8 @@ export async function POST(
       CateringServiceType | null =
       body.serviceType === "corporate" ||
       body.serviceType === "event" ||
-      body.serviceType === "gift-box"
+      body.serviceType === "gift-box" ||
+      body.serviceType === "bulk-order"
         ? body.serviceType
         : null;
 
@@ -261,9 +264,10 @@ export async function POST(
     let guestCount: number | null =
       null;
 
-    if (
-      serviceType !== "gift-box"
-    ) {
+    if (serviceType !== "gift-box") {
+      if (serviceType === "bulk-order" && (body.guestCount === undefined || body.guestCount === null || body.guestCount === "")) {
+        guestCount = null;
+      } else {
       if (
         typeof body.guestCount !==
           "number" ||
@@ -286,6 +290,22 @@ export async function POST(
 
       guestCount =
         body.guestCount;
+      }
+    }
+
+    let quantityLitres: 3 | 5 | null = null;
+
+    if (serviceType === "bulk-order") {
+      const requestedQuantity = Number(body.quantityLitres);
+
+      if (requestedQuantity !== 3 && requestedQuantity !== 5) {
+        return NextResponse.json(
+          { error: "Bulk Orders must use 3 or 5 litres." },
+          { status: 400 }
+        );
+      }
+
+      quantityLitres = requestedQuantity;
     }
 
     const recipientName =
@@ -460,6 +480,10 @@ export async function POST(
           }
         : {}),
 
+      ...(quantityLitres !== null
+        ? { quantityLitres }
+        : {}),
+
       ...(budget
         ? {
             budget,
@@ -575,6 +599,10 @@ export async function POST(
         ? {
             guestCount,
           }
+        : {}),
+
+      ...(quantityLitres !== null
+        ? { quantityLitres }
         : {}),
 
       ...(budget

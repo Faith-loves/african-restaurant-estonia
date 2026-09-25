@@ -85,6 +85,14 @@ type TranslationKey =
   | "home.eventsDescription"
   | "home.foodGiftBox"
   | "home.foodGiftBoxDescription"
+  | "home.bulkOrder"
+  | "home.bulkOrderDescription"
+  | "catering.bulkOrder"
+  | "catering.bulkOrderDescription"
+  | "catering.quantityLitres"
+  | "catering.selectQuantity"
+  | "catering.threeLitres"
+  | "catering.fiveLitres"
   | "home.galleryEyebrow"
   | "home.galleryTitle"
   | "home.galleryDescription"
@@ -172,7 +180,7 @@ const english: TranslationSet = {
   "home.fromWestAfricaText": "Starting in Tallinn, our goal is to make authentic African food easier to find, understand and enjoy across Estonia.",
   "home.cateringEyebrow": "Catering & Special Orders",
   "home.cateringTitle": "West African Food for More Than Just Dinner.",
-  "home.cateringDescription": "From company lunches to private celebrations and thoughtful food gifts, African Restaurant Estonia can prepare something suited to the occasion.",
+  "home.cateringDescription": "From bulk food orders and company lunches to private celebrations and thoughtful food gifts, African Restaurant Estonia can prepare something suited to the occasion.",
   "home.makeCateringRequest": "Make a Catering Request",
   "home.corporateCatering": "Corporate Catering",
   "home.corporateCateringDescription": "Office lunches, meetings, team meals, conferences and company events with authentic West African food.",
@@ -180,6 +188,14 @@ const english: TranslationSet = {
   "home.eventsDescription": "Beautifully prepared food for birthdays, celebrations, private gatherings and special occasions.",
   "home.foodGiftBox": "Food Gift Box",
   "home.foodGiftBoxDescription": "A thoughtful selection of African favourites, beautifully packed for gifting.",
+  "home.bulkOrder": "Bulk Orders",
+  "home.bulkOrderDescription": "Larger food orders for offices, gatherings, celebrations and special occasions.",
+  "catering.bulkOrder": "Bulk Order",
+  "catering.bulkOrderDescription": "Larger food orders prepared in 3 or 5 litre quantities.",
+  "catering.quantityLitres": "Quantity (Litres)",
+  "catering.selectQuantity": "Select quantity",
+  "catering.threeLitres": "3 Litres",
+  "catering.fiveLitres": "5 Litres",
   "home.galleryEyebrow": "Food & Moments",
   "home.galleryTitle": "A Little Taste Before You Order.",
   "home.galleryDescription": "A changing selection from our menu. Explore the full collection and find your next favourite on the menu page.",
@@ -195,6 +211,12 @@ export const translations: Record<Language, TranslationSet> = {
   en: english,
   et: {
     ...english,
+    "catering.bulkOrder": "Hulgimüügitellimus",
+    "catering.bulkOrderDescription": "Suuremad toidutellimused 3- või 5-liitristes kogustes.",
+    "catering.quantityLitres": "Kogus (liitrites)",
+    "catering.selectQuantity": "Vali kogus",
+    "catering.threeLitres": "3 liitrit",
+    "catering.fiveLitres": "5 liitrit",
     "nav.home": "Avaleht",
     "nav.menu": "Menüü",
     "nav.about": "Meist",
@@ -259,6 +281,12 @@ export const translations: Record<Language, TranslationSet> = {
   },
   fi: {
     ...english,
+    "catering.bulkOrder": "Suurtillaus",
+    "catering.bulkOrderDescription": "Suuremmat ruokatilaukset 3 tai 5 litran määrinä.",
+    "catering.quantityLitres": "Määrä (litroina)",
+    "catering.selectQuantity": "Valitse määrä",
+    "catering.threeLitres": "3 litraa",
+    "catering.fiveLitres": "5 litraa",
     "nav.home": "Etusivu",
     "nav.menu": "Menu",
     "nav.about": "Tietoa meistä",
@@ -323,6 +351,12 @@ export const translations: Record<Language, TranslationSet> = {
   },
   ru: {
     ...english,
+    "catering.bulkOrder": "Оптовый заказ",
+    "catering.bulkOrderDescription": "Большие заказы еды объёмом 3 или 5 литров.",
+    "catering.quantityLitres": "Количество (литры)",
+    "catering.selectQuantity": "Выберите количество",
+    "catering.threeLitres": "3 литра",
+    "catering.fiveLitres": "5 литров",
     "nav.home": "Главная",
     "nav.menu": "Меню",
     "nav.about": "О нас",

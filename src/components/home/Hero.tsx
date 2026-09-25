@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 import { useLanguage } from "@/context/LanguageContext";
 
-const AUTOPLAY_MS = 6000;
+const AUTOPLAY_MS = 11000;
 
 export default function Hero() {
   const { t } = useLanguage();
@@ -51,7 +51,7 @@ export default function Hero() {
             <p className="mt-7 max-w-[620px] text-base leading-8 text-[#FFF8EC]/85 sm:text-lg">{t("hero.description")}</p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Link href="/menu" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#D89A27] px-6 py-4 font-bold text-[#321B29] transition hover:bg-[#FFF8EC] focus:outline-none focus:ring-2 focus:ring-[#FFF8EC] focus:ring-offset-2 focus:ring-offset-[#321B29]">{t("hero.startOrder")}<ArrowRight size={18} /></Link>
-              <Link href="/menu" className="inline-flex items-center justify-center gap-2 rounded-md border border-[#FFF8EC]/50 bg-[#FFF8EC]/10 px-6 py-4 font-semibold text-[#FFF8EC] transition hover:bg-[#FFF8EC] hover:text-[#321B29] focus:outline-none focus:ring-2 focus:ring-[#D89A27]">{t("hero.todayMenu")}</Link>
+              <Link href="/menu?filter=today" className="inline-flex items-center justify-center gap-2 rounded-md border border-[#FFF8EC]/50 bg-[#FFF8EC]/10 px-6 py-4 font-semibold text-[#FFF8EC] transition hover:bg-[#FFF8EC] hover:text-[#321B29] focus:outline-none focus:ring-2 focus:ring-[#D89A27]">{t("hero.todayMenu")}</Link>
             </div>
             <div className="mt-10 flex flex-wrap gap-5 text-sm font-semibold text-[#FFF8EC]/90"><span className="flex items-center gap-2"><Truck size={18} className="text-[#D89A27]" />{t("hero.delivery")}</span><span className="flex items-center gap-2"><ShoppingBag size={18} className="text-[#D89A27]" />{t("hero.pickup")}</span></div>
           </div>

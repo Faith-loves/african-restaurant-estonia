@@ -10,6 +10,7 @@ import {
 } from "@/lib/firebase/client";
 
 import {
+  legacyDuplicateComboIds,
   menuItems,
 } from "@/data/menuData";
 
@@ -110,6 +111,10 @@ export async function importMenuToFirestore() {
       );
     }
   );
+
+  legacyDuplicateComboIds.forEach((id) => {
+    batch.delete(doc(collection(db, "menuItems"), id));
+  });
 
   await batch.commit();
 

@@ -10,6 +10,17 @@ export const restaurantDrinkAddOns = [
   { name: "Zobo", price: 3.5 },
 ] as const;
 
+// These IDs were an accidental duplicate import of the first six combos.
+// Keep them here so readers can ignore stale Firestore docs until sync removes them.
+export const legacyDuplicateComboIds = [
+  "combo-jollof-chicken-plantain-zobo-7",
+  "combo-jollof-turkey-plantain-zobo-8",
+  "combo-jollof-fish-plantain-zobo-9",
+  "combo-fried-rice-chicken-plantain-zobo-10",
+  "combo-fried-rice-turkey-plantain-zobo-11",
+  "combo-fried-rice-fish-plantain-zobo-12",
+] as const;
+
 type MenuSeedOptions = {
   estonianName?: string;
   description?: string;
@@ -109,12 +120,11 @@ export const menuItems: MenuItem[] = [
       estonianName: "Jollof-riis",
       description:
         "Aromatic Nigerian jollof rice cooked in a rich tomato and pepper sauce with onions and traditional spices.",
-      image: "/images/foods/jollof.webp",
+      image: "/images/foods/jollof-rice.jpg",
       addOns: [
         ["VEGETABLE SALAD", 4.5],
         ["FRIED PLANTAINS", 5],
       ],
-      tags: ["VEGAN OPTIONS"],
     }
   ),
 
@@ -132,7 +142,48 @@ export const menuItems: MenuItem[] = [
         "Praetud riis",
       description:
         "Aromatic fried rice with mixed vegetables, onions and Nigerian-style seasoning.",
-      image: "/images/foods/fried-rice-chicken.jpg",
+      image: "/images/foods/fried-rice.jpg",
+      addOns: [
+        ["VEGETABLE SALAD", 4.5],
+        ["FRIED PLANTAINS", 5],
+      ],
+    }
+  ),
+
+  m(
+    "vegan-jollof-rice",
+    "Vegan Jollof Rice",
+    "VEGAN OPTIONS",
+    [
+      ["Small", 9.5],
+      ["Medium", 11.5],
+      ["Large", 14.5],
+    ],
+    {
+      image: "/images/foods/vegan-jollof.jpg",
+      description:
+        "A vibrant plant-based jollof rice prepared with rich tomato, pepper and traditional West African spices.",
+      addOns: [
+        ["VEGETABLE SALAD", 4.5],
+        ["FRIED PLANTAINS", 5],
+      ],
+      tags: ["VEGAN OPTIONS"],
+    }
+  ),
+
+  m(
+    "vegan-fried-rice",
+    "Vegan Fried Rice",
+    "VEGAN OPTIONS",
+    [
+      ["Small", 10],
+      ["Medium", 12],
+      ["Large", 15],
+    ],
+    {
+      image: "/images/foods/vegan-fried-rice.jpg",
+      description:
+        "Plant-based fried rice with mixed vegetables and Nigerian-style seasoning.",
       addOns: [
         ["VEGETABLE SALAD", 4.5],
         ["FRIED PLANTAINS", 5],
@@ -370,7 +421,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 20],
     ],
     {
-      image: "/images/foods/fried-plantain.jpg",
+      image: "/images/foods/vegan-plantain.jpg",
       estonianName:
         "Praetud jahubanaan",
       description:
@@ -435,7 +486,7 @@ export const menuItems: MenuItem[] = [
 
   m(
     "bean-cake",
-    "Bean Cake",
+    "Beans Cake (Akara)",
     "MAIN DISH",
     [
       ["Medium"],
@@ -457,7 +508,7 @@ export const menuItems: MenuItem[] = [
 
   m(
     "bean-pudding",
-    "Bean Pudding",
+    "Bean Pudding (Moi Moi)",
     "MAIN DISH",
     [
       ["Medium"],
@@ -778,6 +829,66 @@ export const menuItems: MenuItem[] = [
   ),
 
   m(
+    "ewedu-soup",
+    "Ewedu Soup",
+    "SOUP",
+    [],
+    {
+      description:
+        "Silky Nigerian jute-leaf soup, traditionally served with a choice of swallow.",
+      addOns: [
+        ["EBA"],
+        ["SEMO"],
+        ["POUNDO"],
+        ["AMALA"],
+        ["PLANTAIN FUFU"],
+      ],
+      available: false,
+      pricePending: true,
+    }
+  ),
+
+  m(
+    "eba",
+    "Eba",
+    "SWALLOW/FUFU",
+    [],
+    { image: "/images/foods/eba.jpg", available: false, pricePending: true }
+  ),
+
+  m(
+    "semo",
+    "Semo",
+    "SWALLOW/FUFU",
+    [],
+    { image: "/images/foods/semo.jpg", available: false, pricePending: true }
+  ),
+
+  m(
+    "pounded-yam",
+    "Pounded Yam",
+    "SWALLOW/FUFU",
+    [],
+    { image: "/images/foods/pounded-yam.jpg", available: false, pricePending: true }
+  ),
+
+  m(
+    "amala",
+    "Amala",
+    "SWALLOW/FUFU",
+    [],
+    { image: "/images/foods/amala.jpg", available: false, pricePending: true }
+  ),
+
+  m(
+    "plantain-fufu",
+    "Plantain Fufu",
+    "SWALLOW/FUFU",
+    [],
+    { image: "/images/foods/plantain-fufu.jpg", available: false, pricePending: true }
+  ),
+
+  m(
     "oha-soup",
     "Oha Soup",
     "SOUP",
@@ -902,7 +1013,7 @@ export const menuItems: MenuItem[] = [
 
   m(
     "cowleg",
-    "Cowleg",
+    "Cow Leg (Nkwobi)",
     "PROTEIN",
     [],
     {
@@ -1552,91 +1663,13 @@ export const menuItems: MenuItem[] = [
     }
   ),
 
-  /*
-    Rows 7-12 are listed under VEGAN OPTIONS in the client's
-    combo sheet, but they contain chicken, turkey and fish.
-
-    We preserve the combo names but DO NOT mark them as vegan.
-  */
-
-  m(
-    "combo-jollof-chicken-plantain-zobo-7",
-    "Jollof + Chicken + Plantain + Zobo",
-    "COMBO OPTIONS",
-    [],
-    {
-      image: "/images/foods/jollof-chicken-plantain.jpg",
-      available: false,
-      pricePending: true,
-    }
-  ),
-
-  m(
-    "combo-jollof-turkey-plantain-zobo-8",
-    "Jollof + Turkey + Plantain + Zobo",
-    "COMBO OPTIONS",
-    [],
-    {
-      image: "/images/foods/peppered-turkey.jpg",
-      available: false,
-      pricePending: true,
-    }
-  ),
-
-  m(
-    "combo-jollof-fish-plantain-zobo-9",
-    "Jollof + Fish + Plantain + Zobo",
-    "COMBO OPTIONS",
-    [],
-    {
-      image: "/images/foods/fried-fish.jpg",
-      available: false,
-      pricePending: true,
-    }
-  ),
-
-  m(
-    "combo-fried-rice-chicken-plantain-zobo-10",
-    "Fried Rice + Chicken + Plantain + Zobo",
-    "COMBO OPTIONS",
-    [],
-    {
-      image: "/images/foods/fried-rice-chicken.jpg",
-      available: false,
-      pricePending: true,
-    }
-  ),
-
-  m(
-    "combo-fried-rice-turkey-plantain-zobo-11",
-    "Fried Rice + Turkey + Plantain + Zobo",
-    "COMBO OPTIONS",
-    [],
-    {
-      image: "/images/foods/peppered-turkey.jpg",
-      available: false,
-      pricePending: true,
-    }
-  ),
-
-  m(
-    "combo-fried-rice-fish-plantain-zobo-12",
-    "Fried Rice + Fish + Plantain + Zobo",
-    "COMBO OPTIONS",
-    [],
-    {
-      image: "/images/foods/fried-fish.jpg",
-      available: false,
-      pricePending: true,
-    }
-  ),
-
   m(
     "combo-peppered-fish-plantain-zobo-13",
     "Peppered Fish + Fried Plantains + Zobo",
     "COMBO OPTIONS",
     [],
     {
+      image: "/images/foods/peppered-fish.jpg",
       available: false,
       pricePending: true,
     }

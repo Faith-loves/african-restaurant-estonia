@@ -114,13 +114,15 @@ type CateringRequest = {
   serviceType:
     | "corporate"
     | "event"
-    | "gift-box";
+    | "gift-box"
+    | "bulk-order";
   customer: Customer;
   companyName?: string;
   eventType?: string;
   requestedDate?: string;
   location?: string;
   guestCount?: number;
+  quantityLitres?: 3 | 5;
   budget?: string;
   recipient?: CateringRecipient;
   selectedMenuItems?: string[];
@@ -264,6 +266,10 @@ function serviceLabel(
 
   if (serviceType === "event") {
     return "Event Catering";
+  }
+
+  if (serviceType === "bulk-order") {
+    return "Bulk Order";
   }
 
   return "Food Gift Box";
@@ -1617,6 +1623,14 @@ function RequestCard({
                   value={String(
                     request.guestCount
                   )}
+                />
+              )}
+
+              {typeof request.quantityLitres === "number" && (
+                <DetailLine
+                  icon={PackageCheck}
+                  label="Quantity"
+                  value={`${request.quantityLitres} Litres`}
                 />
               )}
 

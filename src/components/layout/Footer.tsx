@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 import {
-  AtSign,
   Mail,
   MapPin,
   Phone,
@@ -24,6 +23,7 @@ import {
   db,
 } from "@/lib/firebase/client";
 import { useLanguage } from "@/context/LanguageContext";
+import InstagramIcon from "@/components/icons/InstagramIcon";
 
 type FooterSettings = {
   restaurantName: string;
@@ -257,7 +257,7 @@ export default function Footer() {
               />
 
               <FooterContact
-                icon={AtSign}
+                icon={InstagramIcon}
                 value={
                   settings.instagram
                 }

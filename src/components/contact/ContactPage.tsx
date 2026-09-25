@@ -9,7 +9,6 @@ import {
 } from "react";
 
 import {
-  AtSign,
   Clock3,
   Mail,
   MapPin,
@@ -26,6 +25,8 @@ import {
 import {
   db,
 } from "@/lib/firebase/client";
+
+import InstagramIcon from "@/components/icons/InstagramIcon";
 
 type PublicSettings = {
   restaurantName: string;
@@ -64,6 +65,21 @@ export default function ContactPage() {
     useState<PublicSettings>(
       defaultSettings
     );
+
+  const [
+    sending,
+    setSending,
+  ] = useState(false);
+
+  const [
+    statusMessage,
+    setStatusMessage,
+  ] = useState("");
+
+  const [
+    errorMessage,
+    setErrorMessage,
+  ] = useState("");
 
   useEffect(() => {
     const unsubscribe =
@@ -134,7 +150,7 @@ export default function ContactPage() {
     };
   }, []);
 
-  function handleSubmit(
+  async function handleSubmit(
     event:
       FormEvent<HTMLFormElement>
   ) {
@@ -171,32 +187,45 @@ export default function ContactPage() {
         ?.toString()
         .trim() || "";
 
-    const emailSubject =
-      `${subject} - ${name}`;
+    setSending(true);
+    setStatusMessage("");
+    setErrorMessage("");
 
-    const emailBody = [
-      `Hello ${settings.restaurantName},`,
-      "",
-      message,
-      "",
-      "Customer details:",
-      `Name: ${name}`,
-      `Email: ${customerEmail}`,
-      "",
-      "Sent from the African Restaurant Estonia website.",
-    ].join("\n");
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email: customerEmail,
+          subject,
+          message,
+        }),
+      });
 
-    const mailto =
-      `mailto:${settings.publicEmail}` +
-      `?subject=${encodeURIComponent(
-        emailSubject
-      )}` +
-      `&body=${encodeURIComponent(
-        emailBody
-      )}`;
+      const result = await response.json().catch(() => ({}));
 
-    window.location.href =
-      mailto;
+      if (!response.ok) {
+        throw new Error(
+          typeof result.error === "string"
+            ? result.error
+            : "Unable to send your message right now. Please try again."
+        );
+      }
+
+      form.reset();
+      setStatusMessage("Your message has been sent to African Restaurant Estonia.");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to send your message right now. Please try again."
+      );
+    } finally {
+      setSending(false);
+    }
   }
 
   return (
@@ -281,7 +310,7 @@ export default function ContactPage() {
               />
 
               <ContactCard
-                icon={AtSign}
+                icon={InstagramIcon}
                 label="Instagram"
                 value={
                   settings.instagram
@@ -352,7 +381,7 @@ export default function ContactPage() {
             </div>
 
             <p className="mt-5 text-sm font-semibold leading-7 text-[#151313]/50">
-              Fill in your message below. When you click send, your email app will open with everything ready to send directly to the restaurant.
+              Fill in your message below and we&apos;ll receive it directly at the restaurant.
             </p>
 
             <form
@@ -444,14 +473,27 @@ export default function ContactPage() {
 
               <button
                 type="submit"
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-[#321B29] px-6 py-4 text-sm font-extrabold text-white transition hover:bg-[#D89A27] hover:text-[#321B29]"
+                disabled={sending}
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-[#321B29] px-6 py-4 text-sm font-extrabold text-white transition hover:bg-[#D89A27] hover:text-[#321B29] disabled:cursor-wait disabled:opacity-60"
               >
                 <Send
                   size={17}
                 />
 
-                Send Message by Email
+                {sending ? "Sending Message..." : "Send Message"}
               </button>
+
+              {statusMessage && (
+                <p className="mt-4 rounded-xl bg-[#2E7D5B]/10 px-4 py-3 text-sm font-bold text-[#2E7D5B]" role="status">
+                  {statusMessage}
+                </p>
+              )}
+
+              {errorMessage && (
+                <p className="mt-4 rounded-xl bg-[#B9472E]/10 px-4 py-3 text-sm font-bold text-[#B9472E]" role="alert">
+                  {errorMessage}
+                </p>
+              )}
 
             </form>
 

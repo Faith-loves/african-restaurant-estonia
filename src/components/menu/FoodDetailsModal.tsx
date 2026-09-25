@@ -16,6 +16,7 @@ import {
 import { MenuItem } from "@/types/menu";
 import { CartItem } from "@/types/cart";
 import { useCart } from "@/context/CartContext";
+import { restaurantDrinkAddOns } from "@/data/menuData";
 
 type FoodDetailsModalProps = {
   item: MenuItem | null;
@@ -211,6 +212,19 @@ export default function FoodDetailsModal({
         selectedAddOns,
       ]
     );
+
+  const drinkAddOnNames = useMemo<Set<string>>(
+    () => new Set<string>(restaurantDrinkAddOns.map((drink) => drink.name)),
+    []
+  );
+
+  const extraAddOns = validAddOns.filter(
+    (addOn) => !drinkAddOnNames.has(addOn.name)
+  );
+
+  const drinkAddOns = validAddOns.filter(
+    (addOn) => drinkAddOnNames.has(addOn.name)
+  );
 
   const total =
     useMemo(() => {
@@ -504,56 +518,74 @@ export default function FoodDetailsModal({
               0 && (
               <div className="mt-6">
 
-                <h3 className="font-[var(--font-cormorant)] text-2xl font-bold text-[#321B29]">
-                  Add Extras
-                </h3>
-
                 <p className="mt-1 text-xs font-semibold text-[#151313]/50">
                   Optional
                 </p>
 
-                <div className="mt-3 grid gap-2">
+                {extraAddOns.length > 0 && (
+                  <div>
+                    <h3 className="font-[var(--font-cormorant)] text-2xl font-bold text-[#321B29]">
+                      Add Extras
+                    </h3>
 
-                  {validAddOns.map(
-                    (addOn) => {
-                      const selected =
-                        selectedAddOns.includes(
-                          addOn.name
+                    <div className="mt-3 grid gap-2">
+                      {extraAddOns.map((addOn) => {
+                        const selected = selectedAddOns.includes(addOn.name);
+
+                        return (
+                          <button
+                            key={addOn.name}
+                            type="button"
+                            onClick={() => toggleAddOn(addOn.name)}
+                            className={`flex items-center justify-between rounded-xl border px-4 py-3 transition ${
+                              selected
+                                ? "border-[#D89A27] bg-[#D89A27]/15"
+                                : "border-[#321B29]/10 bg-white hover:border-[#D89A27]"
+                            }`}
+                          >
+                            <span className="font-bold text-[#321B29]">{addOn.name}</span>
+                            <span className="font-extrabold text-[#B9472E]">+€{addOn.price.toFixed(2)}</span>
+                          </button>
                         );
+                      })}
+                    </div>
+                  </div>
+                )}
 
-                      return (
-                        <button
-                          key={
-                            addOn.name
-                          }
-                          type="button"
-                          onClick={() =>
-                            toggleAddOn(
-                              addOn.name
-                            )
-                          }
-                          className={`flex items-center justify-between rounded-xl border px-4 py-3 transition ${
-                            selected
-                              ? "border-[#D89A27] bg-[#D89A27]/15"
-                              : "border-[#321B29]/10 bg-white hover:border-[#D89A27]"
-                          }`}
-                        >
-                          <span className="font-bold text-[#321B29]">
-                            {addOn.name}
-                          </span>
+                {drinkAddOns.length > 0 && (
+                  <div className={extraAddOns.length > 0 ? "mt-5" : ""}>
+                    <h3 className="font-[var(--font-cormorant)] text-2xl font-bold text-[#321B29]">
+                      Drinks
+                    </h3>
 
-                          <span className="font-extrabold text-[#B9472E]">
-                            +€
-                            {addOn.price.toFixed(
-                              2
-                            )}
-                          </span>
-                        </button>
-                      );
-                    }
-                  )}
+                    <p className="mt-1 text-xs font-semibold text-[#151313]/50">
+                      Choose a drink to add to your meal
+                    </p>
 
-                </div>
+                    <div className="mt-3 grid gap-2">
+                      {drinkAddOns.map((addOn) => {
+                        const selected = selectedAddOns.includes(addOn.name);
+
+                        return (
+                          <button
+                            key={addOn.name}
+                            type="button"
+                            onClick={() => toggleAddOn(addOn.name)}
+                            className={`flex items-center justify-between rounded-xl border px-4 py-3 transition ${
+                              selected
+                                ? "border-[#D89A27] bg-[#D89A27]/15"
+                                : "border-[#321B29]/10 bg-white hover:border-[#D89A27]"
+                            }`}
+                          >
+                            <span className="font-bold text-[#321B29]">{addOn.name}</span>
+                            <span className="font-extrabold text-[#B9472E]">+€{addOn.price.toFixed(2)}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
               </div>
             )}
 
