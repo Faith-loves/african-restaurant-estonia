@@ -28,6 +28,7 @@ import {
 
 import {
   legacyDuplicateComboIds,
+  isHiddenMenuCategory,
   menuItems as catalogMenuItems,
   menuImageById,
   restaurantDrinkAddOns,
@@ -61,7 +62,6 @@ const categories:
     "SNACKS",
     "PROTEIN",
     "SAUCE",
-    "SWALLOW/FUFU",
     "VEGAN OPTIONS",
     "COMBO OPTIONS",
   ];
@@ -73,10 +73,10 @@ const catalogComboIds = new Set(
 );
 
 const categoryLabels:
-  Record<
+  Partial<Record<
     FilterCategory,
     string
-  > = {
+  >> = {
     ALL: "All",
 
     STARTER:
@@ -102,9 +102,6 @@ const categoryLabels:
 
     SAUCE:
       "Sauces",
-
-    "SWALLOW/FUFU":
-      "Swallow / Fufu",
 
     "VEGAN OPTIONS":
       "Vegan Options",
@@ -330,9 +327,11 @@ function mapFirestoreMenuItem(
     ? addOns
     : [
         ...addOns,
-        ...restaurantDrinkAddOns.filter(
-          (drink) => !addOns.some((addOn) => addOn.name === drink.name)
-        ),
+        ...restaurantDrinkAddOns
+          .filter(
+            (drink) => !addOns.some((addOn) => addOn.name === drink.name)
+          )
+          .map((drink) => ({ name: drink.name })),
       ];
 
   const calculatedPricePending =
@@ -542,6 +541,7 @@ export default function MenuSection() {
                   );
 
                   return (
+                    !isHiddenMenuCategory(menuDocument.data().category) &&
                     !legacyDuplicateComboIds.includes(
                       menuDocument.id as (typeof legacyDuplicateComboIds)[number]
                     ) &&
@@ -566,7 +566,9 @@ export default function MenuSection() {
             [
               ...remoteItems,
               ...catalogMenuItems.filter(
-                (item) => !remoteIds.has(item.id)
+                (item) =>
+                  !remoteIds.has(item.id) &&
+                  !isHiddenMenuCategory(item.category)
               ),
             ]
               .filter(

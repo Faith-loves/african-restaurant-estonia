@@ -24,7 +24,11 @@ export default function AdminUsers() {
     const token = await getIdToken(user);
     const response = await fetch(path, { ...options, headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, ...(options?.headers ?? {}) } });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error ?? "Request failed");
+    if (!response.ok) {
+      const error = new Error(data.error ?? "Request failed") as Error & { data?: typeof data };
+      error.data = data;
+      throw error;
+    }
     return data;
   }
 
@@ -33,7 +37,7 @@ export default function AdminUsers() {
 
   async function invite(event: React.FormEvent) {
     event.preventDefault(); setMessage(""); setResetLink("");
-    try { const data = await call("/api/admin/admins", { method: "POST", body: JSON.stringify({ name, email, permissions }) }); setResetLink(data.passwordResetLink); setName(""); setEmail(""); setMessage("Administrator created. Copy the one-time reset link below."); await load(); } catch (error) { setMessage((error as Error).message); }
+    try { const data = await call("/api/admin/admins", { method: "POST", body: JSON.stringify({ name, email, permissions }) }); setResetLink(data.passwordResetLink); setName(""); setEmail(""); setMessage("Administrator created and invitation email sent. A one-time reset link is also shown below."); await load(); } catch (error) { const apiError = error as Error & { data?: { passwordResetLink?: string } }; if (apiError.data?.passwordResetLink) setResetLink(apiError.data.passwordResetLink); setMessage(apiError.message); }
   }
 
   async function toggle(user: User) { try { await call(`/api/admin/admins/${user.uid}`, { method: "PATCH", body: JSON.stringify({ active: !user.active }) }); await load(); } catch (error) { setMessage((error as Error).message); } }

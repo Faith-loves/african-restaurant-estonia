@@ -4,11 +4,15 @@ type SizeSeed = [label: string, price?: number];
 type AddOnSeed = [name: string, price?: number];
 
 export const restaurantDrinkAddOns = [
-  { name: "Ginger Drink", price: 3.5 },
-  { name: "Malt", price: 3.5 },
-  { name: "Coca-Cola Can", price: 3.5 },
-  { name: "Zobo", price: 3.5 },
+  { name: "Ginger Drink" },
+  { name: "Malt" },
+  { name: "Coca-Cola Can" },
+  { name: "Zobo" },
 ] as const;
+
+export function isHiddenMenuCategory(value: unknown) {
+  return value === "SWALLOW/FUFU";
+}
 
 // These IDs were an accidental duplicate import of the first six combos.
 // Keep them here so readers can ignore stale Firestore docs until sync removes them.
@@ -48,7 +52,7 @@ function m(
     ? addOns ?? []
     : [
         ...(addOns ?? []),
-        ...restaurantDrinkAddOns.map((drink) => [drink.name, drink.price] as AddOnSeed),
+        ...restaurantDrinkAddOns.map((drink) => [drink.name] as AddOnSeed),
       ];
 
   return {
@@ -834,6 +838,7 @@ export const menuItems: MenuItem[] = [
     "SOUP",
     [],
     {
+      image: "/images/foods/ewedu.jpg",
       description:
         "Silky Nigerian jute-leaf soup, traditionally served with a choice of swallow.",
       addOns: [
@@ -1435,6 +1440,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 17],
     ],
     {
+      image: "/images/foods/egg-sauce.jpg",
       estonianName:
         "Munakaste",
       description:
@@ -1458,6 +1464,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 19],
     ],
     {
+      image: "/images/foods/fish-sauce.jpg",
       estonianName:
         "Kalakaste",
       description:

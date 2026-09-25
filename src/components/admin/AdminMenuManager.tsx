@@ -44,6 +44,7 @@ import {
 
 import {
   legacyDuplicateComboIds,
+  isHiddenMenuCategory,
   menuItems as catalogMenuItems,
   menuImageById,
 } from "@/data/menuData";
@@ -197,10 +198,12 @@ export default function AdminMenuManager() {
         ),
         (snapshot) => {
           const recordsById = new Map<string, AdminFoodItem>(
-            catalogMenuItems.map((item) => [
-              item.id,
-              { ...item },
-            ])
+            catalogMenuItems
+              .filter((item) => !isHiddenMenuCategory(item.category))
+              .map((item) => [
+                item.id,
+                { ...item },
+              ])
           );
 
           snapshot.docs
@@ -209,6 +212,7 @@ export default function AdminMenuManager() {
                 const category = menuDocument.data().category;
 
                 return (
+                  !isHiddenMenuCategory(category) &&
                   !legacyDuplicateComboIds.includes(
                     menuDocument.id as (typeof legacyDuplicateComboIds)[number]
                   ) &&

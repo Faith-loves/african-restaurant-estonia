@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { adminAuth, adminDb } from "@/lib/firebase/admin";
 import { ADMIN_PERMISSION_KEYS } from "@/lib/admin/permissions";
+import { sendAdminInvitationEmail } from "@/lib/email/adminEmails";
 import { requireOwner } from "@/lib/server/requireAdmin";
 
 const loginUrl = "https://africanrestaurant.ee/login";
@@ -52,7 +53,17 @@ export async function POST(request: Request) {
     }, { merge: true });
 
     const passwordResetLink = await adminAuth.generatePasswordResetLink(email, { url: loginUrl, handleCodeInApp: false });
-    return NextResponse.json({ uid: user.uid, passwordResetLink });
+    try {
+      await sendAdminInvitationEmail({ name, email, passwordResetLink });
+    } catch {
+      return NextResponse.json({
+        error: "Administrator created, but the invitation email could not be sent. Use the reset link shown below or check the email provider configuration.",
+        uid: user.uid,
+        passwordResetLink,
+      }, { status: 502 });
+    }
+
+    return NextResponse.json({ uid: user.uid, passwordResetLink, emailSent: true });
   } catch {
     return NextResponse.json({ error: "Unable to create administrator." }, { status: 400 });
   }

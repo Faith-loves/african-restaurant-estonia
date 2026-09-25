@@ -11,8 +11,11 @@ import {
 } from "react";
 
 import {
+  EmailAuthProvider,
   onAuthStateChanged,
+  reauthenticateWithCredential,
   signOut,
+  updatePassword,
 } from "firebase/auth";
 
 import {
@@ -98,6 +101,26 @@ export default function AdminSettings() {
   const [
     saving,
     setSaving,
+  ] = useState(false);
+
+  const [
+    currentPassword,
+    setCurrentPassword,
+  ] = useState("");
+
+  const [
+    newPassword,
+    setNewPassword,
+  ] = useState("");
+
+  const [
+    confirmPassword,
+    setConfirmPassword,
+  ] = useState("");
+
+  const [
+    changingPassword,
+    setChangingPassword,
   ] = useState(false);
 
   const [
@@ -408,6 +431,61 @@ export default function AdminSettings() {
     }
   }
 
+  async function handlePasswordChange(
+    event: FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+
+    setError("");
+    setSuccess("");
+
+    if (newPassword.length < 8) {
+      setError("The new password must be at least 8 characters long.");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setError("The new passwords do not match.");
+      return;
+    }
+
+    const user = auth.currentUser;
+    if (!user?.email) {
+      setError("Your signed-in admin account could not be found.");
+      return;
+    }
+
+    setChangingPassword(true);
+
+    try {
+      const credential = EmailAuthProvider.credential(
+        user.email,
+        currentPassword
+      );
+
+      await reauthenticateWithCredential(user, credential);
+      await updatePassword(user, newPassword);
+
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setSuccess("Your administrator password was changed successfully.");
+    } catch (passwordError) {
+      console.error("Admin password change error:", passwordError);
+
+      const code = (passwordError as { code?: string }).code;
+      setError(
+        code === "auth/wrong-password" || code === "auth/invalid-credential"
+          ? "The current password is incorrect."
+          : code === "auth/requires-recent-login"
+            ? "Please sign in again before changing your password."
+            : "The administrator password could not be changed."
+      );
+    } finally {
+      setChangingPassword(false);
+    }
+  }
+
   if (loading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#FFF8EC]">
@@ -689,6 +767,59 @@ export default function AdminSettings() {
 
           </button>
 
+        </form>
+
+        <form
+          onSubmit={handlePasswordChange}
+          className="mt-7 rounded-[24px] border border-[#321B29]/10 bg-white p-5 shadow-[0_8px_30px_rgba(50,27,41,0.05)] sm:p-7"
+        >
+          <div>
+            <h2 className="font-[var(--font-cormorant)] text-3xl font-bold text-[#321B29]">
+              Change Administrator Password
+            </h2>
+            <p className="mt-2 text-sm font-semibold leading-6 text-[#151313]/55">
+              Confirm your current password before choosing a new one for this signed-in admin account.
+            </p>
+          </div>
+
+          <div className="mt-5 grid gap-5 sm:grid-cols-3">
+            <SettingsField
+              label="Current Password"
+              type="password"
+              value={currentPassword}
+              onChange={setCurrentPassword}
+              required
+            />
+            <SettingsField
+              label="New Password"
+              type="password"
+              value={newPassword}
+              onChange={setNewPassword}
+              required
+            />
+            <SettingsField
+              label="Confirm New Password"
+              type="password"
+              value={confirmPassword}
+              onChange={setConfirmPassword}
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={changingPassword}
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-[#321B29] px-6 py-4 text-sm font-extrabold text-[#321B29] transition hover:bg-[#321B29] hover:text-white disabled:cursor-wait disabled:opacity-50"
+          >
+            {changingPassword ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Changing Password...
+              </>
+            ) : (
+              "Change Password"
+            )}
+          </button>
         </form>
 
       </section>

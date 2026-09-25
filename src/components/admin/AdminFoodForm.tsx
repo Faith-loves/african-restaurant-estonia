@@ -101,7 +101,6 @@ const categories = [
   "SNACKS",
   "PROTEINS",
   "SAUCE",
-  "SWALLOW/FUFU",
   "VEGAN OPTIONS",
   "COMBO OPTIONS",
 ];

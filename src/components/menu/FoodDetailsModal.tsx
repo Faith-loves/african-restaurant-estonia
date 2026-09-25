@@ -222,7 +222,7 @@ export default function FoodDetailsModal({
     (addOn) => !drinkAddOnNames.has(addOn.name)
   );
 
-  const drinkAddOns = validAddOns.filter(
+  const drinkAddOns = (item?.addOns ?? []).filter(
     (addOn) => drinkAddOnNames.has(addOn.name)
   );
 
@@ -565,20 +565,26 @@ export default function FoodDetailsModal({
                     <div className="mt-3 grid gap-2">
                       {drinkAddOns.map((addOn) => {
                         const selected = selectedAddOns.includes(addOn.name);
+                        const selectable = hasValidAddOnPrice(addOn);
 
                         return (
                           <button
                             key={addOn.name}
                             type="button"
-                            onClick={() => toggleAddOn(addOn.name)}
+                            disabled={!selectable}
+                            onClick={() => selectable && toggleAddOn(addOn.name)}
                             className={`flex items-center justify-between rounded-xl border px-4 py-3 transition ${
                               selected
                                 ? "border-[#D89A27] bg-[#D89A27]/15"
-                                : "border-[#321B29]/10 bg-white hover:border-[#D89A27]"
+                                : selectable
+                                  ? "border-[#321B29]/10 bg-white hover:border-[#D89A27]"
+                                  : "cursor-not-allowed border-[#321B29]/10 bg-[#321B29]/5 opacity-70"
                             }`}
                           >
                             <span className="font-bold text-[#321B29]">{addOn.name}</span>
-                            <span className="font-extrabold text-[#B9472E]">+€{addOn.price.toFixed(2)}</span>
+                            <span className="font-extrabold text-[#B9472E]">
+                              {selectable ? `+€${addOn.price.toFixed(2)}` : "Price Pending"}
+                            </span>
                           </button>
                         );
                       })}
