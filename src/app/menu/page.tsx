@@ -102,8 +102,8 @@ export default function MenuPage() {
               </h1>
 
               <p className="mx-auto mt-6 max-w-[680px] text-base font-semibold leading-8 text-white/95 sm:text-lg">
-                Browse our menu and discover the bold, comforting flavours of
-                West Africa. From fragrant rice and hearty soups to grilled
+                Browse our menu and discover the tasty and memorable flavours of
+                Africa. From a wide range of diverse rice dishes and hearty soups to grilled
                 proteins, snacks and refreshing drinks, there is something for
                 every appetite.
               </p>

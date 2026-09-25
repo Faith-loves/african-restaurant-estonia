@@ -3,6 +3,13 @@
 type SizeSeed = [label: string, price?: number];
 type AddOnSeed = [name: string, price?: number];
 
+export const restaurantDrinkAddOns = [
+  { name: "Ginger Drink", price: 3.5 },
+  { name: "Malt", price: 3.5 },
+  { name: "Coca-Cola Can", price: 3.5 },
+  { name: "Zobo", price: 3.5 },
+] as const;
+
 type MenuSeedOptions = {
   estonianName?: string;
   description?: string;
@@ -26,6 +33,13 @@ function m(
     ...rest
   } = options;
 
+  const allAddOns = category === "DRINKS"
+    ? addOns ?? []
+    : [
+        ...(addOns ?? []),
+        ...restaurantDrinkAddOns.map((drink) => [drink.name, drink.price] as AddOnSeed),
+      ];
+
   return {
     id,
     name,
@@ -40,10 +54,9 @@ function m(
       })
     ),
 
-    ...(addOns &&
-    addOns.length > 0
+    ...(allAddOns.length > 0
       ? {
-          addOns: addOns.map(
+          addOns: allAddOns.map(
             ([name, price]) => ({
               name,
               ...(price !==
@@ -1034,7 +1047,7 @@ export const menuItems: MenuItem[] = [
       ["Large", 24.5],
     ],
     {
-      image: "/images/foods/fried-fish.jpg",
+      image: "/images/foods/peppered-fish.jpg",
       estonianName:
         "Kala tomati-piprakastmes",
       description:
@@ -1046,6 +1059,18 @@ export const menuItems: MenuItem[] = [
         ["BOILED POTATOES", 4.5],
         ["BOILED YAM", 9],
       ],
+    }
+  ),
+
+  m(
+    "fried-fish",
+    "Fried Fish",
+    "PROTEIN",
+    [],
+    {
+      image: "/images/foods/fried-fish.jpg",
+      available: false,
+      pricePending: true,
     }
   ),
 
@@ -1126,7 +1151,7 @@ export const menuItems: MenuItem[] = [
       ["30 pcs", 25],
     ],
     {
-      image: "/images/foods/peppered-fish.jpg",
+      image: "/images/foods/puff-puff.jpg",
       estonianName:
         "Puff Puff",
       description:
@@ -1248,6 +1273,42 @@ export const menuItems: MenuItem[] = [
     [],
     {
       image: "/images/foods/ginger-juice.jpg",
+      available: false,
+      pricePending: true,
+    }
+  ),
+
+  m(
+    "malta-guinness",
+    "Malta Guinness",
+    "DRINKS",
+    [],
+    {
+      image: "/images/foods/malta-guinness.jpg",
+      available: false,
+      pricePending: true,
+    }
+  ),
+
+  m(
+    "capri-sun",
+    "Capri-Sun Orange",
+    "DRINKS",
+    [],
+    {
+      image: "/images/foods/capri-sun.jpg",
+      available: false,
+      pricePending: true,
+    }
+  ),
+
+  m(
+    "coca-cola-can",
+    "Coca-Cola Can",
+    "DRINKS",
+    [],
+    {
+      image: "/images/foods/coca-cola.jpg",
       available: false,
       pricePending: true,
     }
@@ -1576,7 +1637,6 @@ export const menuItems: MenuItem[] = [
     "COMBO OPTIONS",
     [],
     {
-      image: "/images/foods/peppered-fish.jpg",
       available: false,
       pricePending: true,
     }
@@ -1763,16 +1823,5 @@ export const restaurantProteinAddOns = [
   {
     name: "Cowleg — 1 portion",
     price: 5,
-  },
-];
-
-export const restaurantDrinkAddOns = [
-  {
-    name: "Zobo",
-    price: 3.5,
-  },
-  {
-    name: "Ginger Juice",
-    price: 3.5,
   },
 ];
