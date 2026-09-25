@@ -5,7 +5,7 @@ import { ADMIN_PERMISSION_KEYS } from "@/lib/admin/permissions";
 import { sendAdminInvitationEmail } from "@/lib/email/adminEmails";
 import { requireOwner } from "@/lib/server/requireAdmin";
 
-const loginUrl = "https://africanrestaurant.ee/login";
+const loginUrl = `${(process.env.NEXT_PUBLIC_SITE_URL || "https://africanrestaurant.ee").replace(/\/$/, "")}/login`;
 
 function cleanPermissions(value: unknown) {
   const input = value && typeof value === "object" ? value as Record<string, unknown> : {};
@@ -52,7 +52,18 @@ export async function POST(request: Request) {
       updatedAt: FieldValue.serverTimestamp(),
     }, { merge: true });
 
-    const passwordResetLink = await adminAuth.generatePasswordResetLink(email, { url: loginUrl, handleCodeInApp: false });
+    let passwordResetLink: string;
+    try {
+      passwordResetLink = await adminAuth.generatePasswordResetLink(email, { url: loginUrl, handleCodeInApp: false });
+    } catch (error) {
+      const code = (error as { code?: string }).code;
+      if (code !== "auth/invalid-continue-uri" && code !== "auth/unauthorized-continue-uri") {
+        throw error;
+      }
+
+      console.warn("Admin invitation continue URL is not authorized; using Firebase's default reset page.");
+      passwordResetLink = await adminAuth.generatePasswordResetLink(email);
+    }
     try {
       await sendAdminInvitationEmail({ name, email, passwordResetLink });
     } catch {
@@ -64,7 +75,14 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ uid: user.uid, passwordResetLink, emailSent: true });
-  } catch {
-    return NextResponse.json({ error: "Unable to create administrator." }, { status: 400 });
+  } catch (error) {
+    console.error("Admin invitation error:", error);
+    const code = (error as { code?: string }).code;
+    const message = code === "auth/email-already-exists"
+      ? "An account with this email already exists."
+      : code === "auth/invalid-email"
+        ? "The administrator email address is invalid."
+        : "Unable to create administrator. Check the Firebase and email-provider configuration.";
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 }
