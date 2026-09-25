@@ -12,6 +12,43 @@ function cleanPermissions(value: unknown) {
   return Object.fromEntries(ADMIN_PERMISSION_KEYS.map((key) => [key, input[key] === true]));
 }
 
+function getInvitationError(error: unknown) {
+  const code = typeof error === "object" && error !== null && "code" in error
+    ? String((error as { code?: unknown }).code || "")
+    : "";
+  const message = error instanceof Error ? error.message : "";
+
+  if (message === "UNAUTHORIZED") {
+    return { message: "Your admin session has expired. Sign in again.", status: 401 };
+  }
+
+  if (message === "FORBIDDEN") {
+    return { message: "Only the owner account can invite administrators.", status: 403 };
+  }
+
+  if (code === "auth/invalid-email") {
+    return { message: "The administrator email address is invalid.", status: 400 };
+  }
+
+  if (code === "auth/email-already-exists") {
+    return { message: "An account with this email already exists.", status: 409 };
+  }
+
+  if (code === "auth/invalid-continue-uri" || code === "auth/unauthorized-continue-uri") {
+    return { message: "The password-reset redirect domain is not authorized in Firebase.", status: 500 };
+  }
+
+  if (code === "PERMISSION_DENIED" || code === "5") {
+    return { message: "Firebase rejected the server request. Check the Firebase Admin credentials and Firestore access.", status: 500 };
+  }
+
+  if (message.includes("RESEND_API_KEY") || message.toLowerCase().includes("resend")) {
+    return { message: "The administrator was not invited because the email provider is not configured correctly.", status: 502 };
+  }
+
+  return { message: "Unable to create administrator. Check the Firebase and email-provider configuration.", status: 500 };
+}
+
 export async function GET(request: Request) {
   try {
     await requireOwner(request);
@@ -77,12 +114,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ uid: user.uid, passwordResetLink, emailSent: true });
   } catch (error) {
     console.error("Admin invitation error:", error);
-    const code = (error as { code?: string }).code;
-    const message = code === "auth/email-already-exists"
-      ? "An account with this email already exists."
-      : code === "auth/invalid-email"
-        ? "The administrator email address is invalid."
-        : "Unable to create administrator. Check the Firebase and email-provider configuration.";
-    return NextResponse.json({ error: message }, { status: 400 });
+    const result = getInvitationError(error);
+    return NextResponse.json({ error: result.message }, { status: result.status });
   }
 }
