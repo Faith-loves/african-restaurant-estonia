@@ -23,6 +23,17 @@ export default function CustomerEntryGate({ children }: { children: React.ReactN
   const [stage, setStage] = useState<"checking" | "splash" | "choice" | "done">("checking");
   const [guestStarting, setGuestStarting] = useState(false);
   const [guestError, setGuestError] = useState("");
+  const [readinessTimedOut, setReadinessTimedOut] = useState(false);
+
+  useEffect(() => {
+    if (isExcludedPath(pathname) || (!authLoading && guestReady)) {
+      queueMicrotask(() => setReadinessTimedOut(false));
+      return;
+    }
+
+    const timer = window.setTimeout(() => setReadinessTimedOut(true), 2_500);
+    return () => window.clearTimeout(timer);
+  }, [authLoading, guestReady, pathname]);
 
   useEffect(() => {
     if (isExcludedPath(pathname)) {
@@ -74,8 +85,12 @@ export default function CustomerEntryGate({ children }: { children: React.ReactN
     return <>{children}</>;
   }
 
-  if (authLoading || !guestReady) {
+  if ((authLoading || !guestReady) && !readinessTimedOut) {
     return null;
+  }
+
+  if ((authLoading || !guestReady) && readinessTimedOut) {
+    return <>{children}</>;
   }
 
   if (user || guestActive || stage === "done") {

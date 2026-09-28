@@ -1,18 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { collection, onSnapshot, type Timestamp } from "firebase/firestore";
-import { ArrowUpRight, CalendarDays, ChevronRight, CircleDollarSign, Clock3, ShoppingBag, UsersRound } from "lucide-react";
+import { useEffect, useState } from "react";
+import { collection, limit, onSnapshot, orderBy, query, type Timestamp } from "firebase/firestore";
+import { ArrowUpRight, BarChart3, CalendarDays, ChevronRight, CircleDollarSign, ShoppingBag, UsersRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { useAdminAuthorization } from "@/components/admin/AdminGuard";
-import { auth, db } from "@/lib/firebase/client";
-
-type OverviewData = {
-  summary: { totalOrders: number; activeOrders: number; completedOrders: number; totalCateringRequests: number; orderValue: number };
-  orderStatuses: Record<string, number>;
-  customers: { totalIdentifiable: number; registered: number; guests: number; repeat: number };
-};
+import { db } from "@/lib/firebase/client";
 
 type RecentOrder = { id: string; reference?: string; status?: string; total?: number; customer?: { name?: string }; createdAt?: Timestamp | { seconds?: number } | string | null };
 type RecentRequest = { id: string; reference?: string; status?: string; serviceType?: string; customer?: { name?: string }; createdAt?: Timestamp | { seconds?: number } | string | null };
@@ -45,42 +39,29 @@ export default function AdminOverview() {
   const canCatering = hasPermission("manageCatering");
   const canAnalytics = hasPermission("viewAnalytics");
   const canCustomers = hasPermission("viewCustomers");
-  const [analytics, setAnalytics] = useState<OverviewData | null>(null);
   const [orders, setOrders] = useState<RecentOrder[]>([]);
   const [requests, setRequests] = useState<RecentRequest[]>([]);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    let active = true;
-    if (!canAnalytics || !auth.currentUser) return;
-    void auth.currentUser.getIdToken().then((token) => fetch("/api/admin/analytics?range=all", { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" }))
-      .then((response) => response.ok ? response.json() as Promise<OverviewData> : Promise.reject(new Error("analytics")))
-      .then((data) => { if (active) setAnalytics(data); })
-      .catch(() => { if (active) setError(true); });
-    return () => { active = false; };
-  }, [canAnalytics]);
-
-  useEffect(() => {
     if (!canOrders) return;
-    return onSnapshot(collection(db, "orders"), (snapshot) => {
+    return onSnapshot(query(collection(db, "orders"), orderBy("createdAt", "desc"), limit(5)), (snapshot) => {
       setOrders(snapshot.docs.map((item) => ({ id: item.id, ...item.data() } as RecentOrder)).sort((a, b) => dateValue(b.createdAt) - dateValue(a.createdAt)).slice(0, 5));
     }, () => setError(true));
   }, [canOrders]);
 
   useEffect(() => {
     if (!canCatering) return;
-    return onSnapshot(collection(db, "cateringRequests"), (snapshot) => {
+    return onSnapshot(query(collection(db, "cateringRequests"), orderBy("createdAt", "desc"), limit(8)), (snapshot) => {
       setRequests(snapshot.docs.map((item) => ({ id: item.id, ...item.data() } as RecentRequest)).filter((item) => item.serviceType !== "gift-box").sort((a, b) => dateValue(b.createdAt) - dateValue(a.createdAt)).slice(0, 4));
     }, () => setError(true));
   }, [canCatering]);
 
-  const statusRows = useMemo(() => ["pending_confirmation", "confirmed", "preparing", "ready", "completed"].map((status) => ({ status, count: analytics?.orderStatuses?.[status] ?? 0 })), [analytics]);
-  const statusTotal = Math.max(1, statusRows.reduce((total, item) => total + item.count, 0));
   const cards = [
-    { label: "Total orders", value: analytics ? analytics.summary.totalOrders : "—", detail: analytics ? money(analytics.summary.orderValue) : "Analytics permission required", icon: ShoppingBag, tone: "bg-[#321B29] text-white" },
-    { label: "Active orders", value: analytics ? analytics.summary.activeOrders : "—", detail: "Needs attention", icon: Clock3, tone: "bg-[#D89A27] text-[#321B29]" },
-    { label: "Completed", value: analytics ? analytics.summary.completedOrders : "—", detail: "All-time completed", icon: CircleDollarSign, tone: "bg-white text-[#321B29]" },
-    { label: "Catering requests", value: analytics ? analytics.summary.totalCateringRequests : "—", detail: canCatering ? "Open requests" : "Restricted", icon: CalendarDays, tone: "bg-white text-[#321B29]" },
+    { label: "Recent orders", value: canOrders ? orders.length : "—", detail: canOrders ? "Latest five orders" : "Restricted", icon: ShoppingBag, tone: "bg-[#321B29] text-white" },
+    { label: "Recent catering", value: canCatering ? requests.length : "—", detail: canCatering ? "Latest requests" : "Restricted", icon: CalendarDays, tone: "bg-[#D89A27] text-[#321B29]" },
+    { label: "Analytics", value: canAnalytics ? "View" : "—", detail: canAnalytics ? "Detailed reports" : "Restricted", icon: BarChart3, tone: "bg-white text-[#321B29]" },
+    { label: "Live data", value: "Ready", detail: "Bounded recent previews", icon: CircleDollarSign, tone: "bg-white text-[#321B29]" },
   ];
 
   return <section className="mt-8 space-y-5" aria-label="Restaurant overview">
@@ -92,8 +73,8 @@ export default function AdminOverview() {
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{cards.map(({ label, value, detail, icon: Icon, tone }) => <div key={label} className={`rounded-2xl border border-[#321B29]/10 p-5 shadow-[0_8px_30px_rgba(50,27,41,0.04)] ${tone}`}><div className="flex items-start justify-between gap-3"><div><p className="text-xs font-extrabold uppercase tracking-[0.1em] opacity-60">{label}</p><p className="mt-3 text-3xl font-black">{value}</p><p className="mt-1 text-xs font-bold opacity-60">{detail}</p></div><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#B9472E]/15"><Icon size={18} /></span></div></div>)}</div>
 
     <div className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
-      {canAnalytics && <div className="rounded-2xl border border-[#321B29]/10 bg-white p-5 shadow-[0_8px_30px_rgba(50,27,41,0.04)] sm:p-6"><div className="flex items-start justify-between"><div><p className="text-[10px] font-extrabold uppercase tracking-[0.17em] text-[#B9472E]">Order flow</p><h3 className="mt-1 text-xl font-black text-[#321B29]">Status breakdown</h3></div><ShoppingBag size={19} className="text-[#D89A27]" /></div><div className="mt-6 space-y-4">{statusRows.map(({ status, count }) => <div key={status}><div className="mb-1 flex justify-between text-xs font-extrabold text-[#321B29]"><span>{statusLabel(status)}</span><span>{count}</span></div><div className="h-2 overflow-hidden rounded-full bg-[#F4F0E8]"><div className="h-full rounded-full bg-[#B9472E]" style={{ width: `${Math.min(100, (count / statusTotal) * 100)}%` }} /></div></div>)}</div></div>}
-      {canCustomers && <div className="rounded-2xl border border-[#321B29]/10 bg-[#FFF8EC] p-5 shadow-[0_8px_30px_rgba(50,27,41,0.04)] sm:p-6"><div className="flex items-start justify-between"><div><p className="text-[10px] font-extrabold uppercase tracking-[0.17em] text-[#B9472E]">Customer insight</p><h3 className="mt-1 text-xl font-black text-[#321B29]">Who is ordering</h3></div><UsersRound size={19} className="text-[#B9472E]" /></div>{analytics ? <div className="mt-6 grid grid-cols-2 gap-3">{[["Identifiable", analytics.customers.totalIdentifiable], ["Registered", analytics.customers.registered], ["Guest", analytics.customers.guests], ["Repeat", analytics.customers.repeat]].map(([label, value]) => <div key={label} className="rounded-xl bg-white p-4"><p className="text-2xl font-black text-[#321B29]">{value}</p><p className="mt-1 text-xs font-bold text-[#151313]/55">{label}</p></div>)}</div> : <p className="mt-6 text-sm font-semibold text-[#151313]/55">Loading customer insights…</p>}</div>}
+      {canAnalytics && <div className="rounded-2xl border border-[#321B29]/10 bg-white p-5 shadow-[0_8px_30px_rgba(50,27,41,0.04)] sm:p-6"><div className="flex items-start justify-between gap-4"><div><p className="text-[10px] font-extrabold uppercase tracking-[0.17em] text-[#B9472E]">Order flow</p><h3 className="mt-1 text-xl font-black text-[#321B29]">Detailed analytics</h3><p className="mt-3 text-sm font-semibold leading-6 text-[#151313]/55">Open analytics for historical totals, status breakdowns, food popularity and customer insights.</p></div><BarChart3 size={22} className="shrink-0 text-[#D89A27]" /></div></div>}
+      {canCustomers && <div className="rounded-2xl border border-[#321B29]/10 bg-[#FFF8EC] p-5 shadow-[0_8px_30px_rgba(50,27,41,0.04)] sm:p-6"><div className="flex items-start justify-between gap-4"><div><p className="text-[10px] font-extrabold uppercase tracking-[0.17em] text-[#B9472E]">Customer insight</p><h3 className="mt-1 text-xl font-black text-[#321B29]">Historical customer insights</h3><p className="mt-3 text-sm font-semibold leading-6 text-[#151313]/55">Open analytics to load historical customer metrics only when needed.</p></div><UsersRound size={22} className="shrink-0 text-[#B9472E]" /></div></div>}
     </div>
 
     {(canOrders || canCatering) && <div className="grid gap-5 xl:grid-cols-2"><div className="rounded-2xl border border-[#321B29]/10 bg-white p-5 shadow-[0_8px_30px_rgba(50,27,41,0.04)] sm:p-6"><div className="flex items-center justify-between"><div><p className="text-[10px] font-extrabold uppercase tracking-[0.17em] text-[#B9472E]">Customer activity</p><h3 className="mt-1 text-xl font-black text-[#321B29]">Recent orders</h3></div><button type="button" onClick={() => router.push("/admin/orders#orders")} className="text-xs font-extrabold text-[#B9472E]">View all <ChevronRight size={14} className="inline" /></button></div>{canOrders ? <div className="mt-4 divide-y divide-[#321B29]/10">{orders.length ? orders.map((order) => <button type="button" key={order.id} onClick={() => router.push(`/admin/orders#orders`)} className="flex w-full items-center justify-between gap-3 py-3 text-left"><span className="min-w-0"><span className="block truncate text-sm font-extrabold text-[#321B29]">{order.customer?.name || "Customer"}</span><span className="mt-1 block text-xs font-semibold text-[#151313]/50">{order.reference || order.id.slice(0, 8)} · {shortDate(order.createdAt)}</span></span><span className="shrink-0 text-right"><span className="block text-sm font-black text-[#321B29]">{money(order.total || 0)}</span><span className="mt-1 block text-[10px] font-extrabold uppercase text-[#B9472E]">{statusLabel(order.status)}</span></span></button>) : <p className="py-8 text-center text-sm font-semibold text-[#151313]/50">No orders yet.</p>}</div> : <p className="mt-5 text-sm font-semibold text-[#151313]/50">Orders are restricted for this account.</p>}</div>

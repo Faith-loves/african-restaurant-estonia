@@ -16,6 +16,7 @@ import {
 } from "@/context/AuthContext";
 import { GuestSessionProvider } from "@/context/GuestSessionContext";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { PublicSettingsProvider } from "@/context/PublicSettingsContext";
 
 import CartDrawer from "@/components/cart/CartDrawer";
 import PublicFooter from "@/components/layout/PublicFooter";
@@ -146,6 +147,8 @@ export default function RootLayout({
         />
         <LanguageProvider>
 
+        <PublicSettingsProvider>
+
         <AuthProvider>
 
           <GuestSessionProvider>
@@ -171,6 +174,8 @@ export default function RootLayout({
           </GuestSessionProvider>
 
         </AuthProvider>
+
+        </PublicSettingsProvider>
 
         </LanguageProvider>
       </body>

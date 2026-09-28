@@ -12,15 +12,12 @@ import {
 
 import {
   EmailAuthProvider,
-  onAuthStateChanged,
   reauthenticateWithCredential,
-  signOut,
   updatePassword,
 } from "firebase/auth";
 
 import {
   doc,
-  getDoc,
   onSnapshot,
   serverTimestamp,
   setDoc,
@@ -46,6 +43,7 @@ import {
   auth,
   db,
 } from "@/lib/firebase/client";
+import { useAdminAuth } from "@/context/AdminAuthContext";
 
 type RestaurantSettings = {
   restaurantName: string;
@@ -88,10 +86,8 @@ export default function AdminSettings() {
   const router =
     useRouter();
 
-  const [
-    authorized,
-    setAuthorized,
-  ] = useState(false);
+  const { loading: adminLoading } = useAdminAuth();
+  const authorized = !adminLoading;
 
   const [
     loading,
@@ -140,90 +136,6 @@ export default function AdminSettings() {
     success,
     setSuccess,
   ] = useState("");
-
-  useEffect(() => {
-    const unsubscribe =
-      onAuthStateChanged(
-        auth,
-        async (user) => {
-          if (!user) {
-            router.replace(
-              "/login"
-            );
-
-            return;
-          }
-
-          try {
-            const adminSnapshot =
-              await getDoc(
-                doc(
-                  db,
-                  "admins",
-                  user.uid
-                )
-              );
-
-            if (
-              !adminSnapshot.exists()
-            ) {
-              await signOut(
-                auth
-              );
-
-              router.replace(
-                "/login"
-              );
-
-              return;
-            }
-
-            const adminData =
-              adminSnapshot.data();
-
-            if (
-              adminData.role !== "admin" &&
-              adminData.role !== "owner" ||
-              adminData.active !==
-                true
-            ) {
-              await signOut(
-                auth
-              );
-
-              router.replace(
-                "/login"
-              );
-
-              return;
-            }
-
-            setAuthorized(
-              true
-            );
-          } catch (
-            authError
-          ) {
-            console.error(
-              "Settings admin verification error:",
-              authError
-            );
-
-            setError(
-              "Unable to verify administrator access."
-            );
-
-            setLoading(
-              false
-            );
-          }
-        }
-      );
-
-    return () => {
-      unsubscribe();
-    };
-  }, [router]);
 
   useEffect(() => {
     if (!authorized) {

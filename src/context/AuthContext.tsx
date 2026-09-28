@@ -17,6 +17,8 @@ import {
 
 import { auth } from "@/lib/firebase/client";
 
+const AUTH_READY_TIMEOUT_MS = 10_000;
+
 type AuthContextValue = {
   user: User | null;
   loading: boolean;
@@ -38,15 +40,25 @@ export function AuthProvider({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let settled = false;
+    const timeout = window.setTimeout(() => {
+      if (!settled) setLoading(false);
+    }, AUTH_READY_TIMEOUT_MS);
     const unsubscribe = onAuthStateChanged(
       auth,
       (nextUser) => {
+        settled = true;
+        window.clearTimeout(timeout);
         setUser(nextUser);
         setLoading(false);
       }
     );
 
-    return unsubscribe;
+    return () => {
+      settled = true;
+      window.clearTimeout(timeout);
+      unsubscribe();
+    };
   }, []);
 
   async function logout() {

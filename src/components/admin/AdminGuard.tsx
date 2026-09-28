@@ -1,12 +1,10 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { createContext, useContext, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { auth, db } from "@/lib/firebase/client";
 import { useGuestSession } from "@/context/GuestSessionContext";
-import { type AdminPermission, type AdminRecord, hasAdminPermission, isActiveAdminRecord, isOwner } from "@/lib/admin/permissions";
+import { type AdminPermission, type AdminRecord } from "@/lib/admin/permissions";
+import { useAdminAuth } from "@/context/AdminAuthContext";
 
 type AdminAuthorization = {
   admin: AdminRecord | null;
@@ -22,38 +20,25 @@ type AdminGuardProps = { children: React.ReactNode; permission?: AdminPermission
 
 export default function AdminGuard({ children, permission, ownerOnly = false }: AdminGuardProps) {
   const router = useRouter();
-  const [admin, setAdmin] = useState<AdminRecord | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [allowed, setAllowed] = useState(false);
   const { guestActive, ready: guestReady } = useGuestSession();
+  const { user, admin, loading, error, retry, authorized, owner, hasPermission } = useAdminAuth();
+
+  const allowed = Boolean(
+    user &&
+    authorized &&
+    (!ownerOnly || owner) &&
+    (Array.isArray(permission) ? permission.some(hasPermission) : permission ? hasPermission(permission) : true)
+  );
 
   useEffect(() => {
-    if (!guestReady) return;
-    return onAuthStateChanged(auth, async (user) => {
-    if (guestActive) {
-      setAllowed(false);
-      setLoading(false);
-      router.replace("/account");
-      return;
-    }
-    if (!user) { setAllowed(false); setLoading(false); router.replace("/login"); return; }
-    try {
-      const snapshot = await getDoc(doc(db, "admins", user.uid));
-      const data = snapshot.exists() ? snapshot.data() as AdminRecord : null;
-      const hasRequiredPermission = Array.isArray(permission)
-        ? permission.some((item) => hasAdminPermission(data, item))
-        : permission ? hasAdminPermission(data, permission) : true;
-      setAdmin(data);
-      setAllowed(isActiveAdminRecord(data) && (!ownerOnly || isOwner(data)) && hasRequiredPermission);
-    } catch {
-      setAdmin(null);
-      setAllowed(false);
-    } finally { setLoading(false); }
-    });
-  }, [guestActive, guestReady, ownerOnly, permission, router]);
+    if (!guestReady || loading || error) return;
+    if (guestActive) router.replace("/account");
+    else if (!user) router.replace("/login");
+  }, [error, guestActive, guestReady, loading, router, user]);
 
-  const value = useMemo(() => ({ admin, owner: isOwner(admin), hasPermission: (item: AdminPermission) => hasAdminPermission(admin, item) }), [admin]);
-  if (loading) return <main className="p-6">Checking admin access…</main>;
+  const value = useMemo(() => ({ admin, owner, hasPermission }), [admin, hasPermission, owner]);
+  if (loading || !guestReady) return <main className="p-6">Checking admin access…</main>;
+  if (error) return <main className="mx-auto max-w-xl p-6 text-center"><h1 className="text-2xl font-semibold">Administrator access is unavailable</h1><p className="mt-2 text-gray-600">Firebase could not verify administrator access. You can retry without signing out.</p><button type="button" onClick={retry} className="mt-5 min-h-11 rounded bg-black px-5 py-3 text-white">Retry</button></main>;
   if (!allowed) return <main className="mx-auto max-w-xl p-6 text-center"><h1 className="text-2xl font-semibold">Access denied</h1><p className="mt-2 text-gray-600">Your account does not have permission to view this admin area.</p><button type="button" onClick={() => router.push("/admin")} className="mt-5 min-h-11 rounded bg-black px-5 py-3 text-white">Back to dashboard</button></main>;
   return <AdminAuthorizationContext.Provider value={value}>{children}</AdminAuthorizationContext.Provider>;
 }

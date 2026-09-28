@@ -4,24 +4,12 @@ import type {
   ComponentType,
 } from "react";
 
-import {
-  useEffect,
-  useState,
-} from "react";
-
-import {
-  onAuthStateChanged,
-  signOut,
-} from "firebase/auth";
-
-import {
-  doc,
-  getDoc,
-} from "firebase/firestore";
+import { useState } from "react";
 
 import {
   useRouter,
 } from "next/navigation";
+import { signOut } from "firebase/auth";
 
 import {
   ArrowUpRight,
@@ -39,11 +27,9 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 
-import {
-  auth,
-  db,
-} from "@/lib/firebase/client";
 import { useAdminAuthorization } from "@/components/admin/AdminGuard";
+import { useAdminAuth } from "@/context/AdminAuthContext";
+import { auth } from "@/lib/firebase/client";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminOverview from "@/components/admin/AdminOverview";
 
@@ -65,108 +51,13 @@ export default function AdminDashboard() {
     useRouter();
   const { hasPermission, owner } = useAdminAuthorization();
 
-  const [
-    loading,
-    setLoading,
-  ] = useState(true);
-
-  const [
-    adminEmail,
-    setAdminEmail,
-  ] = useState("");
+  const { user, loading, error, retry } = useAdminAuth();
+  const adminEmail = user?.email ?? "";
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  useEffect(() => {
-    const unsubscribe =
-      onAuthStateChanged(
-        auth,
-        async (user) => {
-          if (!user) {
-            router.replace(
-              "/login"
-            );
-
-            return;
-          }
-
-          try {
-            const adminSnapshot =
-              await getDoc(
-                doc(
-                  db,
-                  "admins",
-                  user.uid
-                )
-              );
-
-            if (
-              !adminSnapshot.exists()
-            ) {
-              await signOut(
-                auth
-              );
-
-              router.replace(
-                "/login"
-              );
-
-              return;
-            }
-
-            const adminData =
-              adminSnapshot.data();
-
-            if (
-              adminData.role !== "admin" &&
-              adminData.role !== "owner" ||
-              adminData.active !==
-                true
-            ) {
-              await signOut(
-                auth
-              );
-
-              router.replace(
-                "/login"
-              );
-
-              return;
-            }
-
-            setAdminEmail(
-              user.email ?? ""
-            );
-
-            setLoading(
-              false
-            );
-          } catch (error) {
-            console.error(
-              "Admin dashboard access check error:",
-              error
-            );
-
-            await signOut(
-              auth
-            );
-
-            router.replace(
-              "/login"
-            );
-          }
-        }
-      );
-
-    return () => {
-      unsubscribe();
-    };
-  }, [router]);
-
   async function handleLogout() {
-    await signOut(
-      auth
-    );
+    await signOut(auth);
 
     router.replace(
       "/login"
@@ -189,6 +80,10 @@ export default function AdminDashboard() {
 
       </main>
     );
+  }
+
+  if (error) {
+    return <main className="flex min-h-screen items-center justify-center bg-[#F8F3EA] px-5"><div className="max-w-md text-center"><h1 className="text-2xl font-bold text-[#321B29]">Dashboard access is unavailable</h1><p className="mt-3 text-sm font-semibold leading-6 text-[#321B29]/65">{error}</p><button type="button" onClick={retry} className="mt-5 min-h-11 rounded-xl bg-[#321B29] px-5 py-3 text-sm font-extrabold text-white">Retry</button></div></main>;
   }
 
   return (

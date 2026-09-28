@@ -1,10 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { getIdToken, onAuthStateChanged, type User } from "firebase/auth";
+import { getIdToken, type User } from "firebase/auth";
 import { ArrowLeft, BarChart3, CalendarDays, CircleAlert, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { auth } from "@/lib/firebase/client";
+import { useAdminAuth } from "@/context/AdminAuthContext";
 
 type Range = "7d" | "30d" | "month" | "all" | "custom";
 type Analytics = {
@@ -24,6 +24,7 @@ function dateLabel(value: string | null) { return value ? new Intl.DateTimeForma
 
 export default function AdminAnalytics() {
   const router = useRouter();
+  const { user, loading: adminLoading } = useAdminAuth();
   const [range, setRange] = useState<Range>("30d");
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
@@ -45,7 +46,9 @@ export default function AdminAnalytics() {
     finally { setLoading(false); }
   }, [end, range, start]);
 
-  useEffect(() => onAuthStateChanged(auth, (user) => { if (user) void load(user); }), [load]);
+  useEffect(() => {
+    if (!adminLoading && user) window.setTimeout(() => void load(user), 0);
+  }, [adminLoading, load, user]);
 
   const cards = [
     ["Total Orders", data.summary.totalOrders.toString()], ["Completed Orders", data.summary.completedOrders.toString()], ["Pending / Active", data.summary.activeOrders.toString()], ["Cancelled Orders", data.summary.cancelledOrders.toString()], ["Total Order Value", money(data.summary.orderValue)], ["Completed Order Value", money(data.summary.completedOrderValue)], ["Average Order Value", money(data.summary.averageOrderValue)], ["Catering Requests", data.summary.totalCateringRequests.toString()], ["Gift Box Requests", data.summary.totalGiftBoxRequests.toString()],

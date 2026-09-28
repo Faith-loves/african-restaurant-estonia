@@ -7,17 +7,13 @@ import {
 } from "react";
 
 import {
-  onAuthStateChanged,
-  signOut,
-} from "firebase/auth";
-
-import {
   collection,
   doc,
-  getDoc,
   onSnapshot,
   serverTimestamp,
   setDoc,
+  type DocumentData,
+  type QuerySnapshot,
 } from "firebase/firestore";
 
 import {
@@ -37,10 +33,7 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 
-import {
-  auth,
-  db,
-} from "@/lib/firebase/client";
+import { db } from "@/lib/firebase/client";
 
 import {
   legacyDuplicateComboIds,
@@ -53,6 +46,7 @@ import AdminFoodForm, {
   AdminFoodItem,
 } from "@/components/admin/AdminFoodForm";
 import MenuItemImage from "@/components/menu/MenuItemImage";
+import { useAdminAuth } from "@/context/AdminAuthContext";
 
 const catalogComboIds = new Set(
   catalogMenuItems
@@ -60,24 +54,86 @@ const catalogComboIds = new Set(
     .map((item) => item.id)
 );
 
+const MENU_LOAD_TIMEOUT_MS = 10_000;
+
+function sortMenuItems(items: AdminFoodItem[]) {
+  return items.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function getInitialMenuItems() {
+  return sortMenuItems(
+    catalogMenuItems
+      .filter((item) => !isHiddenMenuCategory(item.category))
+      .map((item) => ({ ...item }))
+  );
+}
+
+function mergeMenuSnapshot(snapshot: QuerySnapshot<DocumentData>) {
+  const recordsById = new Map<string, AdminFoodItem>(
+    getInitialMenuItems().map((item) => [item.id, item])
+  );
+
+  snapshot.docs
+    .filter((menuDocument) => {
+      const category = menuDocument.data().category;
+
+      return (
+        !isHiddenMenuCategory(category) &&
+        !legacyDuplicateComboIds.includes(
+          menuDocument.id as (typeof legacyDuplicateComboIds)[number]
+        ) &&
+        (category !== "COMBO OPTIONS" || catalogComboIds.has(menuDocument.id))
+      );
+    })
+    .forEach((menuDocument) => {
+      const data = menuDocument.data();
+      const remoteTags = Array.isArray(data.tags)
+        ? data.tags.filter(
+            (tag) =>
+              !((menuDocument.id === "jollof-rice" || menuDocument.id === "fried-rice") && tag === "VEGAN OPTIONS")
+          )
+        : data.tags;
+
+      recordsById.set(menuDocument.id, {
+        id: menuDocument.id,
+        ...data,
+        tags: remoteTags,
+        image:
+          menuDocument.id === "puff-puff" || menuDocument.id === "abula" || menuDocument.id === "jollof-rice" || menuDocument.id === "fried-rice" || menuDocument.id === "combo-peppered-fish-plantain-zobo-13"
+            ? menuImageById[menuDocument.id]
+            : data.image || menuImageById[menuDocument.id],
+      } as unknown as AdminFoodItem);
+    });
+
+  return sortMenuItems(Array.from(recordsById.values()));
+}
+
 export default function AdminMenuManager() {
   const router =
     useRouter();
 
-  const [
-    checkingAdmin,
-    setCheckingAdmin,
-  ] = useState(true);
+  const { loading: adminLoading } = useAdminAuth();
+  const checkingAdmin = adminLoading;
 
   const [
-    loadingMenu,
-    setLoadingMenu,
+    syncingMenu,
+    setSyncingMenu,
   ] = useState(true);
 
   const [
     error,
     setError,
   ] = useState("");
+
+  const [
+    syncError,
+    setSyncError,
+  ] = useState("");
+
+  const [
+    menuSyncAttempt,
+    setMenuSyncAttempt,
+  ] = useState(0);
 
   const [
     search,
@@ -92,9 +148,7 @@ export default function AdminMenuManager() {
   const [
     items,
     setItems,
-  ] = useState<
-    AdminFoodItem[]
-  >([]);
+  ] = useState<AdminFoodItem[]>(getInitialMenuItems);
 
   const [
     editingItem,
@@ -109,171 +163,83 @@ export default function AdminMenuManager() {
   ] = useState(false);
 
   useEffect(() => {
-    const unsubscribe =
-      onAuthStateChanged(
-        auth,
-        async (user) => {
-          if (!user) {
-            router.replace(
-              "/login"
-            );
-            return;
-          }
-
-          try {
-            const adminSnapshot =
-              await getDoc(
-                doc(
-                  db,
-                  "admins",
-                  user.uid
-                )
-              );
-
-            if (
-              !adminSnapshot.exists()
-            ) {
-              await signOut(
-                auth
-              );
-
-              router.replace(
-                "/login"
-              );
-              return;
-            }
-
-            const data =
-              adminSnapshot.data();
-
-            if (
-              data.role !== "admin" &&
-              data.role !== "owner" ||
-              data.active !==
-                true
-            ) {
-              await signOut(
-                auth
-              );
-
-              router.replace(
-                "/login"
-              );
-              return;
-            }
-
-            setCheckingAdmin(
-              false
-            );
-          } catch (authError) {
-            console.error(
-              authError
-            );
-
-            setError(
-              "Unable to verify administrator access."
-            );
-
-            setCheckingAdmin(
-              false
-            );
-          }
-        }
-      );
-
-    return () =>
-      unsubscribe();
-  }, [router]);
-
-  useEffect(() => {
     if (checkingAdmin) {
       return;
     }
 
-    const unsubscribe =
-      onSnapshot(
+    let active = true;
+    let initialLoadSettled = false;
+    let unsubscribe = () => {};
+
+    const clearLoadTimeout = () => {
+      window.clearTimeout(timeoutId);
+    };
+
+    const finishWithError = (message: string) => {
+      if (!active) {
+        return;
+      }
+
+      active = false;
+      initialLoadSettled = true;
+      clearLoadTimeout();
+      unsubscribe();
+      setSyncError(message);
+      setSyncingMenu(false);
+    };
+
+    const timeoutId = window.setTimeout(() => {
+      finishWithError(
+        "Live menu data could not be synced. Retry connection."
+      );
+    }, MENU_LOAD_TIMEOUT_MS);
+
+    try {
+      unsubscribe = onSnapshot(
         collection(
           db,
           "menuItems"
         ),
         (snapshot) => {
-          const recordsById = new Map<string, AdminFoodItem>(
-            catalogMenuItems
-              .filter((item) => !isHiddenMenuCategory(item.category))
-              .map((item) => [
-                item.id,
-                { ...item },
-              ])
-          );
+          if (!active) {
+            return;
+          }
 
-          snapshot.docs
-            .filter(
-              (menuDocument) => {
-                const category = menuDocument.data().category;
-
-                return (
-                  !isHiddenMenuCategory(category) &&
-                  !legacyDuplicateComboIds.includes(
-                    menuDocument.id as (typeof legacyDuplicateComboIds)[number]
-                  ) &&
-                  (category !== "COMBO OPTIONS" ||
-                    catalogComboIds.has(menuDocument.id))
-                );
-              }
-            )
-            .forEach((menuDocument) => {
-            const data = menuDocument.data();
-
-            const remoteTags = Array.isArray(data.tags)
-              ? data.tags.filter(
-                  (tag) =>
-                    !((menuDocument.id === "jollof-rice" || menuDocument.id === "fried-rice") && tag === "VEGAN OPTIONS")
-                )
-              : data.tags;
-
-            recordsById.set(menuDocument.id, {
-              id: menuDocument.id,
-              ...data,
-              tags: remoteTags,
-              image:
-                menuDocument.id === "puff-puff" || menuDocument.id === "abula" || menuDocument.id === "jollof-rice" || menuDocument.id === "fried-rice" || menuDocument.id === "combo-peppered-fish-plantain-zobo-13"
-                  ? menuImageById[menuDocument.id]
-                  : data.image || menuImageById[menuDocument.id],
-            } as unknown as AdminFoodItem);
-            });
-
-          const records = Array.from(recordsById.values());
-
-          records.sort(
-            (a, b) =>
-              a.name.localeCompare(
-                b.name
-              )
-          );
-
-          setItems(records);
-          setLoadingMenu(
-            false
-          );
+          if (!initialLoadSettled) {
+            initialLoadSettled = true;
+            clearLoadTimeout();
+          }
+          setItems(mergeMenuSnapshot(snapshot));
+          setSyncError("");
+          setSyncingMenu(false);
         },
         (snapshotError) => {
           console.error(
             snapshotError
           );
 
-          setError(
+          finishWithError(
             "Unable to load the menu from Firestore."
-          );
-
-          setLoadingMenu(
-            false
           );
         }
       );
+    } catch (snapshotError) {
+      console.error(
+        snapshotError
+      );
 
-    return () =>
+      finishWithError(
+        "Unable to load the menu from Firestore."
+      );
+    }
+
+    return () => {
+      active = false;
+      initialLoadSettled = true;
+      clearLoadTimeout();
       unsubscribe();
-  }, [checkingAdmin]);
+    };
+  }, [checkingAdmin, menuSyncAttempt]);
 
   const visibleItems =
     useMemo(() => {
@@ -435,10 +401,7 @@ export default function AdminMenuManager() {
     }
   }
 
-  if (
-    checkingAdmin ||
-    loadingMenu
-  ) {
+  if (checkingAdmin) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#FFF8EC]">
 
@@ -493,6 +456,13 @@ export default function AdminMenuManager() {
 
           </div>
 
+          {syncingMenu && (
+            <div className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#321B29]/10 bg-white px-4 py-3 text-sm font-bold text-[#321B29]/65">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Syncing menu…
+            </div>
+          )}
+
           <button
             type="button"
             onClick={() =>
@@ -514,6 +484,25 @@ export default function AdminMenuManager() {
       </header>
 
       <section className="mx-auto max-w-[1400px] px-5 py-8 sm:px-8 lg:px-12">
+
+        {syncError && (
+          <div className="mb-6 rounded-2xl border border-[#D89A27]/40 bg-[#D89A27]/15 px-5 py-4 text-sm font-bold leading-6 text-[#321B29]">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <span>{syncError}</span>
+              <button
+                type="button"
+                onClick={() => {
+                  setSyncError("");
+                  setSyncingMenu(true);
+                  setMenuSyncAttempt((current) => current + 1);
+                }}
+                className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-lg bg-[#321B29] px-4 py-2 text-xs font-extrabold text-white transition hover:bg-[#D89A27] hover:text-[#321B29]"
+              >
+                Retry
+              </button>
+            </div>
+          </div>
+        )}
 
         {error && (
           <div className="mb-6 rounded-2xl border border-[#B9472E]/20 bg-[#B9472E]/10 px-5 py-4 text-sm font-bold leading-6 text-[#B9472E]">

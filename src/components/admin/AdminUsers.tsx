@@ -1,16 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { getIdToken, onAuthStateChanged } from "firebase/auth";
+import { getIdToken } from "firebase/auth";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { auth } from "@/lib/firebase/client";
+import { useAdminAuth } from "@/context/AdminAuthContext";
 import { ADMIN_PERMISSION_KEYS, type AdminPermission } from "@/lib/admin/permissions";
 
 type User = { uid: string; name?: string; email?: string; active?: boolean; role?: string; permissions?: Partial<Record<AdminPermission, boolean>> };
 
 export default function AdminUsers() {
   const router = useRouter();
+  const { user, loading: adminLoading } = useAdminAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -19,8 +20,7 @@ export default function AdminUsers() {
   const [message, setMessage] = useState("");
   const [inviting, setInviting] = useState(false);
 
-  async function call(path: string, options?: RequestInit) {
-    const user = auth.currentUser;
+  const call = useCallback(async (path: string, options?: RequestInit) => {
     if (!user) throw new Error("Not signed in");
     const token = await getIdToken(user);
     const response = await fetch(path, { ...options, headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, ...(options?.headers ?? {}) } });
@@ -31,10 +31,10 @@ export default function AdminUsers() {
       throw error;
     }
     return data;
-  }
+  }, [user]);
 
-  const load = useCallback(async () => { try { setUsers(await call("/api/admin/admins")); } catch (error) { setMessage((error as Error).message); } }, []);
-  useEffect(() => onAuthStateChanged(auth, (user) => { if (user) void load(); }), [load]);
+  const load = useCallback(async () => { try { setUsers(await call("/api/admin/admins")); } catch (error) { setMessage((error as Error).message); } }, [call]);
+  useEffect(() => { if (!adminLoading && user) window.setTimeout(() => void load(), 0); }, [adminLoading, load, user]);
 
   async function invite(event: React.FormEvent) {
     event.preventDefault(); setMessage(""); setResetLink("");

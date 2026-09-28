@@ -2,10 +2,10 @@
 
 import { Bell, CheckCircle2, Gift, ShoppingBag, UtensilsCrossed } from "lucide-react";
 import { useEffect, useState } from "react";
-import { onAuthStateChanged, type User } from "firebase/auth";
+import { type User } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
-import { auth } from "@/lib/firebase/client";
+import { useAdminAuth } from "@/context/AdminAuthContext";
 
 type NotificationItem = {
   id: string;
@@ -53,8 +53,7 @@ async function loadNotifications(user: User) {
 
 export default function AdminNotificationBell() {
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [authorized, setAuthorized] = useState(false);
+  const { user, authorized, loading: adminLoading } = useAdminAuth();
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [open, setOpen] = useState(false);
@@ -66,7 +65,6 @@ export default function AdminNotificationBell() {
       try {
         const result = await loadNotifications(nextUser);
         if (active && result) {
-          setAuthorized(true);
           setNotifications(result.notifications);
           setUnreadCount(result.unreadCount);
         }
@@ -75,25 +73,20 @@ export default function AdminNotificationBell() {
       }
     }
 
-    const unsubscribe = onAuthStateChanged(auth, (nextUser) => {
-      setUser(nextUser);
-      if (nextUser) void refresh(nextUser);
-      else {
-        setAuthorized(false);
-        setNotifications([]);
-        setUnreadCount(0);
-      }
-    });
-    const timer = window.setInterval(() => {
-      if (auth.currentUser) void refresh(auth.currentUser);
-    }, 30_000);
+    if (!user || !authorized || adminLoading) return () => { active = false; };
+    void refresh(user);
+    const refreshIfVisible = () => {
+      if (document.visibilityState === "visible") void refresh(user);
+    };
+    const timer = window.setInterval(refreshIfVisible, 60_000);
+    document.addEventListener("visibilitychange", refreshIfVisible);
 
     return () => {
       active = false;
-      unsubscribe();
       window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", refreshIfVisible);
     };
-  }, []);
+  }, [adminLoading, authorized, user]);
 
   async function openNotification(notification: NotificationItem) {
     if (user && !notification.read) {
@@ -111,7 +104,7 @@ export default function AdminNotificationBell() {
     router.push(`/admin/orders#${notification.type === "order" ? "orders" : notification.type === "gift-box" ? "gift-box" : "catering"}`);
   }
 
-  if (!user || !authorized) return null;
+  if (!user || !authorized || adminLoading) return null;
 
   return (
     <div className="fixed right-4 top-20 z-50 sm:right-6">

@@ -9,50 +9,9 @@ import {
   Phone,
 } from "lucide-react";
 
-import {
-  useEffect,
-  useState,
-} from "react";
-
-import {
-  doc,
-  onSnapshot,
-} from "firebase/firestore";
-
-import {
-  db,
-} from "@/lib/firebase/client";
 import { useLanguage } from "@/context/LanguageContext";
+import { usePublicSettings } from "@/context/PublicSettingsContext";
 import InstagramIcon from "@/components/icons/InstagramIcon";
-
-type FooterSettings = {
-  restaurantName: string;
-  description: string;
-  publicEmail: string;
-  phone: string;
-  instagram: string;
-  address: string;
-};
-
-const defaultSettings: FooterSettings = {
-  restaurantName:
-    "African Restaurant Estonia",
-
-  description:
-    "Authentic Nigerian & West African food in Tallinn.",
-
-  publicEmail:
-    "africanrestaurantestonia@gmail.com",
-
-  phone:
-    "53078208",
-
-  instagram:
-    "@AFRICANRESTAURANTESTONIA",
-
-  address:
-    "NELGI 30, 11213, TALLINN",
-};
 
 const navigation = [
   {
@@ -83,82 +42,7 @@ const navigation = [
 
 export default function Footer() {
   const { t } = useLanguage();
-  const [
-    settings,
-    setSettings,
-  ] =
-    useState<FooterSettings>(
-      defaultSettings
-    );
-
-  useEffect(() => {
-    const unsubscribe =
-      onSnapshot(
-        doc(
-          db,
-          "settings",
-          "public"
-        ),
-        (snapshot) => {
-          if (
-            !snapshot.exists()
-          ) {
-            return;
-          }
-
-          const data =
-            snapshot.data();
-
-          setSettings({
-            restaurantName:
-              typeof data.restaurantName ===
-              "string"
-                ? data.restaurantName
-                : defaultSettings.restaurantName,
-
-            description:
-              typeof data.description ===
-              "string"
-                ? data.description
-                : defaultSettings.description,
-
-            publicEmail:
-              typeof data.publicEmail ===
-              "string"
-                ? data.publicEmail
-                : defaultSettings.publicEmail,
-
-            phone:
-              typeof data.phone ===
-              "string"
-                ? data.phone
-                : defaultSettings.phone,
-
-            instagram:
-              typeof data.instagram ===
-              "string"
-                ? data.instagram
-                : defaultSettings.instagram,
-
-            address:
-              typeof data.address ===
-              "string"
-                ? data.address
-                : defaultSettings.address,
-          });
-        },
-        (error) => {
-          console.error(
-            "Footer settings error:",
-            error
-          );
-        }
-      );
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+  const settings = usePublicSettings();
 
   return (
     <footer className="border-t-4 border-[#294B73] bg-[#321B29] text-white">

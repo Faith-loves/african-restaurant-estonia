@@ -4,16 +4,11 @@ import { useEffect, useMemo, useState } from "react";
 import {
   collection,
   doc,
-  getDoc,
   onSnapshot,
   serverTimestamp,
   Timestamp,
   updateDoc,
 } from "firebase/firestore";
-import {
-  onAuthStateChanged,
-  signOut,
-} from "firebase/auth";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -307,15 +302,8 @@ export default function AdminOrders() {
   const canOrders = hasPermission("manageOrders");
   const canCatering = hasPermission("manageCatering");
 
-  const [
-    authorized,
-    setAuthorized,
-  ] = useState(false);
-
-  const [
-    checkingAdmin,
-    setCheckingAdmin,
-  ] = useState(true);
+  const authorized = true;
+  const checkingAdmin = false;
 
   const [
     loadingData,
@@ -364,81 +352,6 @@ export default function AdminOrders() {
     error,
     setError,
   ] = useState("");
-
-  useEffect(() => {
-    const unsubscribe =
-      onAuthStateChanged(
-        auth,
-        async (user) => {
-          if (!user) {
-            router.replace(
-              "/login"
-            );
-
-            return;
-          }
-
-          try {
-            const adminSnapshot =
-              await getDoc(
-                doc(
-                  db,
-                  "admins",
-                  user.uid
-                )
-              );
-
-            if (
-              !adminSnapshot.exists()
-            ) {
-              await signOut(auth);
-
-              router.replace(
-                "/login"
-              );
-
-              return;
-            }
-
-            const adminData =
-              adminSnapshot.data();
-
-            if (
-              adminData.role !== "admin" &&
-              adminData.role !== "owner" ||
-              adminData.active !==
-                true
-            ) {
-              await signOut(auth);
-
-              router.replace(
-                "/login"
-              );
-
-              return;
-            }
-
-            setAuthorized(true);
-            setCheckingAdmin(false);
-          } catch (authError) {
-            console.error(
-              "Orders admin verification error:",
-              authError
-            );
-
-            setError(
-              "Unable to verify administrator access."
-            );
-
-            setCheckingAdmin(false);
-          }
-        }
-      );
-
-    return () => {
-      unsubscribe();
-    };
-  }, [router]);
 
   useEffect(() => {
     if (!authorized) {

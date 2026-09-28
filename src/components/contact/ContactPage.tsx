@@ -4,7 +4,6 @@ import Image from "next/image";
 
 import {
   FormEvent,
-  useEffect,
   useState,
 } from "react";
 
@@ -17,54 +16,11 @@ import {
   Send,
 } from "lucide-react";
 
-import {
-  doc,
-  onSnapshot,
-} from "firebase/firestore";
-
-import {
-  db,
-} from "@/lib/firebase/client";
-
 import InstagramIcon from "@/components/icons/InstagramIcon";
-
-type PublicSettings = {
-  restaurantName: string;
-  tagline: string;
-  publicEmail: string;
-  phone: string;
-  instagram: string;
-  address: string;
-};
-
-const defaultSettings: PublicSettings = {
-  restaurantName:
-    "African Restaurant Estonia",
-
-  tagline:
-    "A Taste of West Africa, Right Here.",
-
-  publicEmail:
-    "africanrestaurantestonia@gmail.com",
-
-  phone:
-    "53078208",
-
-  instagram:
-    "@AFRICANRESTAURANTESTONIA",
-
-  address:
-    "NELGI 30, 11213, TALLINN",
-};
+import { usePublicSettings } from "@/context/PublicSettingsContext";
 
 export default function ContactPage() {
-  const [
-    settings,
-    setSettings,
-  ] =
-    useState<PublicSettings>(
-      defaultSettings
-    );
+  const settings = usePublicSettings();
 
   const [
     sending,
@@ -80,75 +36,6 @@ export default function ContactPage() {
     errorMessage,
     setErrorMessage,
   ] = useState("");
-
-  useEffect(() => {
-    const unsubscribe =
-      onSnapshot(
-        doc(
-          db,
-          "settings",
-          "public"
-        ),
-        (snapshot) => {
-          if (
-            !snapshot.exists()
-          ) {
-            return;
-          }
-
-          const data =
-            snapshot.data();
-
-          setSettings({
-            restaurantName:
-              typeof data.restaurantName ===
-              "string"
-                ? data.restaurantName
-                : defaultSettings.restaurantName,
-
-            tagline:
-              typeof data.tagline ===
-              "string"
-                ? data.tagline
-                : defaultSettings.tagline,
-
-            publicEmail:
-              typeof data.publicEmail ===
-              "string"
-                ? data.publicEmail
-                : defaultSettings.publicEmail,
-
-            phone:
-              typeof data.phone ===
-              "string"
-                ? data.phone
-                : defaultSettings.phone,
-
-            instagram:
-              typeof data.instagram ===
-              "string"
-                ? data.instagram
-                : defaultSettings.instagram,
-
-            address:
-              typeof data.address ===
-              "string"
-                ? data.address
-                : defaultSettings.address,
-          });
-        },
-        (error) => {
-          console.error(
-            "Contact settings error:",
-            error
-          );
-        }
-      );
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
 
   async function handleSubmit(
     event:

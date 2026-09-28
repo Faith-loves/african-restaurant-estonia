@@ -8,14 +8,8 @@ import {
 } from "react";
 
 import {
-  onAuthStateChanged,
-  signOut,
-} from "firebase/auth";
-
-import {
   collection,
   doc,
-  getDoc,
   onSnapshot,
   serverTimestamp,
   writeBatch,
@@ -37,16 +31,14 @@ import {
   useRouter,
 } from "next/navigation";
 
-import {
-  auth,
-  db,
-} from "@/lib/firebase/client";
+import { db } from "@/lib/firebase/client";
 
 import {
   menuItems as catalogMenuItems,
   menuImageById,
 } from "@/data/menuData";
 import MenuItemImage from "@/components/menu/MenuItemImage";
+import { useAdminAuth } from "@/context/AdminAuthContext";
 
 type TodayMenuItem = {
   id: string;
@@ -89,15 +81,9 @@ export default function AdminTodayMenu() {
   const router =
     useRouter();
 
-  const [
-    authorized,
-    setAuthorized,
-  ] = useState(false);
-
-  const [
-    checkingAdmin,
-    setCheckingAdmin,
-  ] = useState(true);
+  const { loading: adminLoading } = useAdminAuth();
+  const authorized = !adminLoading;
+  const checkingAdmin = adminLoading;
 
   const [
     loadingMenu,
@@ -177,94 +163,6 @@ export default function AdminTodayMenu() {
     savingRef.current =
       saving;
   }, [saving]);
-
-  useEffect(() => {
-    const unsubscribe =
-      onAuthStateChanged(
-        auth,
-        async (user) => {
-          if (!user) {
-            router.replace(
-              "/login"
-            );
-
-            return;
-          }
-
-          try {
-            const adminSnapshot =
-              await getDoc(
-                doc(
-                  db,
-                  "admins",
-                  user.uid
-                )
-              );
-
-            if (
-              !adminSnapshot.exists()
-            ) {
-              await signOut(
-                auth
-              );
-
-              router.replace(
-                "/login"
-              );
-
-              return;
-            }
-
-            const adminData =
-              adminSnapshot.data();
-
-            if (
-              adminData.role !== "admin" &&
-              adminData.role !== "owner" ||
-              adminData.active !==
-                true
-            ) {
-              await signOut(
-                auth
-              );
-
-              router.replace(
-                "/login"
-              );
-
-              return;
-            }
-
-            setAuthorized(
-              true
-            );
-
-            setCheckingAdmin(
-              false
-            );
-          } catch (
-            authError
-          ) {
-            console.error(
-              "Admin verification error:",
-              authError
-            );
-
-            setError(
-              "Unable to verify administrator access."
-            );
-
-            setCheckingAdmin(
-              false
-            );
-          }
-        }
-      );
-
-    return () => {
-      unsubscribe();
-    };
-  }, [router]);
 
   useEffect(() => {
     if (!authorized) {
