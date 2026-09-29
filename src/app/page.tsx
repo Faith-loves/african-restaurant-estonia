@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import SiteHeader from "@/components/layout/SiteHeader";
 
 import Hero from "@/components/home/Hero";
+import QuickOrderButtons from "@/components/home/QuickOrderButtons";
 import MenuHighlights from "@/components/home/MenuHighlights";
 import AboutSection from "@/components/home/AboutSection";
 import CateringSection from "@/components/home/CateringSection";
@@ -43,6 +44,7 @@ export default function Home() {
 
       <main>
         <Hero />
+        <QuickOrderButtons />
         <MenuHighlights />
         <AboutSection />
         <CateringSection />

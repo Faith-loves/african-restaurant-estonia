@@ -53,6 +53,10 @@ type TranslationKey =
   | "home.menuTitle"
   | "home.menuDescription"
   | "home.viewFullMenu"
+  | "home.orderOnBolt"
+  | "home.orderViaWhatsApp"
+  | "home.orderOnWolt"
+  | "home.quickOrderOptions"
   | "home.explore"
   | "home.todayMenu"
   | "home.todayMenuDescription"
@@ -156,6 +160,10 @@ const english: TranslationSet = {
   "home.menuTitle": "Explore the Menu",
   "home.menuDescription": "Discover what is available today, our chef's selections, vegan dishes and meal combos.",
   "home.viewFullMenu": "View Full Menu",
+  "home.orderOnBolt": "Order on Bolt",
+  "home.orderViaWhatsApp": "Order via WhatsApp",
+  "home.orderOnWolt": "Order on Wolt",
+  "home.quickOrderOptions": "Quick ordering options",
   "home.explore": "Explore",
   "home.todayMenu": "Today's Menu",
   "home.todayMenuDescription": "Freshly prepared dishes available to order today.",
@@ -264,6 +272,10 @@ export const translations: Record<Language, TranslationSet> = {
     "home.menuTitle": "Avasta menüü",
     "home.menuDescription": "Avasta tänane valik, koka soovitused, veganroad ja kombod.",
     "home.viewFullMenu": "Vaata kogu menüüd",
+    "home.orderOnBolt": "Telli Boltist",
+    "home.orderViaWhatsApp": "Telli WhatsAppi kaudu",
+    "home.orderOnWolt": "Telli Woltist",
+    "home.quickOrderOptions": "Kiired tellimisvõimalused",
     "home.explore": "Avasta",
     "home.storyEyebrow": "Meie lugu",
     "home.storyTitle": "Mõnele tuttav.",
@@ -334,6 +346,10 @@ export const translations: Record<Language, TranslationSet> = {
     "home.menuTitle": "Tutustu menuun",
     "home.menuDescription": "Tutustu päivän valikoimaan, kokin suosituksiin, vegaaniruokiin ja ateriasetteihin.",
     "home.viewFullMenu": "Katso koko menu",
+    "home.orderOnBolt": "Tilaa Boltilla",
+    "home.orderViaWhatsApp": "Tilaa WhatsAppilla",
+    "home.orderOnWolt": "Tilaa Woltilla",
+    "home.quickOrderOptions": "Nopeat tilausvaihtoehdot",
     "home.explore": "Tutustu",
     "home.storyEyebrow": "Tarinamme",
     "home.storyTitle": "Joillekin tuttu.",
@@ -404,6 +420,10 @@ export const translations: Record<Language, TranslationSet> = {
     "home.menuTitle": "Откройте меню",
     "home.menuDescription": "Откройте сегодняшние блюда, рекомендации шеф-повара, веганские блюда и комбо.",
     "home.viewFullMenu": "Смотреть всё меню",
+    "home.orderOnBolt": "Заказать через Bolt",
+    "home.orderViaWhatsApp": "Заказать через WhatsApp",
+    "home.orderOnWolt": "Заказать через Wolt",
+    "home.quickOrderOptions": "Быстрые варианты заказа",
     "home.explore": "Открыть",
     "home.storyEyebrow": "Наша история",
     "home.storyTitle": "Для одних знакомо.",
