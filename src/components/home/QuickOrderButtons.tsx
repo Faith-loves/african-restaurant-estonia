@@ -23,9 +23,9 @@ export default function QuickOrderButtons() {
   return (
     <section
       aria-label={t("home.quickOrderOptions")}
-      className="bg-[#FFF8EC] px-5 pb-8 pt-3 sm:px-8 sm:pb-10 sm:pt-4 lg:px-12 lg:pb-12 lg:pt-5"
+      className="bg-[#FFF8EC] px-5 py-6 sm:px-8 sm:py-8 lg:px-12"
     >
-      <div className="mx-auto grid max-w-[1440px] gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+      <div className="mx-auto grid max-w-5xl gap-3 rounded-2xl border border-[#D89A27]/25 bg-white/80 p-4 shadow-[0_10px_28px_rgba(50,27,41,0.08)] sm:grid-cols-2 sm:p-5 lg:grid-cols-3 lg:gap-4">
         <a
           href={BOLT_ORDER_URL}
           target="_blank"
