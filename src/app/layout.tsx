@@ -23,6 +23,9 @@ import PublicFooter from "@/components/layout/PublicFooter";
 import RestaurantJsonLd from "@/components/seo/RestaurantJsonLd";
 import CustomerEntryGate from "@/components/entry/CustomerEntryGate";
 import InstallBanner from "@/components/layout/InstallBanner";
+import AnalyticsConsent from "@/components/analytics/AnalyticsConsent";
+import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
+import { AnalyticsConsentProvider } from "@/context/AnalyticsConsentContext";
 
 const cormorant =
   Cormorant_Garamond({
@@ -145,6 +148,8 @@ export default function RootLayout({
             __html: `(() => { try { localStorage.removeItem('are-theme'); document.documentElement.classList.remove('dark'); document.documentElement.dataset.theme = 'light'; const path = location.pathname; const excluded = path.startsWith('/admin') || path === '/login' || path === '/signup' || path === '/account'; if (!excluded) document.documentElement.dataset.entryPending = 'true'; } catch {} })();`,
           }}
         />
+        <AnalyticsConsentProvider>
+
         <LanguageProvider>
 
         <PublicSettingsProvider>
@@ -167,6 +172,10 @@ export default function RootLayout({
 
           <InstallBanner />
 
+          <AnalyticsConsent />
+
+          <GoogleAnalytics />
+
           </CustomerEntryGate>
 
           </CartProvider>
@@ -178,6 +187,8 @@ export default function RootLayout({
         </PublicSettingsProvider>
 
         </LanguageProvider>
+
+        </AnalyticsConsentProvider>
       </body>
     </html>
   );
