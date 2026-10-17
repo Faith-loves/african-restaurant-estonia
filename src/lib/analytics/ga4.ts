@@ -26,6 +26,8 @@ export type AnalyticsEventName =
 const ANALYTICS_CONSENT_STORAGE_KEY = "are-analytics-consent";
 const PRODUCTION_HOSTNAMES = new Set(["africanrestaurant.ee", "www.africanrestaurant.ee"]);
 const trackedPurchaseIds = new Set<string>();
+const pendingAnalyticsEvents: Array<[AnalyticsEventName, Record<string, unknown>]> = [];
+let googleAnalyticsReady = false;
 const VALUE_EVENTS = new Set<AnalyticsEventName>([
   "add_to_cart",
   "remove_from_cart",
@@ -70,22 +72,33 @@ export function ensureGtag() {
 }
 
 export function configureGoogleAnalytics() {
-  if (!measurementId || !isAnalyticsEnabled()) return;
+  if (!measurementId || !isAnalyticsEnabled() || googleAnalyticsReady) return;
 
   (window as unknown as Record<string, boolean>)[`ga-disable-${measurementId}`] = false;
   const gtag = ensureGtag();
   gtag("js", new Date());
   gtag("config", measurementId, { send_page_view: false });
+  googleAnalyticsReady = true;
+
+  for (const [name, parameters] of pendingAnalyticsEvents.splice(0)) {
+    gtag("event", name, parameters);
+  }
 }
 
 export function disableGoogleAnalytics() {
   if (!measurementId || typeof window === "undefined") return;
+  googleAnalyticsReady = false;
+  pendingAnalyticsEvents.length = 0;
   (window as unknown as Record<string, boolean>)[`ga-disable-${measurementId}`] = true;
 }
 
 export function trackAnalyticsEvent(name: AnalyticsEventName, parameters: Record<string, unknown> = {}) {
   try {
     if (!isAnalyticsEnabled()) return false;
+    if (!googleAnalyticsReady) {
+      pendingAnalyticsEvents.push([name, parameters]);
+      return true;
+    }
     ensureGtag()("event", name, parameters);
     return true;
   } catch {
