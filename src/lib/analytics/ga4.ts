@@ -67,7 +67,11 @@ export function isAnalyticsEnabled() {
 
 export function ensureGtag() {
   window.dataLayer = window.dataLayer || [];
-  window.gtag = window.gtag || ((...args: unknown[]) => window.dataLayer?.push(args));
+  window.gtag = window.gtag || function gtag() {
+    // Google’s canonical gtag bootstrap intentionally queues the Arguments object.
+    // eslint-disable-next-line prefer-rest-params
+    window.dataLayer?.push(arguments);
+  };
   return window.gtag;
 }
 
