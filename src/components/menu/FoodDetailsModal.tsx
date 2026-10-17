@@ -17,6 +17,8 @@ import { MenuItem } from "@/types/menu";
 import { CartItem } from "@/types/cart";
 import { useCart } from "@/context/CartContext";
 import { restaurantDrinkAddOns } from "@/data/menuData";
+import { menuItemToAnalyticsItem, trackEcommerceEvent } from "@/lib/analytics/ga4";
+import { useAnalyticsConsent } from "@/context/AnalyticsConsentContext";
 
 type FoodDetailsModalProps = {
   item: MenuItem | null;
@@ -74,6 +76,7 @@ export default function FoodDetailsModal({
     updateItem,
     openCart,
   } = useCart();
+  const { consent } = useAnalyticsConsent();
 
   const [
     selectedSizeIndex,
@@ -191,6 +194,17 @@ export default function FoodDetailsModal({
     validSizes,
     validAddOns,
   ]);
+
+  useEffect(() => {
+    if (!item || editingItem) return;
+
+    const startingPrice = item.sizes
+      .map((size) => size.price)
+      .filter((price): price is number => typeof price === "number" && Number.isFinite(price) && price > 0)
+      .sort((first, second) => first - second)[0];
+    const analyticsItem = menuItemToAnalyticsItem(item, startingPrice ?? 0);
+    if (analyticsItem) trackEcommerceEvent("view_item", [analyticsItem]);
+  }, [consent, editingItem, item]);
 
   const selectedSize =
     validSizes[

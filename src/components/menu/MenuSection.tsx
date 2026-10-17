@@ -3,6 +3,7 @@
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -25,6 +26,8 @@ import {
 import {
   db,
 } from "@/lib/firebase/client";
+import { menuItemToAnalyticsItem, trackEcommerceEvent } from "@/lib/analytics/ga4";
+import { useAnalyticsConsent } from "@/context/AnalyticsConsentContext";
 
 import {
   legacyDuplicateComboIds,
@@ -480,6 +483,7 @@ export default function MenuSection() {
 
   const searchParams =
     useSearchParams();
+  const { consent } = useAnalyticsConsent();
 
   const specialFilter =
     searchParams.get(
@@ -523,6 +527,8 @@ export default function MenuSection() {
     useState<MenuItem | null>(
       null
     );
+
+  const lastViewedListRef = useRef("");
 
   useEffect(() => {
     const unsubscribe =
@@ -770,6 +776,44 @@ export default function MenuSection() {
       search,
       specialFilter,
     ]);
+
+  const analyticsListId = specialFilter || activeCategory.toLowerCase().replaceAll(" ", "-");
+  const analyticsListName = specialFilterDetails?.title || categoryLabels[activeCategory] || "Full menu";
+
+  useEffect(() => {
+    if (loading || filteredItems.length === 0) return;
+
+    const analyticsItems = filteredItems
+      .map((item) => {
+        const analyticsItem = menuItemToAnalyticsItem(item, getStartingPrice(item) ?? 0);
+        return analyticsItem
+          ? { ...analyticsItem, item_list_id: analyticsListId, item_list_name: analyticsListName }
+          : null;
+      })
+      .filter((item): item is NonNullable<typeof item> => item !== null);
+
+    if (analyticsItems.length === 0) return;
+
+    const listKey = `${analyticsListId}:${search.trim().toLowerCase()}:${analyticsItems.map((item) => `${item.item_id}:${item.price}`).join(",")}`;
+    if (lastViewedListRef.current === listKey) return;
+    lastViewedListRef.current = listKey;
+
+    trackEcommerceEvent("view_item_list", analyticsItems, undefined, {
+      item_list_id: analyticsListId,
+      item_list_name: analyticsListName,
+    });
+  }, [analyticsListId, analyticsListName, consent, filteredItems, loading, search]);
+
+  function selectMenuItem(item: MenuItem) {
+    const analyticsItem = menuItemToAnalyticsItem(item, getStartingPrice(item) ?? 0);
+    if (analyticsItem) {
+      trackEcommerceEvent("select_item", [{ ...analyticsItem, item_list_id: analyticsListId, item_list_name: analyticsListName }], undefined, {
+        item_list_id: analyticsListId,
+        item_list_name: analyticsListName,
+      });
+    }
+    setSelectedItem(item);
+  }
 
   function chooseCategory(
     category:
@@ -1079,11 +1123,7 @@ export default function MenuSection() {
                                 disabled={
                                   !canChoose
                                 }
-                                onClick={() =>
-                                  setSelectedItem(
-                                    item
-                                  )
-                                }
+                                onClick={() => selectMenuItem(item)}
                                 className={`rounded-lg px-4 py-2.5 text-xs font-extrabold transition ${
                                   canChoose
                                     ? "bg-[#321B29] text-white hover:bg-[#D89A27] hover:text-[#321B29]"

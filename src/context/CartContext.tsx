@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { CartItem } from "@/types/cart";
+import { cartItemToAnalyticsItem, trackEcommerceEvent } from "@/lib/analytics/ga4";
 
 type NewCartItem = Omit<CartItem, "id">;
 
@@ -306,6 +307,8 @@ export function CartProvider({
       return;
     }
 
+    trackEcommerceEvent("add_to_cart", [cartItemToAnalyticsItem(prepared)]);
+
     const id =
       createCartId(
         prepared
@@ -435,6 +438,11 @@ export function CartProvider({
   function removeItem(
     id: string
   ) {
+    const removedItem = items.find((item) => item.id === id);
+    if (removedItem) {
+      trackEcommerceEvent("remove_from_cart", [cartItemToAnalyticsItem(removedItem)]);
+    }
+
     setItems(
       (
         currentItems
@@ -473,6 +481,11 @@ export function CartProvider({
   function decreaseQuantity(
     id: string
   ) {
+    const decreasedItem = items.find((item) => item.id === id);
+    if (decreasedItem?.quantity === 1) {
+      trackEcommerceEvent("remove_from_cart", [cartItemToAnalyticsItem(decreasedItem)]);
+    }
+
     setItems(
       (
         currentItems
@@ -500,6 +513,9 @@ export function CartProvider({
   }
 
   function clearCart() {
+    if (items.length > 0) {
+      trackEcommerceEvent("remove_from_cart", items.map(cartItemToAnalyticsItem));
+    }
     setItems([]);
   }
 

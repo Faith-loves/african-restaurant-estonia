@@ -878,6 +878,8 @@ export async function POST(
             existingData?.reference,
           subtotal:
             existingData?.subtotal,
+          items:
+            existingData?.items,
           currency:
             existingData?.currency ??
             "EUR",
@@ -1016,6 +1018,8 @@ export async function POST(
               duplicateData?.reference,
             subtotal:
               duplicateData?.subtotal,
+            items:
+              duplicateData?.items,
             currency:
               duplicateData?.currency ??
               "EUR",
@@ -1132,6 +1136,9 @@ export async function POST(
         reference,
 
         subtotal,
+
+        items:
+          validatedItems,
 
         currency:
           "EUR",

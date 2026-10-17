@@ -28,6 +28,7 @@ import {
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { OrderDetails } from "@/types/order";
+import { serverOrderItemToAnalyticsItem, trackPurchaseOnce } from "@/lib/analytics/ga4";
 
 const WHATSAPP_NUMBER = "37253078208";
 
@@ -36,6 +37,7 @@ type OrderApiSuccess = {
   orderId: string;
   reference: string;
   subtotal: number;
+  items?: unknown[];
   currency: string;
   status: string;
 };
@@ -396,6 +398,14 @@ Thank you.`;
           message
         );
       }
+
+      const purchaseItems = Array.isArray(result.items)
+        ? result.items
+            .map((item) => serverOrderItemToAnalyticsItem(item as Parameters<typeof serverOrderItemToAnalyticsItem>[0]))
+            .filter((item): item is NonNullable<typeof item> => item !== null)
+        : [];
+
+      trackPurchaseOnce(result.orderId, result.subtotal, purchaseItems);
 
       setSubmittedReference(
         result.reference

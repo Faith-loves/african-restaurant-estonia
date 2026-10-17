@@ -10,7 +10,9 @@ import {
 } from "lucide-react";
 
 import {
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -19,6 +21,8 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { CartItem } from "@/types/cart";
 import { menuItems } from "@/data/menuData";
+import { cartItemToAnalyticsItem, trackEcommerceEvent } from "@/lib/analytics/ga4";
+import { useAnalyticsConsent } from "@/context/AnalyticsConsentContext";
 
 import FoodDetailsModal from "@/components/menu/FoodDetailsModal";
 
@@ -36,11 +40,25 @@ export default function CartDrawer() {
     decreaseQuantity,
     clearCart,
   } = useCart();
+  const { consent } = useAnalyticsConsent();
 
   const [
     editingItem,
     setEditingItem,
   ] = useState<CartItem | null>(null);
+
+  const wasCartOpen = useRef(false);
+  const wasAnalyticsAccepted = useRef(false);
+
+  useEffect(() => {
+    const cartOpened = isCartOpen && !wasCartOpen.current;
+    const consentAccepted = consent === "accepted" && !wasAnalyticsAccepted.current;
+    if (isCartOpen && items.length > 0 && (cartOpened || consentAccepted)) {
+      trackEcommerceEvent("view_cart", items.map(cartItemToAnalyticsItem), subtotal);
+    }
+    wasCartOpen.current = isCartOpen;
+    wasAnalyticsAccepted.current = consent === "accepted";
+  }, [consent, isCartOpen, items, subtotal]);
 
   const menuItemBeingEdited = useMemo(() => {
     if (!editingItem) {
@@ -278,7 +296,12 @@ export default function CartDrawer() {
 
                   <button
                     type="button"
-                    onClick={() => {
+                  onClick={() => {
+                      trackEcommerceEvent(
+                        "begin_checkout",
+                        items.map(cartItemToAnalyticsItem),
+                        subtotal,
+                      );
                       closeCart();
                       router.push("/order");
                     }}
