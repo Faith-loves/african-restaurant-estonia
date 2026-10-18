@@ -68,6 +68,7 @@ type WebsiteAnalyticsData = {
 type ApiResponse =
   | { status: "ok"; data: WebsiteAnalyticsData }
   | { status: "not_configured" }
+  | { stage: string; report: string; httpStatus?: number; code?: string; status?: string }
   | { error: string };
 
 const eventLabels: Record<string, string> = {
@@ -120,11 +121,18 @@ export default function WebsiteAnalytics() {
 
     try {
       const token = await getIdToken(adminUser);
-      const response = await fetch(`/api/admin/analytics/ga4?range=${range}`, {
+      const diagnostic = new URLSearchParams(window.location.search).get("ga4Diagnostic") === "1";
+      const response = await fetch(diagnostic ? `/api/admin/analytics/ga4?diagnostic=1&range=${range}` : `/api/admin/analytics/ga4?range=${range}`, {
         headers: { Authorization: `Bearer ${token}` },
         signal,
       });
       const payload = await response.json() as ApiResponse;
+
+      if ("stage" in payload) {
+        setData(null);
+        setError(`Diagnostic stage=${payload.stage} report=${payload.report} httpStatus=${payload.httpStatus ?? "none"} code=${payload.code ?? "none"} status=${payload.status ?? "none"}`);
+        return;
+      }
 
       if (!response.ok) {
         throw new Error("error" in payload ? payload.error : "Unable to load website analytics.");
