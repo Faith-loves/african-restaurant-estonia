@@ -108,29 +108,13 @@ export type Ga4ReportingData = {
   products: Ga4ProductRow[];
 };
 
-export type Ga4ReportingDiagnostic = {
-  stage: "configuration" | "auth" | "report" | "network" | "timeout" | "success" | "unknown";
-  report: string;
-  httpStatus?: number;
-  code?: string;
-  status?: string;
-};
-
 export class Ga4ReportingError extends Error {
   readonly status: number;
-  readonly report: string;
-  readonly stage: "auth" | "report" | "network" | "timeout";
-  readonly code?: string;
-  readonly apiStatus?: string;
 
-  constructor(status: number, report = "unknown", stage: Ga4ReportingError["stage"] = "report", code?: string, apiStatus?: string) {
+  constructor(status: number) {
     super("GA4_REPORTING_REQUEST_FAILED");
     this.name = "Ga4ReportingError";
     this.status = status;
-    this.report = report;
-    this.stage = stage;
-    this.code = code;
-    this.apiStatus = apiStatus;
   }
 }
 
@@ -178,39 +162,21 @@ function totals(report: DataApiReport | undefined) {
 async function fetchReport(
   credentials: Ga4Credentials,
   accessToken: string,
-  report: string,
   request: DataApiReportRequest
 ) {
-  try {
-    const response = await fetch(`${GA4_API_BASE}/properties/${credentials.propertyId}:runReport`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(request),
-      cache: "no-store",
-      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-    });
+  const response = await fetch(`${GA4_API_BASE}/properties/${credentials.propertyId}:runReport`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(request),
+    cache: "no-store",
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+  });
 
-    if (!response.ok) {
-      let code: string | undefined;
-      let status: string | undefined;
-      try {
-        const payload = await response.json() as { error?: { code?: number; status?: string } };
-        code = typeof payload.error?.code === "number" ? String(payload.error.code) : undefined;
-        status = typeof payload.error?.status === "string" ? payload.error.status : undefined;
-      } catch {
-        // The diagnostic deliberately ignores an unreadable provider response body.
-      }
-      throw new Ga4ReportingError(response.status, report, "report", code, status);
-    }
-    return response.json() as Promise<DataApiReport>;
-  } catch (error) {
-    if (error instanceof Ga4ReportingError) throw error;
-    const isTimeout = error instanceof Error && error.name === "TimeoutError";
-    throw new Ga4ReportingError(0, report, isTimeout ? "timeout" : "network", isTimeout ? "REQUEST_TIMEOUT" : "NETWORK_FAILURE");
-  }
+  if (!response.ok) throw new Ga4ReportingError(response.status);
+  return response.json() as Promise<DataApiReport>;
 }
 
 function eventFilter() {
@@ -227,27 +193,22 @@ function eventFilter() {
 }
 
 async function requestReportData(credentials: Ga4Credentials, range: Ga4DateRange): Promise<Ga4ReportingData> {
-  let accessToken: string | null | undefined;
-  try {
-    const auth = new GoogleAuth({
-      credentials: {
-        project_id: credentials.projectId,
-        client_email: credentials.clientEmail,
-        private_key: credentials.privateKey,
-      },
-      scopes: [GA4_SCOPE],
-    });
-    const client = await auth.getClient();
-    const accessTokenResult = await client.getAccessToken();
-    accessToken = typeof accessTokenResult === "string" ? accessTokenResult : accessTokenResult.token;
-  } catch {
-    throw new Ga4ReportingError(0, "token_generation", "auth", "TOKEN_GENERATION_FAILED");
-  }
-  if (!accessToken) throw new Ga4ReportingError(0, "token_generation", "auth", "TOKEN_GENERATION_FAILED");
+  const auth = new GoogleAuth({
+    credentials: {
+      project_id: credentials.projectId,
+      client_email: credentials.clientEmail,
+      private_key: credentials.privateKey,
+    },
+    scopes: [GA4_SCOPE],
+  });
+  const client = await auth.getClient();
+  const accessTokenResult = await client.getAccessToken();
+  const accessToken = typeof accessTokenResult === "string" ? accessTokenResult : accessTokenResult.token;
+  if (!accessToken) throw new Ga4ReportingError(401);
 
   const dateRanges = [range];
   const [overviewReport, trendReport, pagesReport, channelsReport, sourceMediumReport, devicesReport, countriesReport, ecommerceEventsReport, productsReport] = await Promise.all([
-    fetchReport(credentials, accessToken, "overview", {
+    fetchReport(credentials, accessToken, {
       dateRanges,
       metrics: [
         { name: "totalUsers" },
@@ -260,7 +221,7 @@ async function requestReportData(credentials: Ga4Credentials, range: Ga4DateRang
         { name: "purchaseRevenue" },
       ],
     }),
-    fetchReport(credentials, accessToken, "daily_trends", {
+    fetchReport(credentials, accessToken, {
       dateRanges,
       dimensions: [{ name: "date" }],
       metrics: [
@@ -271,41 +232,41 @@ async function requestReportData(credentials: Ga4Credentials, range: Ga4DateRang
       ],
       orderBys: [{ dimension: { dimensionName: "date" } }],
     }),
-    fetchReport(credentials, accessToken, "pages", {
+    fetchReport(credentials, accessToken, {
       dateRanges,
       dimensions: [{ name: "pagePathPlusQueryString" }],
       metrics: [{ name: "screenPageViews" }, { name: "activeUsers" }, { name: "sessions" }],
       limit: "25",
       orderBys: [{ metric: { metricName: "screenPageViews" }, desc: true }],
     }),
-    fetchReport(credentials, accessToken, "channels", {
+    fetchReport(credentials, accessToken, {
       dateRanges,
       dimensions: [{ name: "sessionDefaultChannelGroup" }],
       metrics: [{ name: "totalUsers" }, { name: "sessions" }, { name: "engagementRate" }],
       limit: "20",
       orderBys: [{ metric: { metricName: "sessions" }, desc: true }],
     }),
-    fetchReport(credentials, accessToken, "source_medium", {
+    fetchReport(credentials, accessToken, {
       dateRanges,
       dimensions: [{ name: "sessionSourceMedium" }],
       metrics: [{ name: "totalUsers" }, { name: "sessions" }],
       limit: "25",
       orderBys: [{ metric: { metricName: "sessions" }, desc: true }],
     }),
-    fetchReport(credentials, accessToken, "devices", {
+    fetchReport(credentials, accessToken, {
       dateRanges,
       dimensions: [{ name: "deviceCategory" }],
       metrics: [{ name: "totalUsers" }, { name: "sessions" }, { name: "screenPageViews" }],
       orderBys: [{ metric: { metricName: "totalUsers" }, desc: true }],
     }),
-    fetchReport(credentials, accessToken, "countries", {
+    fetchReport(credentials, accessToken, {
       dateRanges,
       dimensions: [{ name: "country" }],
       metrics: [{ name: "totalUsers" }, { name: "sessions" }, { name: "screenPageViews" }],
       limit: "25",
       orderBys: [{ metric: { metricName: "totalUsers" }, desc: true }],
     }),
-    fetchReport(credentials, accessToken, "ecommerce_events", {
+    fetchReport(credentials, accessToken, {
       dateRanges,
       dimensions: [{ name: "eventName" }],
       metrics: [{ name: "eventCount" }, { name: "totalUsers" }, { name: "sessions" }],
@@ -313,7 +274,7 @@ async function requestReportData(credentials: Ga4Credentials, range: Ga4DateRang
       orderBys: [{ metric: { metricName: "eventCount" }, desc: true }],
       ...eventFilter(),
     }),
-    fetchReport(credentials, accessToken, "products", {
+    fetchReport(credentials, accessToken, {
       dateRanges,
       dimensions: [{ name: "itemName" }],
       metrics: [{ name: "itemViewEvents" }, { name: "itemsAddedToCart" }, { name: "itemsPurchased" }, { name: "itemRevenue" }],
@@ -411,25 +372,4 @@ export async function getGa4ReportingData(range: Ga4DateRange) {
 
   inFlight.set(cacheKey, request);
   return request;
-}
-
-export async function diagnoseGa4Reporting(range: Ga4DateRange): Promise<Ga4ReportingDiagnostic> {
-  const credentials = readCredentials();
-  if (!credentials) return { stage: "configuration", report: "credentials", code: "NOT_CONFIGURED" };
-
-  try {
-    await requestReportData(credentials, range);
-    return { stage: "success", report: "all" };
-  } catch (error) {
-    if (error instanceof Ga4ReportingError) {
-      return {
-        stage: error.stage,
-        report: error.report,
-        ...(error.status > 0 ? { httpStatus: error.status } : {}),
-        ...(error.code ? { code: error.code } : {}),
-        ...(error.apiStatus ? { status: error.apiStatus } : {}),
-      };
-    }
-    return { stage: "unknown", report: "unknown", code: "UNEXPECTED_FAILURE" };
-  }
 }
