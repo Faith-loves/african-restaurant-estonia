@@ -207,7 +207,7 @@ async function requestReportData(credentials: Ga4Credentials, range: Ga4DateRang
   if (!accessToken) throw new Ga4ReportingError(401);
 
   const dateRanges = [range];
-  const [overviewReport, trendReport, pagesReport, channelsReport, sourceMediumReport, devicesReport, countriesReport, ecommerceEventsReport, productsReport] = await Promise.all([
+  const [overviewReport, trendReport, pagesReport, channelsReport, sourceMediumReport, devicesReport, countriesReport, ecommerceEventsReport] = await Promise.all([
     fetchReport(credentials, accessToken, {
       dateRanges,
       metrics: [
@@ -274,14 +274,21 @@ async function requestReportData(credentials: Ga4Credentials, range: Ga4DateRang
       orderBys: [{ metric: { metricName: "eventCount" }, desc: true }],
       ...eventFilter(),
     }),
-    fetchReport(credentials, accessToken, {
+  ]);
+
+  let productsReport: DataApiReport | undefined;
+  try {
+    productsReport = await fetchReport(credentials, accessToken, {
       dateRanges,
       dimensions: [{ name: "itemName" }],
-      metrics: [{ name: "itemViewEvents" }, { name: "itemsAddedToCart" }, { name: "itemsPurchased" }, { name: "itemRevenue" }],
+      metrics: [{ name: "itemsViewed" }, { name: "itemsAddedToCart" }, { name: "itemsPurchased" }, { name: "itemRevenue" }],
       limit: "25",
-      orderBys: [{ metric: { metricName: "itemViewEvents" }, desc: true }],
-    }),
-  ]);
+      orderBys: [{ metric: { metricName: "itemsViewed" }, desc: true }],
+    });
+  } catch {
+    // Product reporting is optional; preserve the valid traffic and event reports.
+    productsReport = undefined;
+  }
 
   const overviewTotals = totals(overviewReport);
   const activeUsers = rowMetric(overviewTotals, 1);
