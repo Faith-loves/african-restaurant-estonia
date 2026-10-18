@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { requireAdminPermission } from "@/lib/server/requireAdmin";
-import { Ga4ReportingError, getGa4ConfigurationDiagnostics, getGa4ReportingData, hasGa4ReportingConfiguration, type Ga4DateRange } from "@/lib/server/ga4Reporting";
+import { Ga4ReportingError, getGa4ReportingData, hasGa4ReportingConfiguration, type Ga4DateRange } from "@/lib/server/ga4Reporting";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -49,10 +49,6 @@ function responseHeaders() {
 export async function GET(request: Request) {
   try {
     await requireAdminPermission(request, "viewAnalytics");
-
-    if (new URL(request.url).searchParams.get("diagnostic") === "1") {
-      return NextResponse.json(getGa4ConfigurationDiagnostics(), { headers: responseHeaders() });
-    }
 
     if (!hasGa4ReportingConfiguration()) {
       return NextResponse.json({ status: "not_configured" }, { headers: responseHeaders() });

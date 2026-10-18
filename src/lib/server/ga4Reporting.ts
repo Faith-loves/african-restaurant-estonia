@@ -138,20 +138,6 @@ export function hasGa4ReportingConfiguration() {
   return readCredentials() !== null;
 }
 
-export function getGa4ConfigurationDiagnostics() {
-  const propertyId = process.env.GA4_PROPERTY_ID?.trim() ?? "";
-  const projectId = process.env.GA4_PROJECT_ID?.trim() ?? "";
-  const clientEmail = process.env.GA4_CLIENT_EMAIL?.trim() ?? "";
-  const privateKey = process.env.GA4_PRIVATE_KEY?.trim().replace(/^['"]|['"]$/g, "").replace(/\\n/g, "\n") ?? "";
-
-  return {
-    propertyId: /^\d+$/.test(propertyId),
-    projectId: Boolean(projectId),
-    clientEmail: Boolean(clientEmail),
-    privateKey: privateKey.includes("BEGIN PRIVATE KEY"),
-  };
-}
-
 function numeric(value: DataApiValue | undefined) {
   const parsed = Number(value?.value ?? 0);
   return Number.isFinite(parsed) ? parsed : 0;
