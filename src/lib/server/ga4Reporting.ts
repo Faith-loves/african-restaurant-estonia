@@ -155,10 +155,6 @@ function rows(report: DataApiReport | undefined) {
   return report?.rows ?? [];
 }
 
-function totals(report: DataApiReport | undefined) {
-  return report?.totals?.[0];
-}
-
 async function fetchReport(
   credentials: Ga4Credentials,
   accessToken: string,
@@ -290,20 +286,21 @@ async function requestReportData(credentials: Ga4Credentials, range: Ga4DateRang
     productsReport = undefined;
   }
 
-  const overviewTotals = totals(overviewReport);
-  const activeUsers = rowMetric(overviewTotals, 1);
+  // A dimensionless runReport returns one summary row; totals require metricAggregations.
+  const overviewRow = rows(overviewReport)[0];
+  const activeUsers = rowMetric(overviewRow, 1);
 
   return {
     range,
     overview: {
-      totalUsers: rowMetric(overviewTotals, 0),
+      totalUsers: rowMetric(overviewRow, 0),
       activeUsers,
-      newUsers: rowMetric(overviewTotals, 2),
-      sessions: rowMetric(overviewTotals, 3),
-      screenPageViews: rowMetric(overviewTotals, 4),
-      engagementRate: rowMetric(overviewTotals, 5),
-      averageEngagementTime: activeUsers ? rowMetric(overviewTotals, 6) / activeUsers : 0,
-      purchaseRevenue: rowMetric(overviewTotals, 7),
+      newUsers: rowMetric(overviewRow, 2),
+      sessions: rowMetric(overviewRow, 3),
+      screenPageViews: rowMetric(overviewRow, 4),
+      engagementRate: rowMetric(overviewRow, 5),
+      averageEngagementTime: activeUsers ? rowMetric(overviewRow, 6) / activeUsers : 0,
+      purchaseRevenue: rowMetric(overviewRow, 7),
     },
     trends: rows(trendReport).map((row) => ({
       date: rowDimension(row),
