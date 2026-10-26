@@ -54,7 +54,7 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://africanrestaurant.ee"),
+  metadataBase: new URL("https://www.africanrestaurant.ee"),
   title: {
     default: "African Restaurant Estonia",
     template: "%s | African Restaurant Estonia",
@@ -96,10 +96,10 @@ export const metadata: Metadata = {
     siteName: "African Restaurant Estonia",
     locale: "en_EE",
     type: "website",
-    url: "https://africanrestaurant.ee/",
+    url: "https://www.africanrestaurant.ee/",
     images: [
       {
-        url: "https://africanrestaurant.ee/images/hero/hero-food.webp",
+        url: "https://www.africanrestaurant.ee/images/hero/hero-food.webp",
         width: 1672,
         height: 941,
         alt: "African Restaurant Estonia food",

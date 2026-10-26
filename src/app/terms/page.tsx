@@ -5,11 +5,11 @@ export const metadata: Metadata = {
   title: "Terms & Conditions",
   description:
     "Terms for using the African Restaurant Estonia website, ordering service and catering enquiries.",
-  alternates: { canonical: "https://africanrestaurant.ee/terms" },
+  alternates: { canonical: "/terms" },
   openGraph: {
     title: "Terms & Conditions | African Restaurant Estonia",
     description: "Terms for using African Restaurant Estonia website and services.",
-    url: "https://africanrestaurant.ee/terms",
+    url: "https://www.africanrestaurant.ee/terms",
   },
 };
 

@@ -5,8 +5,8 @@ import SiteHeader from "@/components/layout/SiteHeader";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "Privacy information for African Restaurant Estonia website visitors, customers and enquiry submissions.",
-  alternates: { canonical: "https://africanrestaurant.ee/privacy" },
-  openGraph: { title: "Privacy Policy | African Restaurant Estonia", description: "Privacy information for African Restaurant Estonia.", url: "https://africanrestaurant.ee/privacy" },
+  alternates: { canonical: "/privacy" },
+  openGraph: { title: "Privacy Policy | African Restaurant Estonia", description: "Privacy information for African Restaurant Estonia.", url: "https://www.africanrestaurant.ee/privacy" },
 };
 
 const heading = "font-[var(--font-cormorant)] text-3xl font-bold text-[#321B29] sm:text-4xl";

@@ -7,6 +7,12 @@ import { menuItems } from "@/data/menuData";
 export const metadata: Metadata = {
   title: "Food Gallery",
   description: "Browse the full African Restaurant Estonia food gallery.",
+  alternates: { canonical: "/gallery" },
+  openGraph: {
+    title: "Food Gallery | African Restaurant Estonia",
+    description: "Browse the full African Restaurant Estonia food gallery.",
+    url: "https://www.africanrestaurant.ee/gallery",
+  },
 };
 
 const galleryItems = menuItems.filter((item) => item.image);

@@ -15,13 +15,13 @@ export const metadata: Metadata = {
     title: "Catering & Special Orders",
     description:
       "Request catering, event meals, corporate food, or West African food gift boxes from African Restaurant Estonia in Tallinn.",
-    url: "https://africanrestaurant.ee/catering",
+    url: "https://www.africanrestaurant.ee/catering",
     siteName: "African Restaurant Estonia",
     locale: "en_EE",
     type: "website",
     images: [
       {
-        url: "https://africanrestaurant.ee/images/catering/catering.webp",
+        url: "https://www.africanrestaurant.ee/images/catering/catering.webp",
         width: 1448,
         height: 1086,
         alt: "African Restaurant Estonia catering",
