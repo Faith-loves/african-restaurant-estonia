@@ -88,6 +88,7 @@ function mergeMenuSnapshot(snapshot: QuerySnapshot<DocumentData>) {
     })
     .forEach((menuDocument) => {
       const data = menuDocument.data();
+      const catalogItem = catalogMenuItems.find((item) => item.id === menuDocument.id);
       const remoteTags = Array.isArray(data.tags)
         ? data.tags.filter(
             (tag) =>
@@ -96,9 +97,14 @@ function mergeMenuSnapshot(snapshot: QuerySnapshot<DocumentData>) {
         : data.tags;
 
       recordsById.set(menuDocument.id, {
-        id: menuDocument.id,
+        ...catalogItem,
         ...data,
-        tags: remoteTags,
+        id: menuDocument.id,
+        name:
+          typeof data.name === "string" && data.name.trim()
+            ? data.name
+            : catalogItem?.name ?? "Unnamed Food",
+        tags: remoteTags ?? catalogItem?.tags,
         image:
           menuDocument.id === "puff-puff" || menuDocument.id === "abula" || menuDocument.id === "jollof-rice" || menuDocument.id === "fried-rice" || menuDocument.id === "combo-peppered-fish-plantain-zobo-13"
             ? menuImageById[menuDocument.id]
@@ -190,9 +196,14 @@ export default function AdminMenuManager() {
     };
 
     const timeoutId = window.setTimeout(() => {
-      finishWithError(
-        "Live menu data could not be synced. Retry connection."
-      );
+      if (!active || initialLoadSettled) {
+        return;
+      }
+
+      // A slow connection is not a terminal listener error. Keep listening so
+      // Firestore can deliver the menu when the connection recovers.
+      setSyncError("The menu connection is slow. Reconnecting automatically; you can also retry.");
+      setSyncingMenu(false);
     }, MENU_LOAD_TIMEOUT_MS);
 
     try {
@@ -206,11 +217,20 @@ export default function AdminMenuManager() {
             return;
           }
 
+          let nextItems: AdminFoodItem[];
+          try {
+            nextItems = mergeMenuSnapshot(snapshot);
+          } catch (mergeError) {
+            console.error("Unable to read menu data:", mergeError);
+            finishWithError("Unable to read the saved menu. Please retry.");
+            return;
+          }
+
           if (!initialLoadSettled) {
             initialLoadSettled = true;
             clearLoadTimeout();
           }
-          setItems(mergeMenuSnapshot(snapshot));
+          setItems(nextItems);
           setSyncError("");
           setSyncingMenu(false);
         },
