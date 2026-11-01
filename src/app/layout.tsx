@@ -111,6 +111,14 @@ export const metadata: Metadata = {
     title: "African Restaurant Estonia",
     description:
       "Authentic Nigerian and West African food in Tallinn, Estonia.",
+    images: [
+      {
+        url: "https://www.africanrestaurant.ee/images/hero/hero-food.webp",
+        width: 1672,
+        height: 941,
+        alt: "African Restaurant Estonia food",
+      },
+    ],
   },
   robots: {
     index: true,

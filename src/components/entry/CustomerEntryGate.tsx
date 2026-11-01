@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useGuestSession } from "@/context/GuestSessionContext";
 
+const ENTRY_CHOOSER_DELAY_MS = 1_800;
+
 function clearPendingEntryMarker() {
   document.documentElement.removeAttribute("data-entry-pending");
 }
@@ -55,7 +57,11 @@ export default function CustomerEntryGate({ children }: { children: React.ReactN
       return;
     }
 
-    queueMicrotask(() => setStage("choice"));
+    const timer = window.setTimeout(() => {
+      queueMicrotask(() => setStage("choice"));
+    }, ENTRY_CHOOSER_DELAY_MS);
+
+    return () => window.clearTimeout(timer);
   }, [pathname, authLoading, guestReady, user, guestActive]);
 
   async function continueAsGuest() {
@@ -121,9 +127,9 @@ export default function CustomerEntryGate({ children }: { children: React.ReactN
                 African Restaurant Estonia
               </p>
 
-              <h1 className="mt-4 font-[var(--font-cormorant)] text-5xl font-bold leading-none sm:text-7xl">
+              <h2 className="mt-4 font-[var(--font-cormorant)] text-5xl font-bold leading-none sm:text-7xl">
                 A Taste of West Africa, Right Here.
-              </h1>
+              </h2>
 
               <p className="entry-writing mt-5 text-sm font-semibold text-[#FFF8EC]/75">
                 Fresh flavours are on the way...
@@ -140,12 +146,12 @@ export default function CustomerEntryGate({ children }: { children: React.ReactN
                 Welcome
               </p>
 
-              <h1
+              <h2
                 id="entry-choice-title"
                 className="mt-3 font-[var(--font-cormorant)] text-5xl font-bold leading-none"
               >
                 How would you like to continue?
-              </h1>
+              </h2>
 
               <p className="mt-4 text-sm font-semibold leading-6 text-[#FFF8EC]/70">
                 Sign in or create an account for a smoother experience, or continue as a guest to browse and order.
