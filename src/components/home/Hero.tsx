@@ -59,7 +59,7 @@ export default function Hero() {
         ) : (
           <div className="ml-auto w-full max-w-[600px] animate-[entry-writing_500ms_ease-out] text-left motion-reduce:animate-none">
             <p className="mb-5 text-sm font-bold uppercase tracking-[0.2em] text-[#D89A27]">{t("hero.cateringEyebrow")}</p>
-            <h2 className="max-w-full break-words font-[var(--font-cormorant)] text-[42px] font-bold leading-[0.92] text-[#FFF8EC] sm:text-[68px] md:text-[78px]">{t("hero.cateringTitle")}</h2>
+            <h1 className="max-w-full break-words font-[var(--font-cormorant)] text-[42px] font-bold leading-[0.92] text-[#FFF8EC] sm:text-[68px] md:text-[78px]">{t("hero.cateringTitle")}</h1>
             <p className="mt-7 max-w-[530px] text-base leading-8 text-[#FFF8EC]/85 sm:text-lg">{t("hero.cateringDescription")}</p>
             <Link href="/catering" className="mt-9 inline-flex items-center justify-center gap-2 rounded-md bg-[#D89A27] px-6 py-4 font-bold text-[#321B29] transition hover:bg-[#FFF8EC] focus:outline-none focus:ring-2 focus:ring-[#FFF8EC] focus:ring-offset-2 focus:ring-offset-[#321B29]">{t("hero.exploreCatering")}<ArrowRight size={18} /></Link>
           </div>
