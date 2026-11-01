@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Forgot Password",
   description: "Reset your African Restaurant Estonia customer account password.",
   alternates: { canonical: "/forgot-password" },
+  robots: { index: false, follow: false },
 };
 
 export default function ForgotPasswordPage() {
