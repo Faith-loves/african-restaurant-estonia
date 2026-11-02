@@ -1419,26 +1419,28 @@ export const menuItems: MenuItem[] = [
     "Coca-Cola",
     "DRINKS",
     [
-      ["0.30 L",2.45],
+      ["Can 0.33 L",2.45],
       ["0.50 L",3],
     ],
     {
-      image: "/images/foods/coca-cola.jpg",
+      image: "/images/drinks/coca-cola-bottle.jpeg",
       available: true,
       isTodayMenu: true,
       pricePending: false,
     }
   ),
 
-  m("coca-cola-zero", "Coca-Cola Zero", "DRINKS", [["0.30 L",2.45],["0.50 L",3]], { available: true, isTodayMenu: true, pricePending: false }),
+  m("coca-cola-zero", "Coca-Cola Zero", "DRINKS", [["Can 0.33 L",2.45],["0.50 L",3]], { image: "/images/drinks/coca-cola-zero-bottle.jpeg", available: true, isTodayMenu: true, pricePending: false }),
 
-  m("fanta", "Fanta", "DRINKS", [["0.30 L",2.45],["0.50 L",3]], { available: true, isTodayMenu: true, pricePending: false }),
+  m("fanta", "Fanta Orange", "DRINKS", [["Can 0.33 L",2.45],["0.50 L",3]], { image: "/images/drinks/fanta-bottle.jpeg", available: true, isTodayMenu: true, pricePending: false }),
 
-  m("sprite", "Sprite", "DRINKS", [["0.30 L",2.45]], { available: true, isTodayMenu: true, pricePending: false }),
+  m("sprite", "Sprite", "DRINKS", [["Can 0.33 L",2.45]], { image: "/images/drinks/sprite-can.jpeg", available: true, isTodayMenu: true, pricePending: false }),
 
-  m("water", "Water", "DRINKS", [["0.50 L",2.15]], { available: true, isTodayMenu: true, pricePending: false }),
+  m("water", "Evian Water", "DRINKS", [["0.50 L",2.15]], { image: "/images/drinks/evian-water.jpeg", available: true, isTodayMenu: true, pricePending: false }),
 
-  m("zobo", "Zobo", "DRINKS", [["0.30 L",3.99]], { available: true, isTodayMenu: true, pricePending: false }),
+  m("saaremaa-water", "Saaremaa Vesi Water", "DRINKS", [["0.50 L",2.15]], { image: "/images/drinks/saaremaa-water.jpeg", available: true, isTodayMenu: true, pricePending: false }),
+
+  m("zobo", "Zobo", "DRINKS", [["0.30 L",3.99]], { image: "/images/drinks/zobo.jpeg", available: true, isTodayMenu: true, pricePending: false }),
 
   m(
     "egg-sauce",
