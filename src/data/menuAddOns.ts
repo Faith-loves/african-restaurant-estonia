@@ -4,11 +4,12 @@ export const restaurantDrinkAddOns = [
   { name: "Coca-Cola 0.50 L", price: 3 },
   { name: "Coca-Cola Zero 0.50 L", price: 3 },
   { name: "Fanta 0.50 L", price: 3 },
-  { name: "Coca-Cola 0.30 L", price: 2.45 },
-  { name: "Coca-Cola Zero 0.30 L", price: 2.45 },
-  { name: "Fanta 0.30 L", price: 2.45 },
-  { name: "Sprite 0.30 L", price: 2.45 },
-  { name: "Water 0.50 L", price: 2.15 },
+  { name: "Coca-Cola Can 0.33 L", price: 2.45 },
+  { name: "Coca-Cola Zero Can 0.33 L", price: 2.45 },
+  { name: "Fanta Can 0.33 L", price: 2.45 },
+  { name: "Sprite Can 0.33 L", price: 2.45 },
+  { name: "Evian Water 0.50 L", price: 2.15 },
+  { name: "Saaremaa Vesi Water 0.50 L", price: 2.15 },
   { name: "Zobo 0.30 L", price: 3.99 },
   { name: "Ginger Drink 0.30 L", price: 3.99 },
 ] as const;
@@ -23,7 +24,16 @@ export const restaurantProteinAddOns = [
   { name: "Peppered Pomo (Small)", price: 8.5 },
 ] as const;
 
-const legacyDrinkNames = new Set(["ginger drink", "zobo", "coca-cola can"]);
+const legacyDrinkNames = new Set([
+  "ginger drink",
+  "zobo",
+  "coca-cola can",
+  "coca-cola 0.30 l",
+  "coca-cola zero 0.30 l",
+  "fanta 0.30 l",
+  "sprite 0.30 l",
+  "water 0.50 l",
+]);
 
 /** Used for catalogue creation and the one-time update of existing database rows. */
 export function mergeRequestedMenuAddOns(id: string, category: string, existing: readonly MenuAddOn[] = []): MenuAddOn[] {

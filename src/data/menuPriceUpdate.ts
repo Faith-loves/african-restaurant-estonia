@@ -1,7 +1,7 @@
 import type { MenuAddOn, MenuItem, MenuSize } from "@/types/menu";
 import { mergeRequestedMenuAddOns } from "@/data/menuAddOns";
 
-export const MENU_UPDATE_REVISION = "owner-menu-prices-2026-10-26-v1";
+export const MENU_UPDATE_REVISION = "owner-drinks-images-2026-11-02-v1";
 
 export const requestedPriceLabels: Record<string, readonly string[]> = {
   "jollof-rice": [
@@ -73,8 +73,28 @@ export const requestedPriceLabels: Record<string, readonly string[]> = {
     "0.30 L"
   ],
   "coca-cola-can": [
-    "0.30 L",
+    "Can 0.33 L",
     "0.50 L"
+  ],
+  "coca-cola-zero": [
+    "Can 0.33 L",
+    "0.50 L"
+  ],
+  "fanta": [
+    "Can 0.33 L",
+    "0.50 L"
+  ],
+  "sprite": [
+    "Can 0.33 L"
+  ],
+  "water": [
+    "0.50 L"
+  ],
+  "saaremaa-water": [
+    "0.50 L"
+  ],
+  "zobo": [
+    "0.30 L"
   ]
 };
 
@@ -97,6 +117,7 @@ export const requestedAvailableIds = new Set([
   "fanta",
   "sprite",
   "water",
+  "saaremaa-water",
   "zobo"
 ]);
 const unavailableIds = new Set(["fish-pie", "chicken-pie"]);
@@ -110,6 +131,10 @@ export function buildRequestedMenuPatch(id: string, catalogueItem: MenuItem | un
     addOns: mergeRequestedMenuAddOns(id, category, addOns),
     menuUpdateRevision: MENU_UPDATE_REVISION,
   };
+  if (category === "DRINKS" && catalogueItem?.image) {
+    patch.name = catalogueItem.name;
+    patch.image = catalogueItem.image;
+  }
   const labels = requestedPriceLabels[id];
   if (labels && catalogueItem) {
     const requestedSizes = catalogueItem.sizes.filter(size => labels.includes(size.label));
